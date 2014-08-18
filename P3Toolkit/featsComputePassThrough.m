@@ -1,3 +1,3 @@
 function [tfeats, vfeats] = featsComputePassThrough(tfeats, tlabels, vfeats)
-	printf('passing through all the features!\n');
+%  	fprintf(' Passing through all the features! ');
 endfunction;

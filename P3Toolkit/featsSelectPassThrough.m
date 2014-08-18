@@ -1,4 +1,4 @@
 function featsIdx = featsSelectPassThrough(tfeats, tlabels)
-	printf('selecting all the features!\n');
+%  	fprintf(' Selecting all the features! ');
 	featsIdx=[1:columns(tfeats)];
 endfunction;
