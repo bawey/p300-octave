@@ -1,5 +1,7 @@
 #! /usr/bin/octave -qf
 
+init();
+
 if(~exist('ov_data_path','var'))
 	if(length(argv())==1)
 		ov_data_path=argv(){1};
@@ -7,17 +9,6 @@ if(~exist('ov_data_path','var'))
 		error('ov_data_path variable undefined! Pass it as a command line argument or set before "source" if running from octave.')
 	endif;
 endif;
-
-warning('off');
-pkg load nan;
-pkg load signal;
-pkg load parallel;
-
-addpath(sprintf('%s/@P3Session', pwd));
-addpath(sprintf('%s/@P3Workflow', pwd));
-addpath(sprintf('%s/P3Toolkit', pwd));
-addpath(sprintf('%s/Classifiers/', pwd));
-addpath(sprintf('%s/Classifiers/LogisticRegression', pwd));
 
 p3ov=P3SessionOpenVibe(ov_data_path);
 
@@ -60,17 +51,17 @@ summary=launch(w)
 %  printf('LR aware: %s\n', confusionMatrixInfo(summary{1}{1}{3}.aware));
 
 
+summary2str(summary, fc, fs, cl);
+
 channel_scores=[];
 for(x=1:length(summary))
 	for(y=1:length(summary{x}))
 		score=0;
 		for(z=1:length(summary{x}{y}))
 			[nfo, stats] = confusionMatrixInfo(summary{x}{y}{z}.naive);
-			printf('feats computation: %20s, feats selection: %20s, classifier (naive): %10s , %s', fc{x}, fs{y}, cl{z}, nfo);
 			subscore=(stats.recall+stats.precision)/2;
 			[nfo, stats] = confusionMatrixInfo(summary{x}{y}{z}.aware);
 			%subscore is the better of two averages of precision and recal: either for he aware or for the naive classifier
-			printf('feats computation: %20s, feats selection: %20s, classifier (aware): %10s , %s', fc{x}, fs{y}, cl{z}, nfo);
 			subscore=max(score, (stats.recall+stats.precision)/2);
 			%score for the channel is the best classification subscore for that channel
 			score=max(score, subscore);
@@ -81,7 +72,7 @@ endfor;
 
 %remove all the single-channel selecting code and corrresponding printouts
 w=clearFunctions(w, 'featsSelect');
-fs={};
+fs2={};
 
 [cs, cn] = sort(channel_scores, 'descend');
 channels_score=[cs, cn];
@@ -96,27 +87,9 @@ for(i=2:size(channels_score,1))
 	%pick the 'best' channels from 1 to i
 	channels=channels_score(1:i,2)';
 	w=addFunction(w, 'featsSelect', @featsSelectPickChannels, p3ov.samplesCountPerEpoch, channels);
-	fs{end+1}=sprintf('channels %30s [%30s]', mat2str(channels), strcat(channelNames{channels}));
+	fs2{end+1}=sprintf('channels %30s [%30s]', mat2str(channels), strcat(channelNames{channels}));
 endfor;
 
 summary2=launch(w);
 
-
-for(x=1:length(summary2))
-
-for(y=1:length(summary2{x}))
-
-score=0;
-for(z=1:length(summary2{x}{y}))
-
-[nfo, stats] = confusionMatrixInfo(summary2{x}{y}{z}.naive);
-printf('feats computation: %15s, feats selection: %20s, classifier (naive): %10s , %s', fc{x}, fs{y}, cl{z}, nfo);
-
-[nfo, stats] = confusionMatrixInfo(summary2{x}{y}{z}.aware);
-printf('feats computation: %15s, feats selection: %20s, classifier (aware): %10s , %s', fc{x}, fs{y}, cl{z}, nfo);
-
-endfor;
-
-endfor;
-
-endfor;
+summary2str(summary2, fc, fs2, fl);
