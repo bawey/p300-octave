@@ -23,7 +23,7 @@ p3ov=downsample(p3ov, 8);
 %cells for pretty-printing the summary
 fc={}; %Features Computation
 fs={}; %Features Selection
-cl={}; %CLassification
+tt={}; %CLassification
 
 %"OBJECT-ORIENTED"
 w=P3Workflow(p3ov, @trainTestSplitMx);
@@ -37,11 +37,11 @@ for(ch=1:p3ov.channelsCount)
 	w=addFunction(w, 'featsSelect', @featsSelectPickChannels, p3ov.samplesCountPerEpoch, ch);
 	fs{end+1}=sprintf('%d. channel only [%s]', ch, channelNames{ch});
 endfor;
-w=addFunction(w, 'classify', @classifyLDA); cl{end+1}='LDA';
-w=addFunction(w, 'classify', @classifyFDA); cl{end+1}='FDA';
-w=addFunction(w, 'classify', @classifyLogisticRegression); cl{end+1}='LogReg';
+w=addFunction(w, 'trainTest', @ttLDA); tt{end+1}='LDA';
+w=addFunction(w, 'trainTest', @ttFDA); tt{end+1}='FDA';
+w=addFunction(w, 'trainTest', @ttLogisticRegression); tt{end+1}='LogReg';
 
-summary=launch(w)
+summary=launch(w);
 
 %  printf('LDA naive: %s\n', confusionMatrixInfo(summary{1}{1}{1}.naive));
 %  printf('LDA aware: %s\n', confusionMatrixInfo(summary{1}{1}{1}.aware));
@@ -51,7 +51,7 @@ summary=launch(w)
 %  printf('LR aware: %s\n', confusionMatrixInfo(summary{1}{1}{3}.aware));
 
 
-summary2str(summary, fc, fs, cl);
+summarize(summary, fc, fs, tt);
 
 channel_scores=[];
 for(x=1:length(summary))
@@ -92,4 +92,4 @@ endfor;
 
 summary2=launch(w);
 
-summary2str(summary2, fc, fs2, fl);
+summarize(summary2, fc, fs2, tt);

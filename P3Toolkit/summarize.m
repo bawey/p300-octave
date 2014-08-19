@@ -1,4 +1,4 @@
-function summary2str(summary, fc, fs, cl)
+function summarize(summary, fc, fs, cl)
 	for(x=1:length(summary))
 		for(y=1:length(summary{x}))
 			for(z=1:length(summary{x}{y}))

@@ -1,4 +1,4 @@
-function H= classifyLD4(tfeats, tlabels, vfeats, vlabels)
+function H= ttLD4(tfeats, tlabels, vfeats, vlabels)
 %  	tlabels.*=2;
 %  	tlabels.-=1;
 %  	

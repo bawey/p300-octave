@@ -25,7 +25,7 @@ p3ov=downsample(p3ov, 8);
 %cells for pretty-printing the summary
 fc={}; %Features Computation
 fs={}; %Features Selection
-cl={}; %CLassification
+tt={}; %CLassification
 
 %BUG!
 channelNames=p3ov.channelNames;
@@ -34,10 +34,10 @@ channelNames=p3ov.channelNames;
 w=P3Workflow(p3ov, @trainTestSplitMx);
 w=addFunction(w, 'featsCompute', @featsComputePassThrough); fc{end+1}='pass-through';
 w=addFunction(w, 'featsSelect', @featsSelectPassThrough); fs{end+1}='pass-through';
-w=addFunction(w, 'classify', @classifyLDA);	cl{end+1}='LDA';
-w=addFunction(w, 'classify', @classifyFDA); cl{end+1}='FDA';
-w=addFunction(w, 'classify', @classifyLogisticRegression); cl{end+1}='LogReg';
+w=addFunction(w, 'trainTest', @ttLDA);	tt{end+1}='LDA';
+w=addFunction(w, 'trainTest', @ttFDA); tt{end+1}='FDA';
+w=addFunction(w, 'trainTest', @ttLogisticRegression); tt{end+1}='LogReg';
   
 summary=launch(w);
   
-summary2str(summary, fc, fs, cl);
+summarize(summary, fc, fs, tt);

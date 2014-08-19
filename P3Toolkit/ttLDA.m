@@ -1,8 +1,8 @@
-function [H, IH] = classifyFDA(tfeats, tlabels, vfeats, vlabels)
+function [H, IH] = ttLDA(tfeats, tlabels, vfeats, vlabels)
 	vlabels+=1;
 	tlabels+=1;
 	
-	MODE.TYPE='FDA';
+	MODE.TYPE='LDA';
 	CC=train_sc(tfeats, tlabels, MODE);
 	R=test_sc(CC, vfeats, MODE.TYPE, vlabels);
 	H=R.H;

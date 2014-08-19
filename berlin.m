@@ -13,29 +13,34 @@ for(i=1:length(filenames))
 	filenames{i}=sprintf('%s/%s',berlin_data_path, filenames{i});
 endfor;
 
-filenames{:}
+printf('Reading data...'); fflush(stdout);
 
 p3 = P3SessionBerlin(filenames{:});
 
-p3=groupEpochs(p3);
-[b,a]=butter(5, [0.1/120, 15/120]);
-p3=filterEeg(p3,b,a);
 
+%it somehow worked with grouping prior to filtering - period got shorter
+printf('merging epochs...'); fflush(stdout); 
+p3=groupEpochs(p3);
+%[b,a]=butter(5, [0.1/120, 15/120]);
+%p3=filterEeg(p3,b,a);
+
+printf('downsampling...'); fflush(stdout);
 p3=downsample(p3, 6);
 
 %some structures for pretty printing
 fc={};
 fs={};
-cl={};
+tt={};
 
 %"OBJECT-ORIENTED"
 w=P3Workflow(p3, @trainTestSplitMx);
-w=addFunction(w, 'featsCompute', 	@featsComputePassThrough); 		fc{end+1}='pass-through';
-w=addFunction(w, 'featsSelect', 	@featsSelectPassThrough);		fs{end+1}='pass-through';
-w=addFunction(w, 'classify', 		@classifyLDA);					cl{end+1}='LDA';
-w=addFunction(w, 'classify', 		@classifyFDA);					cl{end+1}='FDA';
-w=addFunction(w, 'classify', 		@classifyLogisticRegression);	cl{end+1}='LogReg';
+w=addFunction(w, 'featsCompute', 	@featsComputePassThrough); 	fc{end+1}='pass-through';
+w=addFunction(w, 'featsSelect', 	@featsSelectPassThrough);	fs{end+1}='pass-through';
+%  w=addFunction(w, 'trainTest', @ttLDA); tt{end+1}='LDA';
+w=addFunction(w, 'trainTest', @ttFDA); tt{end+1}='FDA';
+w=addFunction(w, 'trainTest', 		@ttLogisticRegression);		tt{end+1}='LogReg';
 
+printf('launching workflow...'); fflush(stdout);
 summary=launch(w);
 
-summary2str(summary, fc, fs, cl);
+summarize(summary, fc, fs, tt);
