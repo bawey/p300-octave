@@ -1,3 +1,4 @@
+%Merges each period into a set of 12 epochs, each being the average response to a particular stimulus
 function p3session = groupEpochs(p3session)
 	new_signal=[];
 	new_stimuli=[];

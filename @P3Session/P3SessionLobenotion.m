@@ -1,3 +1,4 @@
+%Constructor for the project's own data format. Its fate is yet to be decided
 function p3session = P3SessionLobenotion(dirpath, dataname, metaname)
 	data = load(sprintf('%s/%s', dirpath, dataname));
 	meta = load(sprintf('%s/%s', dirpath, metaname));

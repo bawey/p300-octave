@@ -31,8 +31,11 @@ function p3Session = P3Session(signal, stimuli, targets, channelsCount, sampling
 	%we want a row of labels too. should be easily inferrable from stimuli and targets...
 	
 	%helper - index pointing to the target
-	trg_ind=idivide(0:length(p3Session.stimuli)-1, p3Session.epochsCountPerPeriod)'+1;
-	p3Session.labels= p3Session.stimuli == p3Session.targets(trg_ind, 2) | p3Session.stimuli == p3Session.targets(trg_ind, 1);
+	p3Session.labels=[];
+	if(~isempty(targets))
+		trg_ind=idivide(0:length(p3Session.stimuli)-1, p3Session.epochsCountPerPeriod)'+1;
+		p3Session.labels= p3Session.stimuli == p3Session.targets(trg_ind, 2) | p3Session.stimuli == p3Session.targets(trg_ind, 1);
+	endif;
 
 
 	p3Session=class(p3Session, 'P3Session');

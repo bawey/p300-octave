@@ -1,11 +1,15 @@
 % goes over all the stages defined for P3Workflow and executes the code
-function summary = launch(wf)
+function summary = launch(wf, fc, fs, tt, title)
 	%nobody does the cross-validation splotting now :(
 	%and there is no voting... cause there is nothing to vote about
 	printf('Launching the workflow for %d feature computation methods, %d feature selection methods and %d classification startegies. \n', 
 		length(wf.functions.featsCompute), length(wf.functions.featsSelect), length(wf.functions.trainTest));
 
 	summary={};
+	
+	%for saving the file later
+	[status, datestr]=system('date +"%Y.%m.%d_%H.%M"');
+    filename=sprintf('~/p3results/summary.%s.%s.oct', title, strtrim(datestr));
 	
 	combinationsToRun=size(wf.trainTestSplitMx,1) * length(wf.functions.featsCompute) * length(wf.functions.featsSelect) * length(wf.functions.trainTest);
 	progress=0;
@@ -18,7 +22,9 @@ function summary = launch(wf)
 %  		sv(sv>0)
 		[tfeats, tlabels, tstimuli] = classificationData(wf.p3session, [1:wf.p3session.channelsCount], [sv(sv>0)]);
 		[vfeats, vlabels, vstimuli] = classificationData(wf.p3session, [1:wf.p3session.channelsCount], [-sv(sv<0)]);
+		
 		[tfeats, vfeats] = centerData(tfeats, vfeats);
+		
 %  		printf('Evaluation period: %d \n', -sv(sv<0));
 		for(x=1:length(wf.functions.featsCompute))
 			if(length(summary)<x)	summary{end+1}={};	endif;
@@ -38,6 +44,8 @@ function summary = launch(wf)
     				summary{x}{y}{z}.aware+=IH;
 					
 					printf('Workflow progress: %.2f%%\r', ++progress*100/combinationsToRun);
+					
+					save('-binary', filename, 'summary', 'title', 'fc', 'fs', 'tt');
 					fflush(stdout);
 				endfor;
 			endfor;

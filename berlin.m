@@ -37,7 +37,6 @@ w=P3Workflow(p3, @trainTestSplitMx);
 w=addFunction(w, 'featsCompute', 	@featsComputePassThrough); 	fc{end+1}='pass-through';
 w=addFunction(w, 'featsSelect', 	@featsSelectPassThrough);	fs{end+1}='pass-through';
 %  w=addFunction(w, 'trainTest', @ttLDA); tt{end+1}='LDA';
-w=addFunction(w, 'trainTest', @ttFDA); tt{end+1}='FDA';
 w=addFunction(w, 'trainTest', 		@ttLogisticRegression);		tt{end+1}='LogReg';
 
 printf('launching workflow...'); fflush(stdout);

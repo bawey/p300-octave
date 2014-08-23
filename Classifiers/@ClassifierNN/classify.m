@@ -11,6 +11,6 @@ h2 = sigmoid([ones(m, 1) h1] * nn.Theta2');
 [dummy, p] = max(h2, [], 2);
 
 p.-=1;
-prob=h2;
+prob=h2(:,1)-h2(:,2);
 
 endfunction;

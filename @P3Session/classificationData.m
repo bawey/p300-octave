@@ -1,4 +1,4 @@
-
+%Converts the session into a set of train-test matrices
 %channels and periods are either binary selector vectors or vectors of values to select like [1,2,8]
 
 function [feats, labels, stimuli] = classificationData(p3, channels, periods)
@@ -30,7 +30,11 @@ function [feats, labels, stimuli] = classificationData(p3, channels, periods)
 	periods=vec(repmat(periods, 1, p3.epochsCountPerPeriod)')>0;
 	
 	feats=p3.signal(periods, channels);
-	labels=p3.labels(periods);
+	labels=[];
+	%testdata will be labelless
+	if(~isempty(p3.labels))
+		labels=p3.labels(periods);
+	endif;
 	stimuli=p3.stimuli(periods);
 	
 endfunction;

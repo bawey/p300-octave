@@ -1,6 +1,8 @@
 %implement reading several files!!!!
 function p3Session = P3SessionBerlin(varargin)
 	
+	epoch_length=192;
+	
 	eeg=[];
 	stimuli=[];
 	targets=[];
@@ -10,8 +12,9 @@ function p3Session = P3SessionBerlin(varargin)
 			path=path{:};
 			printf('Simple cell-to-string hopefully and ...')
 		endif;
-		printf('Now we read the matrix from file: %s\n', path)
+		printf('Now we read the matrix from file: %s', path); fflush(stdout);
 		load(path);
+		printf('... done! \n'); fflush(stdout);
 		%signal - all our raw signal
 		%All is loaded. We do not care (pErr detection is tough) what happened when the screen was black etc.
 		%We want to get responses to stimuli
@@ -31,7 +34,7 @@ function p3Session = P3SessionBerlin(varargin)
 		epochStartIdx=flashedSampleIdx(flashedSampleIdx-temp>1);
 		
 		%our epoch length will be 192, as 192/240=0.8 sec.
-		epochEndIdx=epochStartIdx+191;
+		epochEndIdx=epochStartIdx+epoch_length-1;
 		for(epochNo=1:length(epochStartIdx))
 			epoch=signal(epochStartIdx(epochNo):epochEndIdx(epochNo), :);
 			%each row is a separate epoch, column blocks are for electrodes, columns in block represent values at time t0, t1... tN
@@ -48,17 +51,21 @@ function p3Session = P3SessionBerlin(varargin)
 		%this contains lots of entries per stimuli (well, 100ms at 240Hz - 24 entries).
 		stimuli=[stimuli; reshape(stimuli_temp, 24, length(stimuli_temp)/24)'(:,1)];
 		
-		%...The targets
-		%We'll pull out the same trick: we will look forStimulusType's preceeded by sth elkse
-		allLabels = StimulusCode(find(StimulusType==1 & StimulusType~=[0;StimulusType(1:end-1)]));
-		%it's still coded the original way... recoding
-		colLabels=allLabels(allLabels<7)*-1;
-		rowLabels=allLabels(allLabels>6)-6;
-		%take every 15th entry()
-		colLabels=colLabels(mod(1:length(colLabels),15)==1);
-		rowLabels=rowLabels(mod(1:length(rowLabels),15)==1);
-		%store targets: done!
-		targets=[targets;rowLabels, colLabels];
+		if(exist('StimulusType'))
+			%...The targets
+			%We'll pull out the same trick: we will look forStimulusType's preceeded by sth else
+			allLabels = StimulusCode(find(StimulusType==1 & StimulusType~=[0;StimulusType(1:end-1)]));
+			%it's still coded the original way... recoding
+			colLabels=allLabels(allLabels<7)*-1;
+			rowLabels=allLabels(allLabels>6)-6;
+			%take every 15th entry()
+			colLabels=colLabels(mod(1:length(colLabels),15)==1);
+			rowLabels=rowLabels(mod(1:length(rowLabels),15)==1);
+			%store targets: done!
+			targets=[targets;rowLabels, colLabels];
+		else
+			targets=zeros(rows(eeg)/(15*12),2);
+		endif;
 	endfor;
 	
 	channelNames={ 'FC5','FC3','FC1','FCZ','FC2','FC4','FC6', 'C5', 'C3', 'C1', 'CZ', 'C2', 'C4', 'C6', 'CP5', 'CP3', 'CP1', 'CPZ', 'CP2', 'CP4', 'CP6', 'Fp1', 'FpZ', 'Fp2', 'AF7', 'AF3', 'AFZ', 'AF4', 'AF8', 'F7', 'F5', 'F3', 'F1', 'FZ', 'F2', 'F4', 'F6', 'F8', 'FT7', 'FT8', 'T7', 'T8', 'T9', 'T10', 'TP7', 'TP8', 'P7', 'P5', 'P3', 'P1', 'PZ', 'P2', 'P4', 'P6', 'P8', 'PO7', 'PO3', 'POZ', 'PO4', 'PO8', 'O1', 'OZ', 'O2', 'IZ' };

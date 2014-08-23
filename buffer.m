@@ -4,7 +4,7 @@ init();
 [feats, labels, stimuli] = classificationData(p3train, [1:p3train.channelsCount], [1:p3train.periodsCount]);
 [feats, tr_mean, tr_std] = centerTrainData(feats);
 
-classifier = ClassifierNN(feats, labels, 40, 300, 20);
+classifier = ClassifierNN(feats, labels, 40, 50, 2);
 
 
 
@@ -17,6 +17,7 @@ for(testperiod=1:p3test.periodsCount)
     [labels, prob]=classify(classifier, feats);
     
     aware_labels=sextetWiseAwarePrediction(prob);
+    
     row=stimuli(stimuli>0 & aware_labels==1);
     column=stimuli(stimuli<0 & aware_labels==1);
     

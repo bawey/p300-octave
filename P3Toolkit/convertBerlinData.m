@@ -2,6 +2,8 @@
 %Depending on the contents of the folder, either the BCI competition 2 or BCI compettion 3 data will be loaded automatically.
 %First argument denotes the output directory, whatever comes next is considered to be an input dir hosting the Berlin data from either competition
 
+%sample invocation: convertBerlinData('~/Copy/eeg/p3berlin','~/Copy/eeg/berlin.bci.iii','~/Copy/eeg/berlin.bci.ii');
+
 function convertBerlinData(outdir, varargin)
     assert(exist(outdir, 'dir')==7, 'Output directory does not exist');
     for(dir = varargin)

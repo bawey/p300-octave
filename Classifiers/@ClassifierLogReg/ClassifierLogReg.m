@@ -1,4 +1,4 @@
-function classifier = ClassifierLogReg(X,Y,MaxIter=400)
+function classifier = ClassifierLogReg(X,Y,MaxIter=400, lambda=1)
 
 	classfier=struct();
 	
@@ -12,14 +12,19 @@ function classifier = ClassifierLogReg(X,Y,MaxIter=400)
 	initial_theta = zeros(n + 1, 1);
 
 	% Compute and display initial cost and gradient
-	[cost, grad] = logRegCostFunction(initial_theta, X, Y);
+	[cost, grad] = logRegCostFunctionReg(initial_theta, X, Y, lambda);
+
+    fprintf('initial cost of theta: %.3f\n', cost);
 
 	%  Set options for fminunc
 	options = optimset('GradObj', 'on', 'MaxIter', MaxIter);
 
 	%  Run fminunc to obtain the optimal theta
 	%  This function will return theta and the cost 
-	[theta, cost] = fminunc(@(t)(logRegCostFunction(t, X, Y)), initial_theta, options);
+	[theta, cost] = fminunc(@(t)(logRegCostFunctionReg(t, X, Y, lambda)), initial_theta, options);
+	
+	
+	fprintf('cost of theta: %.3f\n', cost);
 
 	classifier.theta=theta;
 	classifier=class(classifier, 'ClassifierLogReg');
