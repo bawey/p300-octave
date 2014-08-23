@@ -67,8 +67,14 @@ first=sigmoid([ones(size(X,1),1),X]*Theta1');
 second = sigmoid([ones(size(first,1),1),first]*Theta2');
 
 answers = zeros(size(second));
+
+index_shift=0;
+if(min(y)==0)
+    index_shift=1;
+endif;
+
 for(i=1:size(answers,1))
-    answers(i,y(i,1))=1;
+    answers(i,y(i,1)+index_shift)=1;
 end;    
 
 for(i=1:m)
