@@ -1,9 +1,9 @@
-function [train, test, center, spread] = centerData(train, test)
+function [train, test, tr_mean, tr_std] = centerData(train, test)
 
-	center=(max(train).-min(train))./2;
-	spread=(max(train).-min(train));
-
-	train=(train.-center)./spread;
-	test=(test.-center)./spread;
+    tr_mean=mean(train);
+    tr_std=std(train);
+    
+    train=(train-tr_mean)./tr_std;
+    test=(test-tr_mean)./tr_std;
 
 endfunction;
