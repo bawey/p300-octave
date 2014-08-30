@@ -27,7 +27,7 @@ function convertBerlinData(outdir, varargin)
                 endfor;
                 
                 %here shour be 6, but AAS001R1106.mat contains some oddities. we'll train on less samples then(for now at least)
-                for(i=1:5)
+                for(i=1:6)
                     train_files{end+1}=sprintf('%s/AAS011R%02d.mat', dir{:}, i);
                 endfor;
 

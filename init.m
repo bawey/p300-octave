@@ -1,3 +1,4 @@
+%sets up the paths required for carrying out the experiments
 function init()
 	warning('off');
 	pkg load nan;
@@ -11,5 +12,6 @@ function init()
 	addpath(sprintf('%s/Classifiers/@ClassifierNan', pwd));
 	addpath(sprintf('%s/Classifiers/@ClassifierSVM', pwd));
 	addpath(sprintf('%s/Classifiers/@ClassifierNN', pwd));
+	addpath(sprintf('%s/Classifiers/@ClassifiersBag', pwd));
 	
 endfunction;

@@ -1,13 +1,21 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
-function [H, IH]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels)
+function [H, IH]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
 	
-	[p, prob]=classify(classifier, vfeats);
-	ap=sextetWiseAwarePrediction(prob);
-	pause;
+	[p, probs]=classify(classifier, vfeats);
+	ap=[];
+	%ap=sextetWiseAwarePrediction(probs);
 	
+	%we need to know how long a period is
+	
+	for(i=0:epochsPerPeriod:rows(vfeats)-1)
+        stimuliOfConcern=vstimuli(i+1:i+epochsPerPeriod,:);
+        [response, row, col] = periodCharacterPrediction(stimuliOfConcern, probs(i+1:i+epochsPerPeriod));
+        ap=[ap; (stimuliOfConcern==row | stimuliOfConcern == col)];
+	endfor;
+        
 	H=zeros(2,2); IH=zeros(2,2);
 	
 	H(1,1)=sum( vlabels==0 & p==0 );

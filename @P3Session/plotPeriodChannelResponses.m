@@ -23,16 +23,15 @@ function plotPeriodChannelResponses(p3, channel, periodNo)
 	
 	figure('name', sprintf('average responses of channel %s to particular stimuli during period %d', p3.channelNames{channelNo}, periodNo));
 	for(stimulus = unique_stimuli)
-		fprintf('Here we go for a stimulus \n');
 		subplot(rows, cols, find(unique_stimuli==stimulus));
 %  		printf('sum(stimuli==stimulus)=%d\n',sum(stimuli==stimulus));
 %  		printf('size(feats(stimuli==stimulus, :))=%d,%d\n',size(feats(stimuli==stimulus, :)));
 		
-		plot(data_x, mean(feats(stimuli==stimulus, :),1),':');
+		plot(data_x, mean(feats(stimuli==stimulus, :),1),'b');
 		hold on;
-		plot(data_x, mean_pos, 'g');
+		plot(data_x, mean_pos, '-g');
 		hold on;
-		plot(data_x, mean_neg, 'r');
+		plot(data_x, mean_neg, '-r');
 		title(sprintf('stimulus: %d', stimulus));
 	endfor;
 endfunction;

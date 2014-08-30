@@ -1,9 +1,9 @@
-%implement reading several files!!!!
+%READS FROm THE FILES PROVIDED
 function p3Session = P3SessionBerlin(varargin)
 	
 	epoch_length=192;
 	
-	eeg=[];
+	eeg=[]
 	stimuli=[];
 	targets=[];
 	
@@ -15,7 +15,14 @@ function p3Session = P3SessionBerlin(varargin)
 		printf('Now we read the matrix from file: %s', path); fflush(stdout);
 		load(path);
 		printf('... done! \n'); fflush(stdout);
-		%signal - all our raw signal
+		%signal - all our raw signal, needs a predefined bandpassing. should be done on a period-by-period basis,
+		%but with intervals large enough between the sessions, bandpassing all will also be fine. and faster.
+		for(c=1:columns(signal))
+            %fixed filter returns a row and accepts a row
+            %signal(:, c)=_fixedFilter(signal(:,c)',240)';
+		endfor;
+		
+		
 		%All is loaded. We do not care (pErr detection is tough) what happened when the screen was black etc.
 		%We want to get responses to stimuli
 		
@@ -27,19 +34,27 @@ function p3Session = P3SessionBerlin(varargin)
 		flashedSampleIdx=find(StimulusCode~=0);
 		
 		%Get only the first such index for each 100ms intensification:
-		%1. temp basically tells us what the previous value for each position is
-		temp=[-10; flashedSampleIdx(1:end-1)];
-		%2. we need to know when each intesification begun, marking the start of each epoch
+		%2. we need to know when each intesification began, marking the start of each epoch
 		%There should be exactly 12*15*numberOfPeriods of such epochStarts
-		epochStartIdx=flashedSampleIdx(flashedSampleIdx-temp>1);
+		epochStartIdx=flashedSampleIdx(flashedSampleIdx(2:end,:)-flashedSampleIdx(1:end-1,:)>1);
+		if(mod(length(epochStartIdx), 180)~=0)
+            %sometimes we get one extra, sometimes one too few. trying to hack it working.
+            epochStartIdx=flashedSampleIdx(flashedSampleIdx(1:end,:)-[0; flashedSampleIdx(1:end-1,:)]>1);
+		endif;
+		assert(mod(length(epochStartIdx), 180)==0, sprintf('epochStartIdx of length %d', length(epochStartIdx)));
 		
 		%our epoch length will be 192, as 192/240=0.8 sec.
 		epochEndIdx=epochStartIdx+epoch_length-1;
-		for(epochNo=1:length(epochStartIdx))
-			epoch=signal(epochStartIdx(epochNo):epochEndIdx(epochNo), :);
-			%each row is a separate epoch, column blocks are for electrodes, columns in block represent values at time t0, t1... tN
-			eeg=[eeg; reshape(epoch, 1, columns(epoch)*rows(epoch))];
-		endfor;
+				
+		%pre-allocate a chunk for filename contents
+        eeg=[eeg; zeros(length(epochStartIdx), epoch_length*64)];
+        
+        for(epochNo=1:length(epochStartIdx))
+            epoch=signal(epochStartIdx(epochNo):epochEndIdx(epochNo), :);
+            %each row is a separate epoch, column blocks are for electrodes, columns in block represent values at time t0, t1... tN
+            %fill the part preallocated above
+            eeg(end-length(epochStartIdx)+epochNo, :)=reshape(epoch, 1, columns(epoch)*rows(epoch));
+        endfor;
 		
 		
 		%....The stimuli
@@ -59,8 +74,17 @@ function p3Session = P3SessionBerlin(varargin)
 			colLabels=allLabels(allLabels<7)*-1;
 			rowLabels=allLabels(allLabels>6)-6;
 			%take every 15th entry()
-			colLabels=colLabels(mod(1:length(colLabels),15)==1);
-			rowLabels=rowLabels(mod(1:length(rowLabels),15)==1);
+			%achtung! here comes a drirty hack for a rare case (one file) with 16-15-15 intensifications that would break the %15 logic
+			colLabelsTemp=colLabels(mod(1:length(colLabels),15)==1);
+			rowLabelsTemp=rowLabels(mod(1:length(rowLabels),15)==1);
+			if(length(rowLabelsTemp)>length(colLabelsTemp))
+                rowLabelsTemp=rowLabels(mod(1:length(rowLabels),16)==1);
+			endif;
+			if(length(colLabelsTemp)>length(rowLabelsTemp))
+                colLabelsTemp=colLabels(mod(1:length(colLabels),16)==1);
+            endif;
+            rowLabels=rowLabelsTemp;
+            colLabels=colLabelsTemp;
 			%store targets: done!
 			targets=[targets;rowLabels, colLabels];
 		else

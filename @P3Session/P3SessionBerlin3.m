@@ -25,7 +25,10 @@ function p3 = P3SessionBerlin(filePath)
         periodBlock=repmat(NaN, 180, epoch_length*channelsCount);
 %          fprintf('epoch_length: %d, channelsCount: %d \n', epoch_length, channelsCount); fflush(stdout);
         for(channelNo=1:channelsCount)
-            periodBlock(:,[1:epoch_length].+(channelNo-1)*epoch_length)=reshape(Signal(periodNo, onset_mask, channelNo), epoch_length, 180)';
+            %signal has to undergo filtering and downsampling now, as a period is still seen as a continuous chunk
+%           temp_sig=_fixedFilter(Signal(periodNo, :, channelNo), samplingRate);
+            temp_sig=Signal(periodNo, :, channelNo);
+            periodBlock(:,[1:epoch_length].+(channelNo-1)*epoch_length)=reshape(temp_sig(1, onset_mask), epoch_length, 180)';
         endfor;
         
         eeg=[eeg; periodBlock];

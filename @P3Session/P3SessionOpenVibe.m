@@ -11,6 +11,14 @@ function p3session = P3SessionOpenVibe(ov_path)
 	EPOCH_LENGTH=100;
 
 	signal_raw=dlmread(strcat(ov_path,"/signal"), 	SEP=';');
+	samplingRate=max(signal_raw(:,end));
+	%perform some fixed signal bandpassing and downsampling
+	for(c=2:columns(signal_raw)-1)
+        %tmp_signal=signal_raw(:,c)';
+        %tmp_signal=_fixedFilter(tmp_signal, samplingRate);
+        %signal_raw(:,c)=tmp_signal';
+	endfor;
+	
 	stimuli	=dlmread(strcat(ov_path,"/stimuli"), 	SEP=';');
 	targets	=dlmread(strcat(ov_path,"/targets"), 	SEP=';');
 
@@ -92,6 +100,6 @@ function p3session = P3SessionOpenVibe(ov_path)
 	
 	stimuli=newStimuli;
 %  	printf('yep: %d, nah: %d \n', yep, nah);
-	p3session=P3Session(signal, stimuli, targets(:,2:3), columns(signal_raw)-2, max(signal_raw(:,end)), channels);
+	p3session=P3Session(signal, stimuli, targets(:,2:3), columns(signal_raw)-2, samplingRate, channels);
 		
 endfunction;

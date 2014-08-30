@@ -1,3 +1,3 @@
-function [tfeats, vfeats] = featsComputePassThrough(tfeats, tlabels, vfeats)
-%  	fprintf(' Passing through all the features! ');
+function steps = featsComputePassThrough(tfeats,  tlabels)
+    steps={};
 endfunction;

@@ -10,6 +10,6 @@ function [nfo, stats] = confusionMatrixInfo(H)
 	stats.sensitivity=stats.tp/(stats.tp+stats.fn);
 	stats.accuracy=(stats.tp+stats.tn)/(stats.tp+stats.tn+stats.fp+stats.fn);
 
-	nfo = sprintf('accuracy %.2f : precision %.2f : recall %.2f : specificity %.2f : sensitivity %.2f\n',  stats.accuracy, stats.precision, stats.recall, stats.specificity, stats.sensitivity);
+	nfo = sprintf('accuracy %.2f%% : precision %.2f%% : recall %.2f%% : specificity %.2f%% : sensitivity %.2f%%\n',  stats.accuracy*100, stats.precision*100, stats.recall*100, stats.specificity*100, stats.sensitivity*100);
 
 endfunction;

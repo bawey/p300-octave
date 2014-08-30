@@ -12,9 +12,10 @@ function p3f=filterEeg(p3original, b, a)
                 row_mask=(periodNo-1)*p3f.epochsCountPerPeriod+epochNo;
                 col_mask=channelColumnsSelector(p3f, channelNo);
                 
-                signal(row_mask,col_mask)=filter(b, a, signal(row_mask,col_mask));
+                signal(row_mask,col_mask)=filtfilt(b, a, signal(row_mask,col_mask));
             endfor;
         endfor;
     endfor;
-
+    p3f.signal=signal;
+    
 endfunction;

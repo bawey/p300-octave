@@ -7,7 +7,8 @@
 %Training and Test function needs to take [training features, training labels, validation features, validation labels]
 %as its first four parameters
 
-%stages are: featsComputre, featsSelect, classify
+%stages are:            featsCompute, featsSelect, trainTest
+%artificial stages are: bagging
 function w = addFunction(w, stage, fHandle, varargin)
 	nameFound=false;
 	for(name=fieldnames(w.functions)')
@@ -16,12 +17,23 @@ function w = addFunction(w, stage, fHandle, varargin)
 			nameFound=true;
 		endif;
 	endfor;
+
+    f=struct();
+    f.functionHandle=fHandle;
+    f.arguments=varargin;
+	
+	%bagging will be a special type of trainTest stage where trainset will be the testset!
+	if(strcmp('bagging',stage)==1)
+        nameFound=true;
+        f.bagging=true;
+        stage='trainTest';
+	endif;
+	
 	if(~nameFound)
 		error('Stage name %s not found!\n',stage);
 	endif;
-%  	printf('shall add a function to %s \n', stage)
-	f=struct();
-	f.functionHandle=fHandle;
-	f.arguments=varargin;
-	w.functions.(stage){end+1}=f;
+	
+    %   printf('shall add a function to %s \n', stage)
+    w.functions.(stage){end+1}=f;
+
 endfunction;

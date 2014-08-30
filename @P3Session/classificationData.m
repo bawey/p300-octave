@@ -1,7 +1,11 @@
-%Converts the session into a set of train-test matrices
-%channels and periods are either binary selector vectors or vectors of values to select like [1,2,8]
+%   Converts the session into a set of train-test matrices
+%
+%   channels and periods are either binary selector vectors or vectors of values to select like [1,2,8]
+%   sample invocation:
+%   [feats, labels, stimuli] = classificationData(p3, channels, periods)
 
-function [feats, labels, stimuli] = classificationData(p3, channels, periods)
+
+function [feats, labels, stimuli] = classificationData(p3, channels=[1:p3.channelsCount], periods=[1:p3.periodsCount])
 	if(length(channels)==p3.channelsCount && min(channels)==0 && max(channels)==1)
 		%channels are aligned horizontally in signal matrix
 		channels=reshape(channels, 1, p3.channelsCount);
