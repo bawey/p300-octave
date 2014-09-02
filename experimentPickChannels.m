@@ -1,6 +1,12 @@
+%   experimentPickChannels(classifierCell, p3train, title, splitsCount=p3train.periodsCount)
 %
 %   classifierCell - a cell array containing all the atributes to be passed to the workflow via addFunction
-function [summary, summary_subsets] = experimentPickChannels(classifierCell, p3train, splitsCount=p3train.periodsCount)
+%   sample invocations:
+%%       
+%       [summary, summary_subsets] = experimentPickChannels({@ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',0.01))}, p3train, 'Berlin3a.SVM', 17);
+%       [summary, summary_subsets] = experimentPickChannels({@ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',0.001))}, p3train, 'Berlin3b.FLDA', 17);
+%
+function [summary, summary_subsets] = experimentPickChannels(classifierCell, p3train, title, splitsCount=p3train.periodsCount)
 
     init();
 
@@ -24,7 +30,7 @@ function [summary, summary_subsets] = experimentPickChannels(classifierCell, p3t
     endfor;
     w=addFunction(w, 'trainTest', classifierCell{:}); tt{end+1}=func2str(classifierCell{1}); %can we convert the classifierCell to a long string? would be good.
 
-    summary=launch(w, fc, fs, tt, 'single.channel.evaluation');
+    summary=launch(w, fc, fs, tt, sprintf('%s.single.channel.evaluation', title));
 
     summarize(summary, fc, fs, tt);
 
@@ -65,7 +71,7 @@ function [summary, summary_subsets] = experimentPickChannels(classifierCell, p3t
         fs2{end+1}=sprintf('channels %30s [%30s]', mat2str(channels), strcat(channelNames{channels}));
     endfor;
 
-    summary_subsets=launch(w, fc, fs, tt, 'channels.subset.evaluation');
+    summary_subsets=launch(w, fc, fs2, tt, sprintf('%s.channels.subset.evaluation', title));
 
     summarize(summary_subsets, fc, fs2, tt);
 endfunction;

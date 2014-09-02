@@ -14,10 +14,9 @@ function bag = ClassifiersBag(X, y, dpc=60, classifierFunc, varargin)
     pieceX=[];
     piecey=[];
     for(i=1:rows(X))
-        if(length(piecey)<dpc)
             pieceX=[pieceX; X(i,:)];
             piecey=[piecey; y(i,:)];
-        else
+        if(length(piecey)==dpc)
             bag.classifiers{end+1}=feval(classifierFunc, pieceX, piecey, varargin{:});
             pieceX=[];
             piecey=[];

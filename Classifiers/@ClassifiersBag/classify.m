@@ -1,4 +1,4 @@
-function [p, prob] = classify(bag, X)
+function [p, prob] = classify(bag, X, stimuli)
     
     fflush(stdout);
     

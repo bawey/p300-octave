@@ -60,9 +60,6 @@ st1_loose={};
 [st1_grouped.summary, st1_grouped.fc, st1_grouped.fs, st1_grouped.tt, st1_grouped.title]=experimentCompareClassifiers(p3train_g, 'Berlin3a.Grouped.Stage1', 17);
 [st1_loose.summary, st1_loose.fc, st1_loose.fs, st1_loose.tt, st1_loose.title]=experimentCompareClassifiers(p3train, 'Berlin3a.Loose.Stage1', 17);
 
-
-
-
 %Natępnie można coś wypróbować pomajsterkować z przestrzenią cech wybranego rozwiązania 
 
 %najpierw dla uśrednionych ======================================
@@ -70,23 +67,23 @@ p3w=P3Workflow(p3train_g, @trainTestSplitMx, {17});
 tt={}
 
 
-%  c=0.1;
-%  p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
-%  tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
+c=0.01;
+p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
+tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
 
 st2_grouped={};
-[st2_grouped.summary, st2_grouped.fc, st2_grouped.fs, st2_grouped.tt, st2_grouped.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3a.Grouped.Stage2.---', 17);
+[st2_grouped.summary, st2_grouped.fc, st2_grouped.fs, st2_grouped.tt, st2_grouped.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3a.Grouped.Stage2.SVM', 17);
 % ===================================================================
 
 p3w=P3Workflow(p3train, @trainTestSplitMx, {17});
-tt={}
+tt={};
 
-%  c=1;
-%  p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
-%  tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
+gamma=0.5;
+p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',gamma)));
+tt{end+1}=sprintf('FLDA (gamma=%.3f)',gamma);
 
 s2_loose={};
-[st2_loose.summary, st2_loose.fc, st2_loose.fs, st2_loose.tt, st2_loose.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3a.Loose.Stage2.---', 17);
+[st2_loose.summary, st2_loose.fc, st2_loose.fs, st2_loose.tt, st2_loose.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3a.Loose.Stage2.FLDA', 17);
 %
 
 
@@ -100,7 +97,7 @@ s2_loose={};
 
 
 
-% =============================== BERLIN III A====================================================
+% =============================== BERLIN III B====================================================
 %Wczytaj dane Berlin BCI II
 load /stuff/eeg.pristine/p3tt-berlin3b.12fold.oct
 
@@ -121,24 +118,24 @@ p3w=P3Workflow(p3train_g, @trainTestSplitMx, {17});
 
 tt={}
 
-%  c=0.1;
-%  p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
-%  tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
+c=0.01;
+p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
+tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
 
 st2_grouped={};
-[st2_grouped.summary, st2_grouped.fc, st2_grouped.fs, st2_grouped.tt, st2_grouped.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3b.Grouped.Stage2.---', 17);
+[st2_grouped.summary, st2_grouped.fc, st2_grouped.fs, st2_grouped.tt, st2_grouped.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3b.Grouped.Stage2.SVM', 17);
 % ===================================================================
 
 p3w=P3Workflow(p3train, @trainTestSplitMx, {17});
 
 tt={}
 
-%  c=1;
-%  p3w=addFunction(p3w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',c)));
-%  tt{end+1}=sprintf('linear SVM (c=%.3f)',c);
+lambda=1;
+p3w=addFunction(p3w, 'trainTest', @ClassifierLogReg, 150, lambda);
+tt{end+1}=sprintf('LogReg (lambda=%.3f)',lambda);
 
 s2_loose={};
-[st2_loose.summary, st2_loose.fc, st2_loose.fs, st2_loose.tt, st2_loose.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3b.Loose.Stage2---', 17);
+[st2_loose.summary, st2_loose.fc, st2_loose.fs, st2_loose.tt, st2_loose.title]=experimentTuneFeatureSpace(p3w, tt, 'Berlin3b.Loose.Stage2.LogReg', 17);
 %
 
 
