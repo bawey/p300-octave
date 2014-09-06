@@ -1,4 +1,5 @@
-function [summary1, summary2, summary3] = flowtest(dataFile, cvSplits, grouped=false)
+%dataFile=~/Forge/p3data/p3tt-berlin3b.12fold.oct
+function flowtest(dataFile, cvSplits, grouped=false, title='untitled')
 
     load(dataFile);
     
@@ -22,16 +23,19 @@ function [summary1, summary2, summary3] = flowtest(dataFile, cvSplits, grouped=f
     summary1 = launch(wf, 'ClassifierGridSearch');
     bestClassifier = getBest(findings_tt);
     
+    save('-binary', sprintf('~/Forge/p3results/%s-ClassifierGridSearch.oct', title), summary1);
+    
+    
     %=== FIND THE BEST FEATURE SPACE TRANSFORMATION FOR CLASSIFIER FOUND ABOVE ===%
-    wf = P3WorkflowFeatureSpaceSearch(p3train, @split...);
-    summary2 = launch(wf, 'FeatureSpaceSearch');
-    bestSpace = getBest(findings_fs, 'featsCompute');
-    bestMask = getBest(findings_fs, 'featsSelect');
+    %wf = P3WorkflowFeatureSpaceSearch(p3train, @split...);
+    %summary2 = launch(wf, 'FeatureSpaceSearch');
+    %bestSpace = getBest(findings_fs, 'featsCompute');
+    %bestMask = getBest(findings_fs, 'featsSelect');
     
     %=== FIND OPTIMAL CHANNELS SUBSET FOR THE METHODS DETERMINED ABOVE === %
     
     %a problem arises: need to simultaneously apply two selection methods: channel masking and correlation based
-    wf = P3WorkflowEvaluateChannels(p3train);
+    %wf = P3WorkflowEvaluateChannels(p3train);
     
 
 endfunction;
