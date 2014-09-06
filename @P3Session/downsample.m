@@ -1,7 +1,7 @@
 function p3d=downsample(p3s, factor)
 	copysignal=p3s.signal;
 	tempsignal=zeros(rows(copysignal), columns(copysignal)/factor);
-	target_columns_per_channel=columns(tempsignal)/p3s.channelsCount;
+	target_columns_per_channel=ceil(columns(tempsignal)/p3s.channelsCount);
 	for(i=1:size(p3s.signal,1))
 %  		tempperiod=zeros(1, size(tempsignal, 2));
 		for(j=1:p3s.channelsCount)

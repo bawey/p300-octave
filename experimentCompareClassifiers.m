@@ -12,7 +12,7 @@ function [summary, fc, fs, tt, title] = experimentCompareClassifiers(p3train, ti
     %lambdas are for logistic regression and neural networks
     %lambdas=[0,pow2(0:0.75:11)/100];
     %lambdas=[0 0.01 0.05 0.1 0.5 1 2 4 8];
-    lambdas=[0 0.1 1 10 100];
+    lambdas=[0 0.001 0.01 0.1 1 10 100];
 
     %c parameter values for SVM training
     cvalues=[100, 10, 1, 0.1, 0.01, 0.001, 0.0001];
@@ -61,7 +61,7 @@ function [summary, fc, fs, tt, title] = experimentCompareClassifiers(p3train, ti
     %LOGISTIC REGRESSIONs
     for(lambda = lambdas)
         %register several flavors of LogisticRegression
-%          w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda); tt{end+1}=sprintf('LogReg (lambda=%.3f)',lambda);
+          w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda); tt{end+1}=sprintf('LogReg (lambda=%.3f)',lambda);
     endfor;
 
     %LINEAR SVMs
@@ -70,7 +70,7 @@ function [summary, fc, fs, tt, title] = experimentCompareClassifiers(p3train, ti
         MODE=struct();
         MODE.TYPE='SVM';
         MODE.hyperparameter.c_value=c;
-        w=addFunction(w, 'trainTest', @ClassifierNan, MODE); tt{end+1}=sprintf('Linear SVM (c=%.3f)',c);
+        %w=addFunction(w, 'trainTest', @ClassifierNan, MODE); tt{end+1}=sprintf('Linear SVM (c=%.3f)',c);
     endfor;
 
     %RADIAL BASIS (GAUSSIAN) KERNEL SVMs
@@ -89,14 +89,14 @@ function [summary, fc, fs, tt, title] = experimentCompareClassifiers(p3train, ti
         MODE=struct();
         MODE.TYPE='FLDA';
         MODE.hyperparameter.gamma=gamma;
-        w=addFunction(w, 'trainTest', @ClassifierNan, MODE); tt{end+1}=sprintf('%s (gamma=%.3f)', MODE.TYPE, gamma);
+        %w=addFunction(w, 'trainTest', @ClassifierNan, MODE); tt{end+1}=sprintf('%s (gamma=%.3f)', MODE.TYPE, gamma);
     endfor;
 
     %Neural Networks
     for(lambda=lambdas(3:end))
         for(hidden_neurons = hidden_neurons_values)
             for(max_iterations = max_iterations_values)
-%              w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda ); tt{end+1}=sprintf('FFNN (lambda=%.3f, max iter=%d, hidden neurons=%d)', lambda, max_iterations, hidden_neurons);
+              w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda ); tt{end+1}=sprintf('FFNN (lambda=%.3f, max iter=%d, hidden neurons=%d)', lambda, max_iterations, hidden_neurons);
             endfor;
         endfor;
     endfor;
