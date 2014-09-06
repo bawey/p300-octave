@@ -26,7 +26,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell)
     %LOGISTIC REGRESSIONs
     for(lambda = lambdas)
         %register several flavors of LogisticRegression
-%          w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda);
+          w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda);
     endfor;
 
     %LINEAR SVMs
@@ -54,14 +54,14 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell)
         MODE=struct();
         MODE.TYPE='FLDA';
 %          MODE.hyperparameter.gamma=gamma;
-%          w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+          w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
     endfor;
 
     %Neural Networks
     for(lambda=lambdas(3:end))
         for(hidden_neurons = hidden_neurons_values)
             for(max_iterations = max_iterations_values)
-%                w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
             endfor;
         endfor;
     endfor;

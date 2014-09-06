@@ -21,9 +21,9 @@ function flowtest(dataFile, cvSplits, grouped=false, title='untitled')
     %=== FIND THE BEST CLASSIFIER FOR FULL FEATURE SPACE ===
     wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, cvSplits});
     summary1 = launch(wf, 'ClassifierGridSearch');
-    bestClassifier = getBest(findings_tt);
+    %bestClassifier = getBest(summary1);
     
-    save('-binary', sprintf('~/Forge/p3results/%s-ClassifierGridSearch.oct', title), summary1);
+    save('-binary', sprintf('~/Forge/p3results/%s-ClassifierGridSearch.oct', title), 'summary1');
     
     
     %=== FIND THE BEST FEATURE SPACE TRANSFORMATION FOR CLASSIFIER FOUND ABOVE ===%
