@@ -42,7 +42,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
         for(gamma=gammas)
             MODE=struct();
             MODE.TYPE='FLDA';
-    %          MODE.hyperparameter.gamma=gamma;
+            MODE.hyperparameter.gamma=gamma;
             w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
         endfor;
 
