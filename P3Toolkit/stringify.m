@@ -27,10 +27,10 @@ function str = stringify(sth)
         
         str=strcat('[',strvcat(cellstr(strings)),']');
         
+    elseif(isa(sth, 'integer') || (isa(sth, 'numeric') && sth==floor(sth)))
+        str = sprintf('%d', sth);   
     elseif(isa(sth, 'float'))
         str = sprintf('%.3f', sth);
-    elseif(isa(sth, 'integer'))
-        str = sprintf('%d', sth);
     else
         str=sth;
     endif;
