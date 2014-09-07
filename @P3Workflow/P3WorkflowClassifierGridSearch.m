@@ -1,4 +1,10 @@
-function w = P3WorkflowClassifierGridSearch(p3train, splitCell)
+%       sample invocations:
+%               wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx});
+
+function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all')
+
+%      printf('passing to the testflow: onlyFast: %d, onlySlow: %d\n', classifiers='all'); fflush(stdout);
+
     w=P3Workflow(p3train, splitCell);
     
     %lambdas are for logistic regression and neural networks
@@ -22,23 +28,43 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell)
     w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
 
 
+    if(strcmp(classifiers, 'slow')==false)
+        %LINEAR SVMs
+        for(c=cvalues)
+            %register several flavors of SVM
+            MODE=struct();
+            MODE.TYPE='SVM';
+            MODE.hyperparameter.c_value=c;
+            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+        endfor;
+
+        %FLDAs
+        for(gamma=gammas)
+            MODE=struct();
+            MODE.TYPE='FLDA';
+    %          MODE.hyperparameter.gamma=gamma;
+            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+        endfor;
+
+    endif;
     
-    %LOGISTIC REGRESSIONs
-    for(lambda = lambdas)
-        %register several flavors of LogisticRegression
-          w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda);
-    endfor;
-
-    %LINEAR SVMs
-    for(c=cvalues)
-        %register several flavors of SVM
-        MODE=struct();
-        MODE.TYPE='SVM';
-        MODE.hyperparameter.c_value=c;
-        w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
-    endfor;
-
-    %RADIAL BASIS (GAUSSIAN) KERNEL SVMs
+    if(strcmp(classifiers, 'fast')==false)
+        %LOGISTIC REGRESSIONs
+        for(lambda = lambdas)
+            %register several flavors of LogisticRegression
+            w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda);
+        endfor;
+        
+        %Neural Networks
+        for(lambda=lambdas(3:end))
+            for(hidden_neurons = hidden_neurons_values)
+                for(max_iterations = max_iterations_values)
+                    w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                endfor;
+            endfor;
+        endfor;
+    endif;
+        %RADIAL BASIS (GAUSSIAN) KERNEL SVMs
     for(c=cvalues)
         for(gamma=gammas)
             MODE=struct();
@@ -46,23 +72,6 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell)
             MODE.hyperparameter.c_value=c;
             MODE.hyperparameter.gamma=gamma;
 %              w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
-        endfor;
-    endfor;
-
-    %FLDAs
-    for(gamma=gammas)
-        MODE=struct();
-        MODE.TYPE='FLDA';
-%          MODE.hyperparameter.gamma=gamma;
-          w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
-    endfor;
-
-    %Neural Networks
-    for(lambda=lambdas(3:end))
-        for(hidden_neurons = hidden_neurons_values)
-            for(max_iterations = max_iterations_values)
-                w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
-            endfor;
         endfor;
     endfor;
 

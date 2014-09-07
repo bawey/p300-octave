@@ -1,5 +1,5 @@
 %dataFile=~/Forge/p3data/p3tt-berlin3b.12fold.oct
-function flowtest(dataFile, cvSplits, grouped=false, title='untitled')
+function flowtest(dataFile, cvSplits, grouped=false, title='untitled', classifiers='all')
 
     load(dataFile);
     
@@ -19,9 +19,13 @@ function flowtest(dataFile, cvSplits, grouped=false, title='untitled')
     endif;
     
     %=== FIND THE BEST CLASSIFIER FOR FULL FEATURE SPACE ===
-    wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, cvSplits});
+    wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, cvSplits}, classifiers);
     summary1 = launch(wf, 'ClassifierGridSearch');
     %bestClassifier = getBest(summary1);
+    
+    if(strcmp(classifiers,'all')==false)
+        title=strcat(title, sprintf('(%sClassifiers)', classifiers));
+    endif;
     
     save('-binary', sprintf('~/Forge/p3results/%s-ClassifierGridSearch.oct', title), 'summary1');
     

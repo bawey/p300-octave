@@ -8,6 +8,7 @@ function w=P3Workflow(p3session, splitCell)
 	w.functions.featsSelect={};
 	w.functions.trainTest={};
 	%a row for reach train-test iteration. negative indices indicate PERIODS(!!!) for validation
+	
 	w.trainTestSplitMx=feval(splitCell{1},p3session.periodsCount, splitCell{[1:end]~=1});
 	%uncomment when done debugging :)
 	
