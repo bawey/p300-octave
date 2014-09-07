@@ -1,5 +1,5 @@
 % goes over all the stages defined for P3Workflow and executes the code
-function p3summary = launch(wf, title)
+function p3summary = launch(wf, title='untitled')
 	%nobody does the cross-validation splotting now :(
 	%and there is no voting... cause there is nothing to vote about
 	printf('Launching the workflow for %d feature computation methods, %d feature selection methods and %d classification startegies. \n', 

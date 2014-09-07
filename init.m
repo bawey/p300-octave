@@ -9,6 +9,7 @@ function init()
 	addpath(sprintf('%s/@P3Summary', pwd));
 	addpath(sprintf('%s/P3Toolkit', pwd));
 	addpath(sprintf('%s/Classifiers/', pwd));
+	
 	addpath(sprintf('%s/Classifiers/@ClassifierLogReg', pwd));
 	addpath(sprintf('%s/Classifiers/@ClassifierNan', pwd));
 	addpath(sprintf('%s/Classifiers/@ClassifierSVM', pwd));
