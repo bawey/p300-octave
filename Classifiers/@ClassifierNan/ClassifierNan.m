@@ -20,7 +20,7 @@ function classifier = ClassifierNan(X, y, mode)
     classifier.CC=CC;
 
     %rename marguin to cutoof
-    classifier.margin=0;
+    classifier.threshold=0;
 
     classifier=class(classifier, 'ClassifierNan');
 
@@ -30,14 +30,10 @@ function classifier = ClassifierNan(X, y, mode)
     
     truth=[y, prob];
 
-    max_n=max(truth(truth(:,1)~=1,2))
-    min_p=min(truth(truth(:,1)==1,2))
+    max_n=max(truth(truth(:,1)~=1,2));
+    min_p=min(truth(truth(:,1)==1,2));
 
-    if(max_n>0)
-        classifier.margin=0.8*max_n;
-    elseif(min_p>0)
-        classifier.margin=0.8*min_p;
-    endif;
+    classifier.threshold=0.5*(min_p+max_n)
 
     classifier=class(classifier, 'ClassifierNan');
 

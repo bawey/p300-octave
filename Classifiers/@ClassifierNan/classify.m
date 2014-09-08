@@ -5,7 +5,7 @@ function [p, prob] = classify(classifier, vfeats)
 
     printf('classifier margin: %f\n', classifier.margin);
 
-    prob=R.output(:,end)-classifier.margin;
+    prob=R.output(:,end).-classifier.threshold;
     
     %if(columns(R.output)>1)
     %    (prob.-=R.output(:,1))./2;
