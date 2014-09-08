@@ -1,6 +1,12 @@
 %returns a set of (row) vectors conformant with P3Workflow: train samples with positive and test samples with negative indexes
 function sv = trainTestSplitMx(samplesCount, splitsCount=samplesCount)
 	%create an n x n matrix, identical rows 1:m
+	
+	
+	samplesCount
+	
+	splitsCount
+	
 	sv=repmat(1:samplesCount, splitsCount, 1);
 	%split and shuffle rows
 	train_elements_count=samplesCount/splitsCount;

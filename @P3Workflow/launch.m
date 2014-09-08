@@ -1,5 +1,5 @@
 % goes over all the stages defined for P3Workflow and executes the code
-function summary = launch(wf, fc, fs, tt, title)
+function p3summary = launch(wf, title='untitled')
 	%nobody does the cross-validation splotting now :(
 	%and there is no voting... cause there is nothing to vote about
 	printf('Launching the workflow for %d feature computation methods, %d feature selection methods and %d classification startegies. \n', 
@@ -11,7 +11,8 @@ function summary = launch(wf, fc, fs, tt, title)
 	
 	%for saving the file later
 	[status, datestr]=system('date +"%Y.%m.%d_%H.%M"');
-    filename=sprintf('~/p3results/summary.%s.%s.oct', title, strtrim(datestr));
+        
+        filename=sprintf('~/p3results/summary.%s.%s.oct', title, strtrim(datestr));
 	
 	combinationsToRun=size(wf.trainTestSplitMx,1) * length(wf.functions.featsCompute) * length(wf.functions.featsSelect) * length(wf.functions.trainTest);
 	progress=0;
@@ -30,7 +31,6 @@ function summary = launch(wf, fc, fs, tt, title)
 		
 %  		printf('Evaluation period: %d \n', -sv(sv<0));
 		for(x=1:length(wf.functions.featsCompute))
-            printf(' %s ', fc{x}); fflush(stdout);
 			if(length(summary)<x)	summary{end+1}={};	endif;
 			
 			%Compute the steps of feature space transformation. Then apply them to both training and test data
@@ -39,7 +39,6 @@ function summary = launch(wf, fc, fs, tt, title)
 			vfeats=executeTransformationSteps(vfeats, transSteps);
 
 			for(y=1:length(wf.functions.featsSelect))
-				printf(' %s \n', fs{y}); fflush(stdout);
 				if(length(summary{x})<y)	summary{x}{end+1}={};	endif;
 				
 				featureIdx = featsSelect(wf, y, tfeats, tlabels);
@@ -60,10 +59,13 @@ function summary = launch(wf, fc, fs, tt, title)
 					printf('Workflow progress: %.2f%%\n', ++progress*100/combinationsToRun);
 					fflush(stdout);
 					
-					save('-binary', filename, 'summary', 'title', 'fc', 'fs', 'tt');
+%  					save('-binary', filename, 'summary', 'title', 'fc', 'fs', 'tt');
 				endfor;
 			endfor;
 		endfor;
 	endfor;
 	printf('\n');
+	
+	%P3Summary object containing info about the methods used and their confusion matrices
+	p3summary=P3Summary(wf.functions, summary);
 endfunction;
