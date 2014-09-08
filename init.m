@@ -16,8 +16,8 @@ function init()
 	addpath(sprintf('%s/Classifiers/@ClassifierNN', pwd));
 	addpath(sprintf('%s/Classifiers/@ClassifiersBag', pwd));
 	
-	addpath(sprintf('%s/test', pwd));
-	addpath(sprintf('%s/../p3results', pwd));
-	addpath(sprintf('%s/../p3data', pwd));
+	addpath(sprintf('%s/test/', pwd));
+	addpath(sprintf('%s/../p3results/', pwd));
+	addpath(sprintf('%s/../p3data/', pwd));
 	
 endfunction;

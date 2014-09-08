@@ -1,4 +1,7 @@
-%This is a classifier that wraps the octave-nan package
+%   This is a classifier that wraps the octave-nan package
+%   sample invocations:
+%       ClassifierNan(X, y, 'SVM') %short style
+
 function classifier = ClassifierNan(X, y, mode)
     
     MODE=struct();
