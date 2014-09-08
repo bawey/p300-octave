@@ -3,6 +3,7 @@
 %   classifier cell, eg. {@ClassifierNN, 128. 150, 6} gets invoked as ClassifierNN(trainfeats, trainlabels, 128, 150, 6)
 %
 %   sample invocations:
+%       testBerlin(p3train, p3test, teststring, {@ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',0.01))})
 %       testBerlin(p3train, p3test, teststring, {@ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',1))})
 %       testBerlin(p3train, p3test, teststring, {@ClassifierNN, 32, 100, 1})
 %       testBerlin(p3train, p3test, teststring, {@ClassifiersBag, 60, @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',1))})
