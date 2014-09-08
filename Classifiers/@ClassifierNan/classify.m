@@ -3,8 +3,6 @@ function [p, prob] = classify(classifier, vfeats)
 
     R.output;
 
-    printf('classifier margin: %f\n', classifier.margin);
-
     prob=R.output(:,end).-classifier.threshold;
     
     %if(columns(R.output)>1)
