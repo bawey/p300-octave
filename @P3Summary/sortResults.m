@@ -8,11 +8,11 @@ function [coords, value] = sortResults(p3summary, mode='aware')
             for(z=1:length(summary{x}{y}))
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.naive);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (naive): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                scoreboard.naive=[scoreboard.naive; (stats.precision+stats.recall)/2, x, y, z];
+                scoreboard.naive=[scoreboard.naive; stats.f1, x, y, z];
                                 
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.aware);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (aware): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                scoreboard.aware=[scoreboard.aware; (stats.precision+stats.recall)/2, x, y, z];
+                scoreboard.aware=[scoreboard.aware; stats.f1, x, y, z];
             endfor;
         endfor;
     endfor;
