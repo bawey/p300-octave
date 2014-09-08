@@ -1,5 +1,5 @@
 %dataFile=~/Forge/p3data/p3tt-berlin3b.12fold.oct
-function flowtest(dataFile, cvSplits, grouped=false, title='untitled', classifiers='all')
+function [summary1] = flowtest(dataFile, cvSplits, grouped=false, title='untitled', classifiers='all')
 
 %       a 'hack' to focus on the more promising algorithms first, while the slow ones compute elsewhere
     if(strcmp(classifiers,'all')==false)
@@ -14,6 +14,7 @@ function flowtest(dataFile, cvSplits, grouped=false, title='untitled', classifie
     if(floor(decimFactor)>=2)
         printf('decimation required for signal! \n');
         p3train=downsample(p3train, floor(decimFactor));
+        save('-binary', sprintf('../p3data/unknown.%dfold.oct',decimFactor), 'p3train');
     else
         printf('decimation not required \n');
     endif;
@@ -32,7 +33,7 @@ function flowtest(dataFile, cvSplits, grouped=false, title='untitled', classifie
         summary1 = launch(wf, 'ClassifierGridSearch');
         %bestClassifier = getBest(summary1);
         
-        %save('-binary', saveFilename, 'summary1');
+        save('-binary', saveFilename, 'summary1');
     else
         printf('Results file %s already exists. Loading... \n', saveFilename);
         load(saveFilename);
