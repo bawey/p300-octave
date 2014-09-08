@@ -3,7 +3,9 @@ function [p, prob] = classify(classifier, vfeats)
 
     R.output;
 
-    prob=R.output(:,end);
+    printf('classifier margin: %f\n', classifier.margin);
+
+    prob=R.output(:,end)-classifier.margin;
     
     %if(columns(R.output)>1)
     %    (prob.-=R.output(:,1))./2;
