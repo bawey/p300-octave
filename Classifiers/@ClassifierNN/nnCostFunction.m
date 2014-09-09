@@ -77,9 +77,8 @@ for(i=1:size(answers,1))
     answers(i,y(i,1)+index_shift)=1;
 end;    
 
-for(i=1:m)
-    J+=sum((  -1*answers(i,:).*log(second(i,:)) - (1-answers(i,:)).*log(1-second(i,:))),2) ;
-end;
+J = sum((-answers .* log(second) - (1-answers) .* log(1-second))(:));
+
 J=J/m;
 
 J+=(lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2),2)+sum(sum(Theta2(:,2:end).^2(:)),2));

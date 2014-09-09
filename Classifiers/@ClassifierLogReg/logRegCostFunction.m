@@ -13,10 +13,10 @@ grad = zeros(size(theta));
 
 % Note: grad should have the same dimensions as theta
 
-for(i=1:m)
-	J+=(  -1*y(i,1)*log(sigmoid(X(i,:)*theta)) - (1-y(i,1))*log(1-sigmoid(X(i,:)*theta))) ;
-	grad=grad .+ (X(i,:))'*(sigmoid(X(i,:)*theta)-y(i,1));
-end;
+modelResp=sigmoid(X*theta);
+    
+J=(-y)'*log(modelResp) - (1-y)'*log(1-modelResp);
+grad= ((modelResp - y(:,1))'*X)';
 
 J/=size(X,1);
 grad/=size(X,1);

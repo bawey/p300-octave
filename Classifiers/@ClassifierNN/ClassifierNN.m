@@ -1,4 +1,4 @@
-function classifier = classifierNN(X, y, hidden_layer_size=100, maxiter=100, lambda=1);
+function classifier = classifierNN(X, y, hidden_layer_size=32, maxiter=175, lambda=1);
 
 input_layer_size = size(X, 2);
 num_labels = length(unique(y));

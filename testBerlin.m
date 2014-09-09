@@ -24,7 +24,9 @@ function [accuracy predicted] = testBerlin(p3train, p3test, expected, classifier
     feats_mask=feval(fsCell{1}, feats, labels, fsCell{[1:end]~=1});
     feats=feats(:,feats_mask);
 
+    tic;
     classifier = feval(func2str(classifierCell{1}), feats, labels, classifierCell{2:end});
+    toc;
 
     predicted='';
     correct=0;

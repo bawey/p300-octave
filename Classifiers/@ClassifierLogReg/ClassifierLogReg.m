@@ -1,7 +1,7 @@
 %
 % ClassifierLogReg(X,Y,MaxIter=400, lambda=1)
 %
-function classifier = ClassifierLogReg(X,Y,MaxIter=400, lambda=1)
+function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1)
 
 	classfier=struct();
 	
