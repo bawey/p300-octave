@@ -63,37 +63,67 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
-first=sigmoid([ones(size(X,1),1),X]*Theta1');
-second = sigmoid([ones(size(first,1),1),first]*Theta2');
+    first=sigmoid([ones(size(X,1),1),X]*Theta1');
+    second = sigmoid([ones(size(first,1),1),first]*Theta2');
 
-answers = zeros(size(second));
 
-index_shift=0;
-if(min(y)==0)
-    index_shift=1;
-endif;
+    first=sigmoid([ones(size(X,1),1),X]*Theta1');
+    second = sigmoid([ones(size(first,1),1),first]*Theta2');
 
-for(i=1:size(answers,1))
-    answers(i,y(i,1)+index_shift)=1;
-end;    
+%   === pre-optimization chunk ===
+%  answers = zeros(size(second));
+%  
+%  index_shift=0;
+%  if(min(y)==0)
+%      index_shift=1;
+%  endif;
+%  
+%  for(i=1:size(answers,1))
+%      answers(i,y(i,1)+index_shift)=1;
+%  end;    
 
-J = sum((-answers .* log(second) - (1-answers) .* log(1-second))(:));
+%  for(i=1:m)
+%      J+=sum((  -1*answers(i,:).*log(second(i,:)) - (1-answers(i,:)).*log(1-second(i,:))),2) ;
+%  end;
 
-J=J/m;
 
-J+=(lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2),2)+sum(sum(Theta2(:,2:end).^2(:)),2));
 
-errors={};
-errors{2}=(second.-answers);
-errors{1}=errors{2}*Theta2(:,2:end).*(first.*(1-first));
-Theta2_grad+=([ones(size(first,1),1), first]'*errors{2})';
-Theta1_grad+=([ones(size(X,1),1), X]'*errors{1})';
+      index_shift=0;
+      if(min(y)==0)
+          index_shift=1;
+      endif;
 
-Theta2_grad+=[zeros(size(Theta2,1),1),Theta2(:,2:end)].*lambda;
-Theta1_grad+=[zeros(size(Theta1,1),1),Theta1(:,2:end)].*lambda;
 
-Theta2_grad/=m;
-Theta1_grad/=m;
+    %=== set answers and avoid looping ===%
+%      answers = zeros(numel(second),1);
+%    
+%      step=columns(second);
+%      offsets=0:step:numel(second)-step;
+%    
+%      answers(y.+offsets'+index_shift)=1;
+%      answers=reshape(answers, columns(second), rows(second))';
+
+    answers=zeros(size(second));
+    for(i=1:columns(second))
+        answers(:,i)=(y+index_shift)==i;
+    endfor;
+
+
+    J = sum((-answers .* log(second) - (1-answers) .* log(1-second))(:));
+    J=J/m;
+
+    J+=(lambda/(2*m))*(sum(sum(Theta1(:,2:end).^2),2)+sum(sum(Theta2(:,2:end).^2(:)),2));
+
+    errors2=(second.-answers);
+    errors1=errors2*Theta2(:,2:end).*(first.*(1-first));
+    Theta2_grad+=([ones(size(first,1),1), first]'*errors2)';
+    Theta1_grad+=([ones(size(X,1),1), X]'*errors1)';
+
+    Theta2_grad+=[zeros(size(Theta2,1),1),Theta2(:,2:end)].*lambda;
+    Theta1_grad+=[zeros(size(Theta1,1),1),Theta1(:,2:end)].*lambda;
+
+    Theta2_grad/=m;
+    Theta1_grad/=m;
 
 % -------------------------------------------------------------
 

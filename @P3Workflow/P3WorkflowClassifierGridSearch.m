@@ -19,7 +19,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
     %max_iterations_values=[150 300 400];
-    max_iterations_values=[175];
+    max_iterations_values=[100];
     hidden_neurons_values=[32 64];
 
     %"OBJECT-ORIENTED"
@@ -51,15 +51,17 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     if(strcmp(classifiers, 'fast')==false)
         %LOGISTIC REGRESSIONs
         for(lambda = lambdas)
-            %register several flavors of LogisticRegression
-            w=addFunction(w, 'trainTest', @ClassifierLogReg, 150, lambda);
+            for(max_iterations=max_iterations_values)
+                %register several flavors of LogisticRegression
+                w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
+            endfor;
         endfor;
         
         %Neural Networks
         for(lambda=lambdas(3:end))
             for(hidden_neurons = hidden_neurons_values)
                 for(max_iterations = max_iterations_values)
-                    w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                      w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
                 endfor;
             endfor;
         endfor;
