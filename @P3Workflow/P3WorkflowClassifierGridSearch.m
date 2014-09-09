@@ -20,7 +20,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
     %max_iterations_values=[150 300 400];
     max_iterations_values=[175];
-    hidden_neurons_values=[32 256 512];
+    hidden_neurons_values=[32 64];
 
     %"OBJECT-ORIENTED"
 

@@ -32,7 +32,7 @@ function summarize(p3summary)
     
     %======DESCRIPTIONS GENERATED=========
     
-        for(mode = {'naive', 'aware'})
+        for(mode = {'naive'})
             mode=mode{:};
             printf('\n*** Scoreboard (precision + recall)/2 of %s methods: ***\n', mode);
             
@@ -42,7 +42,11 @@ function summarize(p3summary)
                 x=coords(i,1);
                 y=coords(i,2);
                 z=coords(i,3);
-                printf('FC: %15s, FS: %20s, TT: %10s , %s', fc{x}, fs{y}, tt{z}, confusionMatrixInfo(summary{x}{y}{z}.(mode)));
+                printf('FC: %15s, FS: %20s, TT: %10s , %s ', fc{x}, fs{y}, tt{z}, confusionMatrixInfo(summary{x}{y}{z}.(mode)));
+                if(isfield(summary{x}{y}{z},'correctSymbols'))
+                    printf('char right: %d', summary{x}{y}{z}.correctSymbols);
+                endif;
+                printf('\n');
             endfor;
             
         endfor;

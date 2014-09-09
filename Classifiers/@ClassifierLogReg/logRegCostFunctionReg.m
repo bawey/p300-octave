@@ -20,15 +20,26 @@ grad = zeros(size(theta));
 #size(theta) = 3 1
 #size(X) = 100 3
 #size(y) = 100 1
-for(i=1:m)
-	J+=(  -1*y(i,1)*log(sigmoid(X(i,:)*theta)) - (1-y(i,1))*log(1-sigmoid(X(i,:)*theta))) ;
-	grad=grad .+ (X(i,:))'*(sigmoid(X(i,:)*theta)-y(i,1));
-end;
+timestart=cputime;
+
+
+J+=(y.*-1)'*log(sigmoid(X))*theta - (1-y)'*log(sigmoid(X))*theta;
+grad=  X'* ((sigmoid(X)*theta)  -y(:,1));
+
+
+printf('looping took %.4f CPU time \n', cputime-timestart);
+fflush(stdout);
 J+=+ (lambda/2)*sum(theta(2:end,:).^2);
 J/=size(X,1);
 
 grad=grad.+[0; theta(2:end).*lambda];
 grad/=size(X,1);
+
+global lasttime; %'
+if(lasttime>0)
+	printf('Execution took %.4f CPU time \n', cputime-lasttime);
+endif;
+lasttime=cputime;
 
 % =============================================================
 
