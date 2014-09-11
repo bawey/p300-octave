@@ -37,6 +37,6 @@ function [H, IH, correctSymbols, cse]=trainTest(workflow, methodIdx, tfeats, tla
     IH(2,1)=sum( vlabels==1 & ap==0 );
     IH(2,2)=sum( vlabels==1 & ap==1 );
 
-    cse=sum((vlabels.-probs).^2)
+    cse=sum((vlabels.-probs).^2);
 	
 endfunction;

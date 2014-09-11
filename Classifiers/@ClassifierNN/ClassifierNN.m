@@ -3,6 +3,11 @@ function classifier = classifierNN(X, y, hidden_layer_size=32, maxiter=175, lamb
 input_layer_size = size(X, 2);
 num_labels = length(unique(y));
 
+%binary classification
+if(num_labels==2)
+    num_labels=1;
+endif;
+
 Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
 Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
 
