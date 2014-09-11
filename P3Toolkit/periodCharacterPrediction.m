@@ -7,7 +7,7 @@
 %
 %
 %
-function [response, row, col] = periodCharacterPrediction(stimuli, probs)
+function [response, row, col, odds] = periodCharacterPrediction(stimuli, probs)
     labels = unique(stimuli);
     
     %odds will store label - avg(prob) for that label

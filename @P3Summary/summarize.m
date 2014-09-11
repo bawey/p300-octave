@@ -42,13 +42,20 @@ function summarize(p3summary)
                 x=coords(i,1);
                 y=coords(i,2);
                 z=coords(i,3);
-                printf('FC: %15s, FS: %20s, TT: %10s , %s ', fc{x}, fs{y}, tt{z}, confusionMatrixInfo(summary{x}{y}{z}.(mode)));
                 if(isfield(summary{x}{y}{z},'correctSymbols'))
-                    printf('char right: %d', summary{x}{y}{z}.correctSymbols);
+                    printf('| char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
                 if(isfield(summary{x}{y}{z},'mse'))
-                    printf(' mse: %.3f', summary{x}{y}{z}.mse);
+                    printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
+                if(isfield(summary{x}{y}{z},'msme'))
+                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
+                endif;
+
+                printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));
+                
+                printf(' : FC: %15s, FS: %20s, TT: %10s , %s ', fc{x}, fs{y}, tt{z});
+                
                 printf('\n');
             endfor;
             

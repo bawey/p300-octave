@@ -8,9 +8,7 @@ m = size(X, 1);
 h1 = sigmoid([ones(m, 1) X] * nn.Theta1');
 h2 = sigmoid([ones(m, 1) h1] * nn.Theta2');
 
-[dummy, p] = max(h2, [], 2);
-
-p.-=1;
 prob=h2(:,1);
+p=prob>=0.5;
 
 endfunction;

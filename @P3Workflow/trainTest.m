@@ -1,20 +1,30 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
-function [H, IH, correctSymbols, cse]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
 	
 	[p, probs]=classify(classifier, vfeats);
 	ap=[];
+	
 	correctSymbols=0;
-
+    %cumulative square mean error: first average within each epoch, then sqare the [avg(stimuli)-label] value
+    csme=0;
 	%we need to know how long a period is
 	
 	for(i=0:epochsPerPeriod:rows(vfeats)-1)
         stimuliOfConcern=vstimuli(i+1:i+epochsPerPeriod,:);
     	periodLabels=vlabels(i+1:i+epochsPerPeriod,:);
+    	periodProbs=probs(i+1:i+epochsPerPeriod);
+    	periodPositiveStimuli=unique(stimuliOfConcern(periodLabels==1, :));
+    	%need to square (avg(per_response_stimuli)-per_response_label), first let's get the odds
 
-        [response, row, col] = periodCharacterPrediction(stimuliOfConcern, probs(i+1:i+epochsPerPeriod));
+        [response, row, col, odds] = periodCharacterPrediction(stimuliOfConcern, periodProbs);
+        %use dbstop(func, line) to examine the outcome of the following:
+        estims=[odds(:,2), ismember(odds(:,1), periodPositiveStimuli)];
+        
+        csme+=sum((estims(:,1).-estims(:,2)).^2);
+
         periodClassifierDecisions=(stimuliOfConcern==row | stimuliOfConcern == col);
         ap=[ap; periodClassifierDecisions];
         
