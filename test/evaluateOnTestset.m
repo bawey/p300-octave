@@ -1,10 +1,67 @@
 function somesummary = evaluateOnTestset(p3train, p3test, teststring)
     p3m=P3SessionMerge(p3train, P3SessionAddLabels(p3test, teststring));
+
+    w=P3Workflow(p3m, {@trainTestSplitMerged, p3train.periodsCount});
+
+    w=addFunction(w, 'featsCompute',    @featsComputePassThrough);
+    w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);    
+
+    w=addFunction(w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',1)));
+    w=addFunction(w, 'trainTest', @ClassifierNan, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',.1)));
     
-    flow=P3WorkflowClassifierGridSearch(p3m, {@trainTestSplitMerged, p3train.periodsCount});
+    w=addFunction(w, 'trainTest', @ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',1)));
+    w=addFunction(w, 'trainTest', @ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',.1)));
     
-    somesummary=launch(flow);
+    w=addFunction(w, 'trainTest', @ClassifierLogReg, 100, 10);
+    w=addFunction(w, 'trainTest', @ClassifierLogReg, 100, 0.1);
+    
+    w=addFunction(w, 'trainTest', @ClassifierNN, 32, 100, 100);
+    
+    somesummary=launch(w);
 
     summarize(somesummary);
     
 endfunction;
+
+
+
+
+
+
+    if(strcmp(classifiers, 'slow')==false)
+        %LINEAR SVMs
+        for(c=cvalues)
+            %register several flavors of SVM
+            MODE=struct();
+            MODE.TYPE='SVM';
+            MODE.hyperparameter.c_value=c;
+            
+        endfor;
+
+        %FLDAs
+        for(gamma=gammas)
+            MODE=struct();
+            MODE.TYPE='FLDA';
+            MODE.hyperparameter.gamma=gamma;
+            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+        endfor;
+
+    endif;
+    
+    if(strcmp(classifiers, 'fast')==false)
+        %LOGISTIC REGRESSIONs
+        for(lambda = lambdas)
+            for(max_iterations=max_iterations_values)
+                %register several flavors of LogisticRegression
+                w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
+            endfor;
+        endfor;
+        
+        %Neural Networks
+        for(lambda=lambdas(3:end))
+            for(hidden_neurons = hidden_neurons_values)
+                for(max_iterations = max_iterations_values)
+                      w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                endfor;
+            endfor;
+        endfor;

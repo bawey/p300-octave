@@ -1,5 +1,5 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
-function [H, IH, correctSymbols]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+function [H, IH, correctSymbols, cse]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
@@ -37,6 +37,6 @@ function [H, IH, correctSymbols]=trainTest(workflow, methodIdx, tfeats, tlabels,
     IH(2,1)=sum( vlabels==1 & ap==0 );
     IH(2,2)=sum( vlabels==1 & ap==1 );
 
-    
+    cse=sum((vlabels.-probs).^2)
 	
 endfunction;

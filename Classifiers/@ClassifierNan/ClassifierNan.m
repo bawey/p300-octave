@@ -24,16 +24,19 @@ function classifier = ClassifierNan(X, y, mode)
 
     classifier=class(classifier, 'ClassifierNan');
 
-    %margin=abs(min(positives))-abs(max(negatives));
-
-    [p, prob] = classify(classifier, X);
+    [p, prob, distance] = classify(classifier, X);
     
-    truth=[y, prob];
+    truth=[y, distance];
 
-    max_n=max(truth(truth(:,1)~=1,2));
-    min_p=min(truth(truth(:,1)==1,2));
+    max_n=max(truth( ( truth(:,1)~=1 )  ,2))
+    min_p=min(truth( ( truth(:,1)==1 )  ,2))
+    
+%      alt_threshold=mean(truth( ( (truth(:,1)~=1 & truth(:,2)>min_p ) | ( truth(:,1)==1 & truth(:,2)<max_n ) ), 2));
+%      classifier.threshold=alt_threshold;
 
-    classifier.threshold=0.5*(min_p+max_n)
+    classifier.threshold=0.5*(min_p+max_n);
+    
+    fprintf('Classfier threshold at %.3f\n', classifier.threshold);
 
     classifier=class(classifier, 'ClassifierNan');
 

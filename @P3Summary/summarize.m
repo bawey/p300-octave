@@ -46,6 +46,9 @@ function summarize(p3summary)
                 if(isfield(summary{x}{y}{z},'correctSymbols'))
                     printf('char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
+                if(isfield(summary{x}{y}{z},'mse'))
+                    printf(' mse: %.3f', summary{x}{y}{z}.mse);
+                endif;
                 printf('\n');
             endfor;
             
