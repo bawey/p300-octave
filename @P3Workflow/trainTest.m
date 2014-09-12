@@ -1,27 +1,6 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
 function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
-	periodsNo = length(tlabels)/epochsPerPeriod;
-	idxToRemove=[];
-	minors = find(tlabels==1);
-    majors = find(tlabels~=1);
-    minorsPerPeriod = length(minors)/periodsNo;
-	%=============== TRIVIAL MAJORITY UNDERSAMPLING =====================
-	for(i=0:epochsPerPeriod:length(tlabels)-1)
-        periodMajors=majors(majors>i & majors<=(i+epochsPerPeriod));
-        throwouts   =periodMajors(randperm(length(periodMajors))(1+minorsPerPeriod:end));
-        idxToRemove=[idxToRemove; throwouts];
-	endfor;
-	rowselector=~ismember( [1:length(tlabels)], idxToRemove);
-	
-	tfeats=tfeats(rowselector, :);
-	tlabels=tlabels(rowselector, :);
-	
-	
-	%====================================================================
-	
-	
-	
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
