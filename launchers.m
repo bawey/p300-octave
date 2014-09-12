@@ -10,7 +10,7 @@ flowtest('~/Forge/p3data/p3tt-berlin2.12fold.oct', 42, false, 'Berlin2.Loose', '
 flowtest('~/Forge/p3data/p3tt-berlin3a.12fold.oct', 85, false, 'Berlin3a.Loose', 'fast');
 flowtest('~/Forge/p3data/p3tt-berlin3a.12fold.oct', 85, false, 'Berlin3a.Loose', 'slow');
 
-%flowtest('~/Forge/p3data/p3tt-berlin3b.12fold.oct', 85, true, 'Berlin3b.Grouped');
+flowtest('~/Forge/p3data/p3tt-berlin3b.12fold.oct', 85, true, 'Berlin3b.Grouped');
 flowtest('~/Forge/p3data/p3tt-berlin3b.12fold.oct', 55, false, 'Berlin3b.Loose', 'fast');
 flowtest('~/Forge/p3data/p3tt-berlin3b.12fold.oct', 55, false, 'Berlin3b.Loose', 'slow');
 

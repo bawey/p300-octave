@@ -13,6 +13,9 @@ function [p, prob] = classify(bag, X, stimuli)
         weight_sum+=weight;
         [cp, cprob]=classify(bag.classifiers{c}, X);
 %          prob+=(sextetWiseAwarePrediction(cprob).*weight);
+
+    
+
        prob+=(cprob).*weight;
         
     endfor;
