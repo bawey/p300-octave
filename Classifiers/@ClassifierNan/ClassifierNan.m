@@ -19,8 +19,9 @@ function classifier = ClassifierNan(X, y, mode)
     classifier.MODE=MODE;
     classifier.CC=CC;
 
-    %rename marguin to cutoof
     classifier.threshold=0;
+    classifier.offset=0;
+    classifier.spread=0;
 
     classifier=class(classifier, 'ClassifierNan');
 
@@ -28,15 +29,21 @@ function classifier = ClassifierNan(X, y, mode)
     
     truth=[y, distance];
 
-    max_n=max(truth( ( truth(:,1)~=1 )  ,2))
-    min_p=min(truth( ( truth(:,1)==1 )  ,2))
+    % max_n=max(truth( ( truth(:,1)~=1 )  ,2))
+    % min_p=min(truth( ( truth(:,1)==1 )  ,2))
     
 %      alt_threshold=mean(truth( ( (truth(:,1)~=1 & truth(:,2)>min_p ) | ( truth(:,1)==1 & truth(:,2)<max_n ) ), 2));
 %      classifier.threshold=alt_threshold;
 
-    classifier.threshold=0.5*(min_p+max_n);
+    % classifier.threshold=0.5*(min_p+max_n);
     
     fprintf('Classfier threshold at %.3f\n', classifier.threshold);
+
+
+    %TRYING SOMETHING NEW OUT
+    classifier.offset=min(distance);
+    classifier.spread=max(distance)-classifier.offset;
+
 
     classifier=class(classifier, 'ClassifierNan');
 
