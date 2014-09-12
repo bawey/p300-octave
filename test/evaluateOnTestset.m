@@ -14,13 +14,13 @@ function somesummary = evaluateOnTestset(p3train, p3test, teststring)
     w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',1))});
     w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, struct('TYPE', 'FLDA', 'hyperparameter', struct('gamma',.05))});
     
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 10});
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 1});
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 0.1});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 10});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 1});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, 100, 0.1});
     
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 48, 100, 1});
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 32, 100, 10});
-    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 64, 100, 100});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 48, 100, 1});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 32, 100, 10});
+    % w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, 64, 100, 100});
     
     somesummary=launch(w);
 

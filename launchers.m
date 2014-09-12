@@ -29,3 +29,9 @@ flowtest('berlin3a.oct', 17, false, 'tuned_Berlin3a.Loose', 'slow'); flowtest('b
 
 flowtest('~/Forge/p3data/p3tt-berlin3a.12fold.oct', 17, true, 'Berlin3a.Grouped', 'fast');
 flowtest('~/Forge/p3data/p3tt-berlin3b.12fold.oct', 17, true, 'Berlin3b.Grouped', 'fast');
+
+
+init();
+load('p3tt-berlin2.12fold.oct');
+flowtest('~/Forge/p3data/p3tt-berlin2.12fold.oct', 42, true, 'balanced_42cv_Berlin2.Grouped');
+
