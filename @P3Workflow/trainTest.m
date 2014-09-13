@@ -17,9 +17,10 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
         stimuliOfConcern=vstimuli(i+1:i+epochsPerPeriod,:);
     	periodLabels=vlabels(i+1:i+epochsPerPeriod,:);
     	
-    	y=probs(i+1:i+epochsPerPeriod);
-    	y=(y-min(y))/max(y-min(y));
-    	probs(i+1:i+epochsPerPeriod)=y;
+%    	y=probs(i+1:i+epochsPerPeriod);
+%       yp=(y-min(y));
+%    	y=(yp)/max(yp);
+%    	probs(i+1:i+epochsPerPeriod)=y;
     	
     	periodProbs=probs(i+1:i+epochsPerPeriod);
     	

@@ -32,7 +32,7 @@ function summarize(p3summary)
     
     %======DESCRIPTIONS GENERATED=========
     
-        for(mode = {'naive'})
+        for(mode = {'naive', 'aware'})
             mode=mode{:};
             printf('\n*** Scoreboard (precision + recall)/2 of %s methods: ***\n', mode);
             
