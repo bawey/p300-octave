@@ -57,7 +57,7 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.aware+=IH;
     				summary{x}{y}{z}.correctSymbols+=correctSymbols;
     				summary{x}{y}{z}.mse+=cse/(wf.p3session.periodsCount*wf.p3session.epochsCountPerPeriod);
-    				summary{x}{y}{z}.msme+=csme/(wf.p3session.periodsCount);
+    				summary{x}{y}{z}.msme+=csme/(wf.p3session.periodsCount * numel(unique(tlabels)));
 					
 					printf('Workflow progress: %.2f%%\n', ++progress*100/combinationsToRun);
 					fflush(stdout);

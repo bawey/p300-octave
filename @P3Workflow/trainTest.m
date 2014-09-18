@@ -48,9 +48,9 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
     
         if(sum(periodClassifierDecisions==periodLabels)==length(periodLabels))
-        	++correctSymbols;
+            ++correctSymbols;
         endif;
-	endfor;
+    endfor;
         
 	H=zeros(2,2); IH=zeros(2,2);
 	
