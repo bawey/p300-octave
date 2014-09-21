@@ -35,7 +35,7 @@ function texize(p3summary, stage)
 
             
             
-            [info, stats]=confusionMatrixInfo(p3summary.confusionMatrix{coordSet(1)}{coordSet(2)}{coordSet(3)}.aware);
+            [info, stats]=confusionMatrixInfo(p3summary.confusionMatrix{coordSet(1)}{coordSet(2)}{coordSet(3)}.naive);
             
             paramString=stringify(ttFunc.arguments);
             functionName = func2str(ttFunc.functionHandle);

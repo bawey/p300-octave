@@ -32,7 +32,7 @@ function summarize(p3summary)
     
     %======DESCRIPTIONS GENERATED=========
     
-        for(mode = {'naive', 'aware'})
+        for(mode = {'naive'})
             mode=mode{:};
             printf('\n*** Scoreboard (precision + recall)/2 of %s methods: ***\n', mode);
             
@@ -49,7 +49,7 @@ function summarize(p3summary)
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
                 if(isfield(summary{x}{y}{z},'msme'))
-                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
+                    printf(' : msme: %.3f', summary{x}{y}{z}.msme / 12);
                 endif;
 
                 printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));

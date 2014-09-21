@@ -1,4 +1,4 @@
-function [coords, value] = sortResults(p3summary, mode='aware')
+function [coords, value] = sortResults(p3summary, mode='naive')
     summary=p3summary.confusionMatrix;
     scoreboard=struct();
     scoreboard.naive=[];
@@ -16,7 +16,10 @@ function [coords, value] = sortResults(p3summary, mode='aware')
 
                 if(isfield(summary{x}{y}{z}, 'correctSymbols'))
                     scoreboard.naive(end, 1)+=summary{x}{y}{z}.correctSymbols;
-                    scoreboard.aware(end, 1)+=summary{x}{y}{z}.correctSymbols;
+                endif;
+                
+                if(isfield(summary{x}{y}{z}, 'msme'))
+                    scoreboard.naive(end, 1)+=(summary{x}{y}{z}.msme * 0.01);
                 endif;
 
             endfor;
@@ -25,7 +28,7 @@ function [coords, value] = sortResults(p3summary, mode='aware')
     
     %for now, using only the aware scores for evaluation
     [value, position] = sort(scoreboard.(mode)(:,1), 'descend');
-    coords=scoreboard.aware([position], [2:end]);
+    coords=scoreboard.(mode)([position], [2:end]);
     
 endfunction;
 
