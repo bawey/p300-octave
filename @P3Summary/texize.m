@@ -3,7 +3,8 @@ function texize(p3summary, stage)
     
     if(stage==1)
         %============== this prints crude stage 1 summary =================
-        printf('Klasyfikator & Parametry & Znaki & F1 & mse & msme \\\\ \n')
+        printf('\\hline \n');
+        printf('Klasyfikator & Parametry & Znaki & F1 & msme & mse \\\\ \n')
         printf('\\hline \n');
         for(coordSet=coords')
             
@@ -30,7 +31,8 @@ function texize(p3summary, stage)
             endif;
             
             if(isfield(summary{x}{y}{z},'msme'))
-                msme = summary{x}{y}{z}.msme/12;
+                %TODO: remove that /6 thing when evaluations are moved to paper
+                msme = summary{x}{y}{z}.msme/6;
             endif;
 
             
@@ -62,8 +64,8 @@ function texize(p3summary, stage)
             endif;
             
             
-            printf('\\hline\n');
-            printf('%s & %s & %d & %.3f & %.3f & %.3f  \\\\\n', functionName, paramString, charRight, stats.f1, mse, msme);
+            printf('%s & %s & %d & %.3f & %.3f & %.3f  \\\\\n', functionName, paramString, charRight, stats.f1, msme, mse);
+            printf('\\hline \n');
         endfor;
         %=============== this prints crude stage 2 summary =================
     elseif(stage==2)

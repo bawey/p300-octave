@@ -19,7 +19,11 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 endif;
                 
                 if(isfield(summary{x}{y}{z}, 'msme'))
-                    scoreboard.naive(end, 1)+=(summary{x}{y}{z}.msme * 0.01);
+                    scoreboard.naive(end, 1)+=(summary{x}{y}{z}.msme * 0.000001);
+                endif;
+
+                if(isfield(summary{x}{y}{z}, 'mse'))
+                    scoreboard.naive(end, 1)+=(summary{x}{y}{z}.mse * 0.0000000001);
                 endif;
 
             endfor;
