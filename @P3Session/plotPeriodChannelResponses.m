@@ -1,3 +1,4 @@
+% plotPeriodChannelResponses(p3, channel, periodNo)
 function plotPeriodChannelResponses(p3, channel, periodNo)
 	channelNo=-1;
 	if(isnumeric(channel))
@@ -21,7 +22,9 @@ function plotPeriodChannelResponses(p3, channel, periodNo)
 	mean_pos=mean(feats(labels==1,:));
 	mean_neg=mean(feats(labels==0,:));
 	
-	figure('name', sprintf('average responses of channel %s to particular stimuli during period %d', p3.channelNames{channelNo}, periodNo));
+	names=p3.channelNames;
+	
+	figure('name', sprintf('average responses of channel %s to particular stimuli during period %d', names{channelNo}, periodNo));
 	for(stimulus = unique_stimuli)
 		subplot(rows, cols, find(unique_stimuli==stimulus));
 %  		printf('sum(stimuli==stimulus)=%d\n',sum(stimuli==stimulus));

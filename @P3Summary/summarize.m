@@ -50,7 +50,7 @@ function summarize(p3summary)
                 endif;
                 if(isfield(summary{x}{y}{z},'msme'))
                     %todo: change this 6, it's here due to a /2 (unique values) in launch
-                    printf(' : msme: %.3f', summary{x}{y}{z}.msme / 6);
+                    printf(' : msme: %.3f', summary{x}{y}{z}.msme / 12);
                 endif;
 
                 printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));

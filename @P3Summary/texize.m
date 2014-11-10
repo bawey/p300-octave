@@ -31,8 +31,8 @@ function texize(p3summary, stage)
             endif;
             
             if(isfield(summary{x}{y}{z},'msme'))
-                %TODO: remove that /6 thing when evaluations are moved to paper
-                msme = summary{x}{y}{z}.msme/6;
+                %TODO: remove that /12 thing when evaluations are moved to paper
+                msme = summary{x}{y}{z}.msme/12;
             endif;
 
             
