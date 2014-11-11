@@ -7,23 +7,23 @@
 %
 %
 %
-function [response, row, col, odds] = periodCharacterPrediction(stimuli, probs)
+function [response, row, col, labelodds] = periodCharacterPrediction(stimuli, probs)
     labels = unique(stimuli);
     
-    %odds will store label - avg(prob) for that label
-    odds=[labels, zeros(size(labels))];
+    %labelodds will store label - avg(prob) for that label
+    labelodds=[labels, zeros(size(labels))];
 
     for(label = vec(labels)') 
-        odds(odds(:,1)==label,2)=mean(probs(stimuli==label));
+        labelodds(labelodds(:,1)==label,2)=mean(probs(stimuli==label));
     endfor;
 
     
     
-    [val, order] = sort(odds(:,2),'descend');
+    [val, order] = sort(labelodds(:,2),'descend');
     
     %these will usually be 1 and 2, but sometimes 2 columns (rows) might seem more likely for classifier 
-    row =  labels(order)(min(find(odds(order,1)>0)));
-    col =  labels(order)(min(find(odds(order,1)<0)));
+    row =  labels(order)(min(find(labelodds(order,1)>0)));
+    col =  labels(order)(min(find(labelodds(order,1)<0)));
     
     response=characterAt(row, col);
     

@@ -14,35 +14,26 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
 	%we need to know how long a period is
 	
 	for(i=0:epochsPerPeriod:rows(vfeats)-1)
-        stimuliOfConcern=vstimuli(i+1:i+epochsPerPeriod,:);
+        periodStimuli=vstimuli(i+1:i+epochsPerPeriod,:);
     	periodLabels=vlabels(i+1:i+epochsPerPeriod,:);
-    	
-%    	y=probs(i+1:i+epochsPerPeriod);
-%       yp=(y-min(y));
-%    	y=(yp)/max(yp);
-%    	probs(i+1:i+epochsPerPeriod)=y;
-    	
     	periodProbs=probs(i+1:i+epochsPerPeriod);
-    	
-    	
-    	
-    	
-    	periodLabelsStimuli=[periodLabels, stimuliOfConcern];
-    	
-    	periodPositiveStimuli=unique(stimuliOfConcern(periodLabels==1, :));
-    	%need to square (avg(per_response_stimuli)-per_response_label), first let's get the odds
 
-        [response, row, col, odds] = periodCharacterPrediction(stimuliOfConcern, periodProbs);
-        %use dbstop(func, line) to examine the outcome of the following:
+    	periodLabelledStimuli=[periodLabels, periodStimuli];
+    	periodPositiveStimuli=unique(periodStimuli(periodLabels==1, :));
+    	
+    	%need to square (avg(per_response_stimuli)-per_response_label), first let's get the labelodds
+
+        [response, row, col, labelodds] = periodCharacterPrediction(periodStimuli, periodProbs);
         
-%        odds
+        %use dbstop(func, line) to examine the outcome of the following:      
+%        labelodds
         
-        estims=[odds(:,2), ismember(odds(:,1), periodPositiveStimuli)];
+        prob_reality=[labelodds(:,2), ismember(labelodds(:,1), periodPositiveStimuli)];
         
-        csmerrors=(estims(:,1).-estims(:,2)).^2;
+        csmerrors=(prob_reality(:,1).-prob_reality(:,2)).^2;
         csme+=sum(csmerrors);
 
-        periodClassifierDecisions=(stimuliOfConcern==row | stimuliOfConcern == col);
+        periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
         ap=[ap; periodClassifierDecisions];
         
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
