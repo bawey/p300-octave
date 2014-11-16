@@ -17,7 +17,7 @@ function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1)
 	% Compute and display initial cost and gradient
 	[cost, grad] = logRegCostFunctionReg(initial_theta, X, Y, lambda);
 
-    fprintf('initial cost of theta: %.3f\n', cost);
+    %fprintf('initial cost of theta: %.3f\n', cost);
 
 	%  Set options for fminunc
 	options = optimset('GradObj', 'on', 'MaxIter', MaxIter);
@@ -27,7 +27,7 @@ function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1)
 	[theta, cost] = fminunc(@(t)(logRegCostFunctionReg(t, X, Y, lambda)), initial_theta, options);
 	
 	
-	fprintf('cost of theta: %.3f\n', cost);
+	%fprintf('cost of theta: %.3f\n', cost);
 
 	classifier.theta=theta;
 	classifier=class(classifier, 'ClassifierLogReg');

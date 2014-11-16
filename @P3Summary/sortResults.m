@@ -18,11 +18,11 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                     scoreboard.naive(end, 1)+=summary{x}{y}{z}.correctSymbols;
                 endif;
                 
-                if(isfield(summary{x}{y}{z}, 'msme'))
+                if(isfield(summary{x}{y}{z}, 'msme') && ~isnan(summary{x}{y}{z}.msme))
                     scoreboard.naive(end, 1)+=(summary{x}{y}{z}.msme * 0.000001);
                 endif;
 
-                if(isfield(summary{x}{y}{z}, 'mse'))
+                if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.msme))
                     scoreboard.naive(end, 1)+=(summary{x}{y}{z}.mse * 0.0000000001);
                 endif;
 
@@ -30,8 +30,12 @@ function [coords, value] = sortResults(p3summary, mode='naive')
         endfor;
     endfor;
     
-    %for now, using only the aware scores for evaluation
-    [value, position] = sort(scoreboard.(mode)(:,1), 'descend');
+    %NaN score needs to be replaced by 0
+    scores = scoreboard.(mode)(:,1);
+    scores(isnan(scores))=0;
+    
+%   [value, position] = sort(scoreboard.(mode)(:,1), 'descend');
+    [value, position] = sort(scores, 'descend');
     coords=scoreboard.(mode)([position], [2:end]);
     
 endfunction;
