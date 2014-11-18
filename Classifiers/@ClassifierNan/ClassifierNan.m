@@ -37,13 +37,11 @@ function classifier = ClassifierNan(X, y, mode)
 
     classifier.threshold=0.5*(min_p+max_n);
     
-    fprintf('Classfier threshold at %.3f\n', classifier.threshold);
-
+%   fprintf('Classfier threshold at %.3f\n', classifier.threshold);
 
     %TRYING SOMETHING NEW OUT
     classifier.offset=min(distance);
     classifier.spread=max(distance)-classifier.offset;
-
 
     classifier=class(classifier, 'ClassifierNan');
 

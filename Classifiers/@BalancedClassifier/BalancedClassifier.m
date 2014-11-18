@@ -21,15 +21,12 @@ function classifier = BalancedClassifier(X, y, classifierCell)
 %      	printf('First step. Samples selector of length %d \n', length(samplesSelector)); fflush(stdout);
 
     	% samplesSelector = samplesSelector(randperm(length(samplesSelector)));
-
     	sX = X(samplesSelector, :);
     	sy = y(samplesSelector, :);
 
 %      	printf('About to train a classifier on %d samples, %d of which positive, %d negative. \n', length(sy), length(find(sy==1)), length(find(sy==0))); fflush(stdout);
-
-    	tic
     	classifier.units{end+1}=feval(classifierCell{1}, sX, sy, classifierCell{[1:end]~=1});
-    	toc
+    	
     endfor;
     classifier=class(classifier, 'BalancedClassifier');
 endfunction;
