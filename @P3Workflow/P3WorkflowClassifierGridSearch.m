@@ -9,15 +9,18 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     
     %lambdas are for logistic regression and neural networks
 %   lambdas=[0 0.001 0.01 0.1 1 10 100];
-    lambdas=[0 0.01 1 100];
+%   lambdas=[0 0.01 1 100];
+    lambdas=[0 10];
 
     %c parameter values for SVM training
 %      cvalues=[100, 10, 1, 0.1, 0.01, 0.001, 0.0001];
-    cvalues=[100, 1, 0.01, 0.0001];
+%      cvalues=[100, 1, 0.01, 0.0001];
+    cvalues=[];
 
     %gamma parameter values for SVM with gaussian kernel
 %      gammas=[0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10];
-    gammas=[0.0001, 0.01, 1, 10];
+%      gammas=[0.0001, 0.01, 1, 10];
+    gammas=[0.01, 1];
 
 
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations

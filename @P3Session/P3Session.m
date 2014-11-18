@@ -1,5 +1,7 @@
 function p3Session = P3Session(signal, stimuli, targets, channelsCount, samplingRate, channelNames)
 	
+	targets
+	
 	p3Session.samplingRate=samplingRate;
 	p3Session.channelsCount=channelsCount;
 	p3Session.periodsCount=size(targets,1);

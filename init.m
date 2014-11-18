@@ -3,6 +3,8 @@ function init()
 	warning('off');
 	pkg load nan;
 	pkg load signal;
+	
+	fprintf('Scripts picked up, initialization begins.\n');
 
 	addpath(sprintf('%s/@P3Session', pwd));
 	addpath(sprintf('%s/@P3Workflow', pwd));
