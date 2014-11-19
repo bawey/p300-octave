@@ -6,4 +6,5 @@ function redirectOutput(destinationFile)
     fprintf('redirecting output ...');
     [X, Y]=dup2(myfile, stdout);
 %   [X, Y]=dup2(myfile, stderr);
+    fprintf('Output redirected!');
 endfunction;

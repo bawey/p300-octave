@@ -14,7 +14,6 @@ function [model, tr_mean, tr_std, modelCell] = pickClassifier(session)
 %      printf('modelCell{2} \n');
 %      modelCell{2}
 
-    
 
     [model, tr_mean, tr_std] = trainClassifier(modelCell{1}, modelCell{2}, session);
     
