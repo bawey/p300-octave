@@ -16,5 +16,3 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifierCell)
     endfor;
     
 endfunction;
-
-        

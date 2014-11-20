@@ -6,7 +6,11 @@ function results = askClassifier(classifier, p3session, tr_mean, tr_std)
         feats=centerTestData(feats, tr_mean, tr_std);
         [preds probs] = classify(classifier, feats);
         [sign row column labelodds] = periodCharacterPrediction(stimuli, probs);
-        printf('period %d: %d. row, %d. column. Seems like character %s \n', periodNo, row, column, sign);
+            
+        [confr, confc]=labeloddsConfidence(labelodds);
+        harmconf = confr*confc/(confr+confc);
+        
+        printf('period %d:     %d. row (conf %.3f), %d. column (conf %.3f). Seems like character %s (harm conf %.3f) \n', periodNo, row, confr, column, confc, sign, harmconf);
         results=[results; row, column];
     endfor;
 endfunction;

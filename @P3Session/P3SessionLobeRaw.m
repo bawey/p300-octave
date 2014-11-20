@@ -1,15 +1,15 @@
 %% takes as arguments raw matrices as read straight from files or passed from memory
 %% performs signal re-folding to create feature vectors for each flash
 %% function session = P3SessionLobeRaw(signalData, stimuliMeta, targets, channelsCount, samplingRate, channelNames)
-function session = P3SessionLobeRaw(data, meta, targets, channelsCount, samplingRate, channelNames)
+function session = P3SessionLobeRaw(data, meta, targets, channelsCount, samplingRate, channelNames, df=1)
 
     epoch_length = 120;
-    %Decimation Factor
-    df=6;
+
     
     %Experimental piece!
     
     cputimestart=cputime;
+    %Decimation Factor
     if(df>1)
         newsignal=[];
         epoch_length=epoch_length/df;
