@@ -2,7 +2,7 @@ function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell] = pickC
     splitRate = factor(session.periodsCount)(1);
     fprintf('using a session of %d characters and %d-fold cross-validation to estimate fitness of models \n', session.periodsCount, splitRate);
     % SplitCell does NOT include the samples number as this is later inserted automatically in P3Workflow...
-    wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, 'all');
+    wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, 'fast');
     summary = launch(wf);
     %will dump the results to console
 

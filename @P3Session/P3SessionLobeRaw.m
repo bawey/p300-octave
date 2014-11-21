@@ -1,7 +1,7 @@
 %% takes as arguments raw matrices as read straight from files or passed from memory
 %% performs signal re-folding to create feature vectors for each flash
 %% function session = P3SessionLobeRaw(signalData, stimuliMeta, targets, channelsCount, samplingRate, channelNames)
-function session = P3SessionLobeRaw(data, meta, targets, channelsCount, samplingRate, channelNames, df=1, cutoff=21)
+function session = P3SessionLobeRaw(data, meta, targets, channelsCount, samplingRate, channelNames, df=1, cutoff=128)
 
     epoch_length = 120;
 

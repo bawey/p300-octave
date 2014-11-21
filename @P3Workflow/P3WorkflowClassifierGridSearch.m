@@ -31,11 +31,11 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     %"OBJECT-ORIENTED"
 
     w=addFunction(w, 'featsCompute',    @featsComputePassThrough);
-%      w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
+    w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
     
 %      for(corrthreshold=[0.001, 0.005, 0.01])
     for(featslimit=[1000 500 375 250])
-        w=addFunction(w, 'featsSelect', @featsSelectFss, featslimit);
+%          w=addFunction(w, 'featsSelect', @featsSelectFss, featslimit);
     endfor;
 
     for(ksr = [0.1 0.3 0.7 1])

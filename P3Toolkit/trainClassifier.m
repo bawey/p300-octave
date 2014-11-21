@@ -8,7 +8,7 @@ function [model, tr_mean, tr_std, featsMask] = trainClassifier(trainSession, mod
     [tfeats, tr_mean, tr_std] = centerTrainData(tfeats);
     
     % compute the features mask AFTER cenetering the data
-    featsMask=feval(featsSelectCell{1}, tfeats, tlabels, featsSelectCell{2});
+    featsMask=feval(featsSelectCell{1}, tfeats, tlabels, featsSelectCell{(2:end)});
     
     % apply the result features mask to training data
     tfeats = tfeats(:, featsMask);
