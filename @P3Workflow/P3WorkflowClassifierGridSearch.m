@@ -37,7 +37,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     endfor;
 
     for(ksr = [0.1 0.3 0.7 1])
-        w=addFunction(w, 'featsCompute',    @featsComputePCAWithKSR, ksr);
+%         w=addFunction(w, 'featsCompute',    @featsComputePCAWithKSR, ksr);
     endfor;
 
     if(strcmp(classifiers, 'slow')==false)
