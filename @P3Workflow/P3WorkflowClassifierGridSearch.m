@@ -14,12 +14,13 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 
     %c parameter values for SVM training
     cvalues=[100, 10, 1, 0.1, 0.01];
+%  cvalues=[10, 1];
 
 
     %gamma parameter values for FLDA
       gammas=[0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1];
 %      gammas=[0.0001, 0.01, 1, 10];
-%      gammas=[0.01, 1];
+%        gammas=[0.01, 1];
 
 
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
@@ -30,10 +31,11 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     %"OBJECT-ORIENTED"
 
     w=addFunction(w, 'featsCompute',    @featsComputePassThrough);
-    w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
+%      w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
     
-    for(corrthreshold=[0.001, 0.005, 0.01])
-        w=addFunction(w, 'featsSelect', @featsSelectFss, corrthreshold);
+%      for(corrthreshold=[0.001, 0.005, 0.01])
+    for(featslimit=[1000 500 375 250])
+        w=addFunction(w, 'featsSelect', @featsSelectFss, featslimit);
     endfor;
 
     for(ksr = [0.1 0.3 0.7 1])
