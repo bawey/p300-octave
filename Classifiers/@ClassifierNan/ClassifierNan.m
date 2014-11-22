@@ -4,6 +4,15 @@
 %       ClassifierNan(X, y, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',1))); %long style
 
 function classifier = ClassifierNan(X, y, mode)
+
+    %   CRAZY!
+    % !!it seems that SVM is sensitive towards what label it sees first.
+    %   Hence for SVM to work properly the first label needs to be a 0! 
+    %
+    %   find the first such label:
+    head=find(y==0)(1);
+    y=[y(head,:); y([1:end]~=head,:)];
+    X=[X(head,:); X([1:end]~=head,:)];
     
     MODE=struct();
     if(ischar(mode))

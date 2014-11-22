@@ -21,6 +21,7 @@ function [p, prob, distance] = classify(classifier, vfeats)
 %      else
     distance.-=classifier.threshold;
     prob=sigmoid(distance);
+    
 %      endif;
 
     p=(prob>=0.5);

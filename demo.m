@@ -1,21 +1,21 @@
 init();
 p3s = P3SessionLobenotion('~/Desktop/eeg/','tomek_session_012');
 fflush(stdout);
-p3s2 = P3SessionLobenotion('~/Desktop/eeg/','tomek_session_014');
-fflush(stdout);
-p3s3 = P3SessionLobenotion('~/Desktop/eeg/','tomek_session_015');
-fflush(stdout);
-
-p3s=P3SessionMerge(p3s, p3s2);
-fflush(stdout);
-p3s=P3SessionMerge(p3s, p3s3);
-fflush(stdout);
+  p3s2 = P3SessionLobenotion('~/Desktop/eeg/','tomek_session_014');
+  fflush(stdout);
+  p3s3 = P3SessionLobenotion('~/Desktop/eeg/','tomek_session_015');
+  fflush(stdout);
+%  
+  p3s=P3SessionMerge(p3s, p3s2);
+  fflush(stdout);
+  p3s=P3SessionMerge(p3s, p3s3);
+  fflush(stdout);
 
 cpustart=cputime;
 p3sd=downsample(p3s, 6);
 fprintf('Decimating trainset took %.3f seconds \n', (cputime-cpustart));
 
-[model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell] = pickClassifier(p3sd);
+[model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell] = pickClassifier(p3sd, 'fast');
 %  askClassifier(model, p3sd, tr_mean, tr_std, featsMask);
 
 p3t   =  P3SessionLobenotion('~/Desktop/eeg/','tomek_session_011');
