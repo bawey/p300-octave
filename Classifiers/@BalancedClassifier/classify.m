@@ -10,12 +10,13 @@ function [pred, prob] = classify(model, X, vstimuli)
 		
 		% get units to vote! assuming the classifier is only asked about one period at a time
 		[response, row, col, labelodds] = periodCharacterPrediction(vstimuli, subprob);
-		subpred = (vstimuli==row | vstimuli==-abs(col));
+		[confr, confc] = labeloddsConfidence(labelodds);
+		
+		subpred = (confr*(vstimuli==row) | confc*(vstimuli==-abs(col)));
 		pred=pred+subpred;
-		
 %  		fprintf('min max of subprob: %.3f and %.3f\n', min(subprob), max(subprob));
-		
 	endfor;
+	
 	prob./=length(model.units);
 	%should be aware prediction anyway
 	pred./=length(model.units);
