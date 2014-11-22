@@ -47,6 +47,7 @@ function p3summary = launch(wf, title='untitled')
 					
 					funobj=wf.functions.trainTest{z};
 					
+					% if classifier function handle's struct indicates it utilizes bagging, validation data becomes the test data... WHY?!
 					if(ismember('bagging', fieldnames(funobj)) && funobj.bagging==true)
                         [H, IH, correctSymbols, cse, csme]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
                     else

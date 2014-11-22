@@ -12,7 +12,7 @@ p3s=P3SessionMerge(p3s, p3s3);
 fflush(stdout);
 
 cpustart=cputime;
-p3sd=downsample(p3s, 7);
+p3sd=downsample(p3s, 6);
 fprintf('Decimating trainset took %.3f seconds \n', (cputime-cpustart));
 
 [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell] = pickClassifier(p3sd);
@@ -23,7 +23,7 @@ p3t2  =  P3SessionLobenotion('~/Desktop/eeg/','tomek_session_016');
 p3t   =  P3SessionMerge(p3t, p3t2);
 
 cpustart=cputime;
-p3td=downsample(p3t, 7);
+p3td=downsample(p3t, 6);
 fprintf('Decimating testset took %.3f seconds \n', (cputime-cpustart));
 
 for(r=0:10)

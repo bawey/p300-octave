@@ -7,7 +7,7 @@ function classifier = ClassifierNan(X, y, mode)
     
     MODE=struct();
     if(ischar(mode))
-        MODE.TYPE='mode';
+        MODE.TYPE=mode;
     else
         MODE=mode;
     endif;

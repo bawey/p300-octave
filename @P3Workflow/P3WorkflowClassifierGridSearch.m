@@ -13,14 +13,14 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 
 
     %c parameter values for SVM training
-    cvalues=[100, 10, 1, 0.1, 0.01];
-%  cvalues=[10, 1];
+      cvalues=[100, 10, 1, 0.1, 0.01];
+%  cvalues=[10, 1, 0.1];
 
 
     %gamma parameter values for FLDA
-      gammas=[0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1];
-%      gammas=[0.0001, 0.01, 1, 10];
-%        gammas=[0.01, 1];
+   gammas=[0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1];
+%   gammas=[0.0001, 0.01, 1, 10];
+%   gammas=[0.01, 1];
 
 
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
@@ -50,6 +50,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE.TYPE='SVM';
             MODE.hyperparameter.c_value=c;
             w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
         endfor;
 
         %FLDAs
@@ -58,6 +59,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE.TYPE='FLDA';
             MODE.hyperparameter.gamma=gamma;
             w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
         endfor;
 
     endif;
@@ -68,6 +70,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             for(max_iterations=max_iterations_values)
                 %register several flavors of LogisticRegression
                 w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, max_iterations, lambda});
+                w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
             endfor;
         endfor;
         
@@ -75,20 +78,10 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
         for(lambda=lambdas(3:end))
             for(hidden_neurons = hidden_neurons_values)
                 for(max_iterations = max_iterations_values)
-                      w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda });
+                    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda });
+                    w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
                 endfor;
             endfor;
         endfor;
     endif;
-        %RADIAL BASIS (GAUSSIAN) KERNEL SVMs
-    for(c=cvalues)
-        for(gamma=gammas)
-            MODE=struct();
-            MODE.TYPE='RBF';
-            MODE.hyperparameter.c_value=c;
-            MODE.hyperparameter.gamma=gamma;
-%              w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
-        endfor;
-    endfor;
-
 endfunction;

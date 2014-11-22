@@ -4,20 +4,24 @@ function [p, prob, distance] = classify(classifier, vfeats)
     % printf('R.output has %d columns! \n', columns(R.output));
 
     %turns out this corresponds to how our classes are converted in the end:
-    distance=-R.output(:,1);
+    %ORIGINAL: distance=-R.output(:,1); TEST (SVM issues:)
+    distance=[];
+    if(columns(R.output)>1)
+        distance =-R.output(:,1);
+    else
+        distance = R.output(:,1);
+    endif;
     
     %sufficiently large margins could be sigmoided
-    if(classifier.spread<=10)
-    	prob=(distance-classifier.offset)/classifier.spread;
-    else
-    	distance.-=classifier.threshold;
-    	prob=sigmoid(distance);
-    endif;
-    % prob=min(1, max(prob, 0));
+%      fprintf('Classifier type is %s and spread is %.3f \n', classifier.MODE.TYPE, classifier.spread);
     
-    %if(columns(R.output)>1)
-    %    (prob.-=R.output(:,1))./2;
-    %endif;
+    %was 10, but we want sigmoid - IT's not this
+%      if(classifier.spread<=10)
+%      	prob=(distance-classifier.offset)/classifier.spread;
+%      else
+    distance.-=classifier.threshold;
+    prob=sigmoid(distance);
+%      endif;
 
-    p=prob>=0.5;
+    p=(prob>=0.5);
 endfunction;

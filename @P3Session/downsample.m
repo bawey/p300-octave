@@ -3,8 +3,6 @@ function p3d=downsample(p3s, factor)
 	target_columns_cnt = columns(copysignal)/factor;
 	tempsignal=repmat(NaN, rows(copysignal), target_columns_cnt);
 	
-	size(tempsignal)
-	
 	target_columns_per_channel=ceil(columns(tempsignal)/p3s.channelsCount);
 
     for(cnl=1:p3s.channelsCount)

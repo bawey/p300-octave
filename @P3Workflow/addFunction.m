@@ -22,7 +22,7 @@ function w = addFunction(w, stage, fHandle, varargin)
     f.functionHandle=fHandle;
     f.arguments=varargin;
 	
-	%bagging will be a special type of trainTest stage where trainset will be the testset!
+	%bagging will be a special type of trainTest stage where trainset will be the testset! - BUT WHY?!
 	if(strcmp('bagging',stage)==1)
         nameFound=true;
         f.bagging=true;

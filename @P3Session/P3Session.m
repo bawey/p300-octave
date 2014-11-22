@@ -1,4 +1,4 @@
-function p3Session = P3Session(signal, stimuli, targets, channelsCount, samplingRate, channelNames)
+function p3Session = P3Session(signal, stimuli, targets, channelsCount, samplingRate, channelNames, silent=true)
 	
 	p3Session.samplingRate=samplingRate;
 	p3Session.channelsCount=channelsCount;
@@ -39,12 +39,14 @@ function p3Session = P3Session(signal, stimuli, targets, channelsCount, sampling
 
 
 	p3Session=class(p3Session, 'P3Session');
-	
-	%---SUMMARY OF LOADED DATA---
-	printf('--------------------%s----------------------\n','SUMMARY OF LOADED DATA');
-	for(fname = fieldnames(p3Session.stats)')
-		printf('%40s  : %10d \n', fname{:}, p3Session.stats.(fname{:}));
-	endfor;
+
+	if(~silent)
+        %---SUMMARY OF LOADED DATA---
+        printf('--------------------%s----------------------\n','SUMMARY OF LOADED DATA');
+        for(fname = fieldnames(p3Session.stats)')
+            printf('%40s  : %10d \n', fname{:}, p3Session.stats.(fname{:}));
+        endfor;
+	endif;
 	
 	
 endfunction;

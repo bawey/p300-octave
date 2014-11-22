@@ -14,13 +14,15 @@ function results = askClassifier(classifier, p3session, tr_mean, tr_std, featsMa
         feats=centerTestData(feats, tr_mean, tr_std);
         
         % filter out surplus features according to features mask
-        feats=feats(:, featsMask);
+        if(exist('featsMask', 'var'))
+            feats=feats(:, featsMask);
+        endif;
 
-        [preds probs] = classify(classifier, feats);
+        [preds probs] = classify(classifier, feats, stimuli);
         [sign row column labelodds] = periodCharacterPrediction(stimuli, probs);
             
         [confr, confc]=labeloddsConfidence(labelodds);
-        harmconf = confr*confc/(confr+confc);
+        harmconf = 2*confr*confc/(confr+confc);
         
         printf('period %d:     %d. row (conf %.3f), %d. column (conf %.3f). Seems like character %s (harm conf %.3f) \n', periodNo, row, confr, column, confc, sign, harmconf);
         results=[results; row, column];

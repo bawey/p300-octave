@@ -1,11 +1,16 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
 function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
+	%mix the data a bit
+	mixing_vec = randperm(length(tlabels));
+	tlabels=tlabels(mixing_vec,:);
+	tfeats=tfeats(mixing_vec, :);
+	
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
 	
-	[p, probs]=classify(classifier, vfeats);
+	p=probs=[];
 	ap=[];
 	
 	correctSymbols=0;
@@ -16,7 +21,11 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
 	for(i=0:epochsPerPeriod:rows(vfeats)-1)
         periodStimuli=vstimuli(i+1:i+epochsPerPeriod,:);
     	periodLabels=vlabels(i+1:i+epochsPerPeriod,:);
-    	periodProbs=probs(i+1:i+epochsPerPeriod);
+    	periodFeats=vfeats(i+1:i+epochsPerPeriod,:);
+    	[periodPreds, periodProbs]=classify(classifier, periodFeats, periodStimuli);
+    	
+    	probs=[probs; periodProbs];
+    	p=[p; periodPreds];
 
     	periodLabelledStimuli=[periodLabels, periodStimuli];
     	periodPositiveStimuli=unique(periodStimuli(periodLabels==1, :));
