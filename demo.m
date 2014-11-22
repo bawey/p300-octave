@@ -15,8 +15,8 @@ cpustart=cputime;
 p3sd=downsample(p3s, 6);
 fprintf('Decimating trainset took %.3f seconds \n', (cputime-cpustart));
 
-p3sd = P3SessionSplitRepeats(p3sd, 'max');
-p3sd = P3SessionSplitRepeats(p3sd, 'max');
+p3sd = P3SessionSplitRepeats(p3sd, 'min');
+p3sd = P3SessionSplitRepeats(p3sd, 'min');
 
 [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary] = pickClassifier(p3sd, 'fast');
 %  askClassifier(model, p3sd, tr_mean, tr_std, featsMask);

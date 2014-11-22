@@ -6,7 +6,7 @@
 function p3s = P3SessionSplitRepeats(session, split_ratio='min')
     factor = min(factor(session.epochsCountPerPeriod));
     if(strcmp(split_ratio,'max'))
-        factor = max(factor(session.epochsCountPerPeriod));
+        factor = max(factor(session.epochsCountPerStimulus));
     endif;
     newtargets=[];
     
