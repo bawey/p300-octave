@@ -1,4 +1,7 @@
 %the ultimate element of the workflow: use the data to train a classifier and report on its performance
+% Returns:
+%   H:  confusion matrix
+%   IH: aware (informed) confusion matrix
 function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
 	%mix the data a bit
@@ -10,8 +13,9 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
 	
 	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
 	
-	p=probs=[];
-	ap=[];
+	predictions=[];
+	probs=[];
+	aware_predictions=[];
 	
 	correctSymbols=0;
     %cumulative square mean error: first average within each epoch, then sqare the [avg(stimuli)-label] value
@@ -25,7 +29,7 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
     	[periodPreds, periodProbs]=classify(classifier, periodFeats, periodStimuli);
     	
     	probs=[probs; periodProbs];
-    	p=[p; periodPreds];
+    	predictions=[predictions; periodPreds];
 
     	periodLabelledStimuli=[periodLabels, periodStimuli];
     	periodPositiveStimuli=unique(periodStimuli(periodLabels==1, :));
@@ -43,7 +47,7 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
         csme+=sum(csmerrors);
 
         periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
-        ap=[ap; periodClassifierDecisions];
+        aware_predictions=[aware_predictions; periodClassifierDecisions];
         
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
     
@@ -54,16 +58,18 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
         
 	H=zeros(2,2); IH=zeros(2,2);
 	
-	H(1,1)=sum( vlabels==0 & p==0 );
-    H(1,2)=sum( vlabels==0 & p==1 );
-    H(2,1)=sum( vlabels==1 & p==0 );
-    H(2,2)=sum( vlabels==1 & p==1 );
+	H(1,1)=sum( vlabels==0 & predictions==0 );
+    H(1,2)=sum( vlabels==0 & predictions==1 );
+    H(2,1)=sum( vlabels==1 & predictions==0 );
+    H(2,2)=sum( vlabels==1 & predictions==1 );
     
-    IH(1,1)=sum( vlabels==0 & ap==0 );
-    IH(1,2)=sum( vlabels==0 & ap==1 );
-    IH(2,1)=sum( vlabels==1 & ap==0 );
-    IH(2,2)=sum( vlabels==1 & ap==1 );
+    IH(1,1)=sum( vlabels==0 & aware_predictions==0 );
+    IH(1,2)=sum( vlabels==0 & aware_predictions==1 );
+    IH(2,1)=sum( vlabels==1 & aware_predictions==0 );
+    IH(2,2)=sum( vlabels==1 & aware_predictions==1 );
 
     cse=sum((vlabels.-probs).^2);
+    
+    assert(sum(H(:))==sum(IH(:)));
 	
 endfunction;

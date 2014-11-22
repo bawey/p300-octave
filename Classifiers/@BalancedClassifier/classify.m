@@ -1,35 +1,22 @@
-%could be useful to make a character-wise prediction...
-%is this one invoked always period-by-period? otherwise character wise prediction makes little sense
-function [pred, prob] = classify(model, X, vstimuli)
-	pred = prob = zeros(rows(vstimuli),1);
+% IMPORTANT: This one has to be invoked period-by-period sd it relies on aware prediction for unit classifiers voting
+% function [naive_label, scores] = classify(model, X, stimuli)
+function [naive_label, scores] = classify(model, X, stimuli)
+	naive_label = scores = zeros(rows(stimuli),1);
 	for(i=1:length(model.units))
-        [nevermind, subprob] = classify(model.units{i}, X);
+        % we will care about the scores (similiar to scoresabilities) returned by unit classifiers
+        [discard, u_scores] = classify(model.units{i}, X);
 		
-		% ordinary probabilities summing - old method
-		prob=prob+subprob;
-		
-		% get units to vote! assuming the classifier is only asked about one period at a time
-		[response, row, col, labelodds] = periodCharacterPrediction(vstimuli, subprob);
+		% scores are used to determine the most likely column\row and their confidence values
+		[response, row, col, labelodds] = periodCharacterPrediction(stimuli, u_scores);
 		[confr, confc] = labeloddsConfidence(labelodds);
 		
-		subpred = (confr*(vstimuli==row) | confc*(vstimuli==-abs(col)));
-		pred=pred+subpred;
-%  		fprintf('min max of subprob: %.3f and %.3f\n', min(subprob), max(subprob));
+		% each unit 'votes' for one row and one column, with the confidence used as a weight of a vote
+		votes = (confr*(stimuli==row) | confc*(stimuli==-abs(col)));
+		scores=votes+scores;
+        
 	endfor;
 	
-	prob./=length(model.units);
-	%should be aware prediction anyway
-	pred./=length(model.units);
-	
-	% comment out\in to switch between averaging continuous response and discrete decisions
-%    	prob=pred
-	% and to see the difference between the two
-%  	[pred, prob]
-
-    %former method, based on probabilities averaging
-	%pred=prob>0.5;
-	
-	%voting! ties should also be handled :(
-	prob=pred;
+	scores./=length(model.units);
+	naive_label = scores>0.5;
 
 endfunction;

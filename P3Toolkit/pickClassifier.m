@@ -1,4 +1,4 @@
-function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell] = pickClassifier(session, classification_methods='all')
+function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary] = pickClassifier(session, classification_methods='all')
     
     splitRate = factor(session.periodsCount)(end);  
     fprintf('using a session of %d characters and %d-fold cross-validation to estimate fitness of models \n', session.periodsCount, splitRate);
