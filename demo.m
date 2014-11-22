@@ -15,12 +15,17 @@ cpustart=cputime;
 p3sd=downsample(p3s, 6);
 fprintf('Decimating trainset took %.3f seconds \n', (cputime-cpustart));
 
+p3sd = P3SessionSplitRepeats(p3sd, 'max');
+p3sd = P3SessionSplitRepeats(p3sd, 'max');
+
 [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary] = pickClassifier(p3sd, 'fast');
 %  askClassifier(model, p3sd, tr_mean, tr_std, featsMask);
 
 p3t   =  P3SessionLobenotion('~/Desktop/eeg/','tomek_session_011');
 p3t2  =  P3SessionLobenotion('~/Desktop/eeg/','tomek_session_016');
+p3t3  =  P3SessionLobenotion('~/Desktop/eeg/','tomek_session_009');
 p3t   =  P3SessionMerge(p3t, p3t2);
+p3t   =  P3SessionMerge(p3t, p3t3);
 
 cpustart=cputime;
 p3td=downsample(p3t, 6);
