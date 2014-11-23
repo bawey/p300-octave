@@ -5,6 +5,14 @@
 
 function classifier = ClassifierNan(X, y, mode)
 
+    classifier = struct();
+    
+    % May the classifier object store data parameters
+    [X, tr_mean, tr_std] = centerTrainData(X);
+    classifier.tr_mean = tr_mean;
+    classifier.tr_std = tr_std;
+    
+
     %   CRAZY!
     % !!it seems that SVM is sensitive towards what label it sees first.
     %   Hence for SVM to work properly the first label needs to be a 0! 

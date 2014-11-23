@@ -4,6 +4,11 @@
 function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1)
 
 	classfier=struct();
+
+    % May the classifier object store data parameters
+    [X, tr_mean, tr_std] = centerTrainData(X);
+    classifier.tr_mean = tr_mean;
+    classifier.tr_std = tr_std;
 	
 	%  Setup the data matrix appropriately, and add ones for the intercept term
 	[m, n] = size(X);

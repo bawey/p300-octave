@@ -18,29 +18,28 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 
 
     %gamma parameter values for FLDA
-   gammas=[0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1];
+   gammas=[0.0001, 0.001, 0.01, 0.1, 1];
 %   gammas=[0.0001, 0.01, 1, 10];
 %   gammas=[0.01, 1];
 
 
     %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
     %max_iterations_values=[150 300 400];
-    max_iterations_values=[100];
-    hidden_neurons_values=[16 32];
+    max_iterations_values=[125];
+    hidden_neurons_values=[32];
 
-    %"OBJECT-ORIENTED"
-
+    
     w=addFunction(w, 'featsCompute',    @featsComputePassThrough);
     w=addFunction(w, 'featsSelect',     @featsSelectPassThrough);
     
-%      for(corrthreshold=[0.001, 0.005, 0.01])
-    for(featslimit=[1000 500 375 250])
-%          w=addFunction(w, 'featsSelect', @featsSelectFss, featslimit);
-    endfor;
-
-    for(ksr = [0.1 0.3 0.7 1])
-%         w=addFunction(w, 'featsCompute',    @featsComputePCAWithKSR, ksr);
-    endfor;
+%  %      for(corrthreshold=[0.001, 0.005, 0.01])
+%      for(featslimit=[1000 500 375 250])
+%  %          w=addFunction(w, 'featsSelect', @featsSelectFss, featslimit);
+%      endfor;
+%  
+%      for(ksr = [0.1 0.3 0.7 1])
+%  %         w=addFunction(w, 'featsCompute',    @featsComputePCAWithKSR, ksr);
+%      endfor;
 
     if(strcmp(classifiers, 'slow')==false)
         %LINEAR SVMs

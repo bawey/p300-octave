@@ -1,7 +1,13 @@
-function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary] = pickClassifier(session, classification_methods='all')
+% function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all')
+function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all')
     
-    splitRate = factor(session.periodsCount)(end);  
+    % train session epochs will be split in <smallest factor> number of periods to increase the depth of classifier comparison
+    % session = P3SessionSplitRepeats(session, 'min');
+    
+    % xvalidation split rate will be the smallest factor to cut down processing time
+    splitRate = factor(session.periodsCount)(1);  
     fprintf('using a session of %d characters and %d-fold cross-validation to estimate fitness of models \n', session.periodsCount, splitRate);
+    
     
     % SplitCell does NOT include the samples number as this is later inserted automatically in P3Workflow...
     wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, classification_methods);
@@ -13,7 +19,7 @@ function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary
     featsComputeCell = getBest(summary).featsCompute;
     
 
-    summarize(summary);
+%      summarize(summary);
 %now we can train our model of choice on the whole available dataset
 %      printf('modelCell{1} \n');
 %      modelCell{1}
@@ -22,7 +28,7 @@ function [model, tr_mean, tr_std, modelCell, featsMask, featsSelectCell, summary
 
        
     % Classifier and its traindata-dependent parameters
-    [model, tr_mean, tr_std, featsMask] = trainClassifier(session, modelCell, featsSelectCell, featsComputeCell);
+    [model] = trainClassifier(session, modelCell, featsSelectCell, featsComputeCell);
     
     
 endfunction;

@@ -1,3 +1,9 @@
+
+%function somesummary = evaluateOnTestset(p3train, p3test, teststring)
+% this function takes in the train data, test data and test string
+% it trains several models using the training data and evaluates them on the testset
+% reports back with summaries
+
 function somesummary = evaluateOnTestset(p3train, p3test, teststring)
     p3m=P3SessionMerge(p3train, P3SessionAddLabels(p3test, teststring));
 

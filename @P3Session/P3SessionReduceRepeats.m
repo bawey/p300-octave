@@ -1,3 +1,4 @@
+% function p3r = P3SessionReduceRepeats(p3, reduceby=1)
 function p3r = P3SessionReduceRepeats(p3, reduceby=1)
     signal = p3.signal;
     stimuli = p3.stimuli;
@@ -24,5 +25,5 @@ function p3r = P3SessionReduceRepeats(p3, reduceby=1)
     stimuli(idx==1)=[];
 %      size(stimuli)
     
-    p3r = P3Session(signal, stimuli, p3.targets, p3.channelsCount, p3.samplingRate, p3.channelNames)
+    p3r = P3Session(signal, stimuli, p3.targets, p3.channelsCount, p3.samplingRate, p3.channelNames);
 endfunction;

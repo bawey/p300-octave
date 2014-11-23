@@ -24,4 +24,6 @@ function init()
 	addpath(sprintf('%s/../p3data/', pwd));
 	addpath(sprintf('%s/../p3results_balanced', pwd));
 	
+	addpath(sprintf('%s/EpocDemos/', pwd));
+	
 endfunction;

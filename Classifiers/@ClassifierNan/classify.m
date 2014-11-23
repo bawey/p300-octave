@@ -1,4 +1,7 @@
 function [p, prob, distance] = classify(classifier, vfeats)
+
+    vfeats = centerTestData(vfeats, classifier.tr_mean, classifier.tr_std);
+
     R=test_sc(classifier.CC, vfeats, classifier.MODE.TYPE);
 
     % printf('R.output has %d columns! \n', columns(R.output));

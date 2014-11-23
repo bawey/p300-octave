@@ -1,3 +1,4 @@
+% function [train_data, tr_mean, tr_std] = centerTrainData(train_data)
 function [train_data, tr_mean, tr_std] = centerTrainData(train_data)
     tr_mean=mean(train_data);
     tr_std=std(train_data);

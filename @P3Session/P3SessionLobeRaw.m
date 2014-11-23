@@ -43,7 +43,8 @@ function session = P3SessionLobeRaw(data, meta, targets, channelsCount, sampling
         %look in data for timestamps greater than current onset timestamp and take only the first 'epoch_length' of such
         timemarks = data(data(:,1)>onset,1)(1:epoch_length);
         for(channelNo=1:channels)
-            signal(sampleNo, ((channelNo-1)*epoch_length+1) : (channelNo*epoch_length) ) = data((data(:,1)>=timemarks(1) & data(:,1)<=timemarks(end)), channelNo+1)';
+            % The (1:epoch_length) guard at the end fixes a rare problem of frames arriving late, both with the same timestamp
+            signal(sampleNo, ((channelNo-1)*epoch_length+1) : (channelNo*epoch_length) ) = data((data(:,1)>=timemarks(1) & data(:,1)<=timemarks(end)), channelNo+1)(1:epoch_length)';
         endfor;
     endfor;
     assert(sum(isnan(signal)(:))==0);
