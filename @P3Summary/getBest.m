@@ -1,6 +1,6 @@
-function best = getBest(p3summary, mode='aware')
+function best = getBest(p3summary)
     best=struct();
-    [coords, scores]=sortResults(p3summary, mode);
+    [coords, scores]=sortResults(p3summary);
     best.featsCompute=p3summary.functions.featsCompute{coords(1,1)};
     best.featsSelect=p3summary.functions.featsSelect{coords(1,2)};
     best.trainTest=p3summary.functions.trainTest{coords(1,3)};

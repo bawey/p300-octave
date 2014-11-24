@@ -1,7 +1,9 @@
 %       sample invocations:
 %               wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx});
+%
+% function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\fast\slow', balancing='yes\no\only')
 
-function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all')
+function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no')
 
 %      printf('passing to the testflow: onlyFast: %d, onlySlow: %d\n', classifiers='all'); fflush(stdout);
 
@@ -41,6 +43,9 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 %  %         w=addFunction(w, 'featsCompute',    @featsComputePCAWithKSR, ksr);
 %      endfor;
 
+    units_only = strcmp(balancing, 'no');
+    balanced_only = strcmp(balancing, 'only');
+
     if(strcmp(classifiers, 'slow')==false)
         %LINEAR SVMs
         for(c=cvalues)
@@ -48,8 +53,12 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE=struct();
             MODE.TYPE='SVM';
             MODE.hyperparameter.c_value=c;
-            w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
-            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+            if(~units_only)
+                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+            endif;
+            if(~balanced_only)
+                w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+            endif;
         endfor;
 
         %FLDAs
@@ -57,8 +66,12 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE=struct();
             MODE.TYPE='FLDA';
             MODE.hyperparameter.gamma=gamma;
-            w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
-            w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+            if(~units_only)
+                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+            endif;
+            if(~balanced_only)
+                w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+            endif;
         endfor;
 
     endif;
@@ -68,8 +81,12 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
         for(lambda = lambdas)
             for(max_iterations=max_iterations_values)
                 %register several flavors of LogisticRegression
-                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, max_iterations, lambda});
-                w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
+                if(~units_only)
+                    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, max_iterations, lambda});
+                endif;
+                if(~balanced_only)
+                    w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
+                endif;
             endfor;
         endfor;
         
@@ -77,8 +94,12 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
         for(lambda=lambdas(3:end))
             for(hidden_neurons = hidden_neurons_values)
                 for(max_iterations = max_iterations_values)
-                    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda });
-                    w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                    if(~units_only)
+                        w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda });
+                    endif;
+                    if(~balanced_only)
+                        w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );
+                    endif;
                 endfor;
             endfor;
         endfor;
