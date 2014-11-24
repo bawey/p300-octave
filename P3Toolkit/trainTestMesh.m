@@ -9,6 +9,4 @@ function scores = trainTestMesh(p3s, p3t, modelCell)
         scores=[scores; evaluateOnTestSet(model, p3t)];
         
     endfor;
-    mesh(1:columns(scores), 1:rows(scores), scores);
-
 endfunction;

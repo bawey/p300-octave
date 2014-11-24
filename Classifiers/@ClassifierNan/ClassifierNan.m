@@ -8,7 +8,10 @@ function classifier = ClassifierNan(X, y, mode)
     classifier = struct();
     
     % May the classifier object store data parameters
-    [X, tr_mean, tr_std] = centerTrainData(X);
+    
+    X_copy = X; % X will be centered. Model's self-adjustment needs data in original distribution.
+    
+    [X, tr_mean, tr_std] = centerTrainData(X);    
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
     
@@ -42,7 +45,7 @@ function classifier = ClassifierNan(X, y, mode)
 
     classifier=class(classifier, 'ClassifierNan');
 
-    [p, prob, distance] = classify(classifier, X);
+    [p, prob, distance] = classify(classifier, X_copy);
     
     truth=[y, distance];
 

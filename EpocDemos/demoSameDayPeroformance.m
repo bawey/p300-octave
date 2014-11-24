@@ -22,14 +22,16 @@ b1_p3_te = P3SessionLobenotion(eeg_dir,'tomek_session_012');
 [b1_model b1_modelCell b1_featsSelectCell b1_summary] = pickClassifier(b1_p3_tr, classification_methods='all');
 figure;
 b1_scores = trainTestMesh(b1_p3_tr, b1_p3_te, b1_modelCell);
+mesh(1:columns(b1_scores), 1:rows(b1_scores), b1_scores);
 
 % BUCKET 2
 b2_p3_tr = P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_015'),P3SessionLobenotion(eeg_dir,'tomek_session_016'));
 b2_p3_te = P3SessionLobenotion(eeg_dir,'tomek_session_014');
 
-[b2_model b2_modelCell b2_featsSelectCell b2_summary] = pickClassifier(b2_p3_tr, classification_methods='all');
+[b2_model b2_modelCell b2_featsSelectCell b2_summary] = pickClassifier(b2_p3_tr, classification_methods='fast');
 figure;
 b2_scores = trainTestMesh(b2_p3_tr, b2_p3_te, b2_modelCell);
+mesh(1:columns(b2_scores), 1:rows(b2_scores), b2_scores);
 
 % BUCKET 3
 b3_p3_tr = P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_014'),P3SessionLobenotion(eeg_dir,'tomek_session_012'));

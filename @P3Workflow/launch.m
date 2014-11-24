@@ -26,8 +26,9 @@ function p3summary = launch(wf, title='untitled')
 		trainPeriods{end+1}=[sv(sv>0)];
 		[vfeats, vlabels, vstimuli] = classificationData(wf.p3session, [1:wf.p3session.channelsCount], [-sv(sv<0)]);
 		testPeriods{end+1}=[-sv(sv<0)];
-		
-		[tfeats, vfeats] = centerData(tfeats, vfeats);
+
+            %   THIS GOES AWAY AS MODELS STORE THE DISTRIBUTIONS
+            %	[tfeats, vfeats] = centerData(tfeats, vfeats);
 		
 %  		printf('Evaluation period: %d \n', -sv(sv<0));
 		for(x=1:length(wf.functions.featsCompute))
