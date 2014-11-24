@@ -2,7 +2,7 @@
 function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all')
     
     % train session epochs will be split in <smallest factor> number of periods to increase the depth of classifier comparison
-    % session = P3SessionSplitRepeats(session, 'min');
+    session = P3SessionSplitRepeats(session, 'min');
     
     % xvalidation split rate will be the smallest factor to cut down processing time
     splitRate = factor(session.periodsCount)(1);  
