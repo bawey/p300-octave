@@ -6,6 +6,7 @@ function scores = evaluateOnTestSet(model, p3s)
         % using i flashes per stimuli. getting all combinations of flashes would be nice, but nchoosek(12,5) is way too much
         p3r = P3SessionReduceRepeats(p3s, i);
         answers = askClassifier(model, p3r);
-        scores=[scores, sum((answers==p3r.targets)(:))/numel(p3r.targets)];
+        score = sum(sum(answers==p3r.targets,2)==2)/rows(p3r.targets);
+        scores=[scores, score];
     endfor;
 endfunction;
