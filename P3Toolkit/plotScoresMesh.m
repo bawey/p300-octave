@@ -6,12 +6,11 @@ function plotScoresMesh(
 )
 
     figure;
-%      hold on
-    meshz(1:columns(scores), 1:rows(scores), scores);
+
+    meshc(1:columns(scores), 1:rows(scores), scores);
     xlabel(label_x);
     ylabel(label_y);
     zlabel(label_z);
-%      hold off
 
     
 endfunction;
