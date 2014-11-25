@@ -19,7 +19,7 @@ eeg_dir = '~/Desktop/eeg/';
 b1_p3_tr = P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_011'), P3SessionLobenotion(eeg_dir,'tomek_session_009'));
 b1_p3_te = P3SessionLobenotion(eeg_dir,'tomek_session_012');
 
-[b1_model b1_modelCell b1_featsSelectCell b1_summary] = pickClassifier(b1_p3_tr, 'fast', 'no');
+[b1_model b1_modelCell b1_featsSelectCell b1_summary] = pickClassifier(b1_p3_tr, 'all', 'no');
 b1_scores = trainTestMesh(b1_p3_tr, b1_p3_te, b1_modelCell);
 
 
@@ -27,7 +27,7 @@ b1_scores = trainTestMesh(b1_p3_tr, b1_p3_te, b1_modelCell);
 b2_p3_tr = P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_015'),P3SessionLobenotion(eeg_dir,'tomek_session_016'));
 b2_p3_te = P3SessionLobenotion(eeg_dir,'tomek_session_014');
 
-[b2_model b2_modelCell b2_featsSelectCell b2_summary] = pickClassifier(b2_p3_tr, 'fast', 'no');
+[b2_model b2_modelCell b2_featsSelectCell b2_summary] = pickClassifier(b2_p3_tr, 'all', 'no');
 b2_scores = trainTestMesh(b2_p3_tr, b2_p3_te, b2_modelCell);
 
 
@@ -38,15 +38,14 @@ b3_p3_te = P3SessionMerge(
                 P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_012'),P3SessionLobenotion(eeg_dir,'tomek_session_011'))
             );
 
-[b3_model b3_modelCell b3_featsSelectCell b3_summary] = pickClassifier(b3_p3_tr, 'fast', 'no');
+[b3_model b3_modelCell b3_featsSelectCell b3_summary] = pickClassifier(b3_p3_tr, 'all', 'no');
 b3_scores = trainTestMesh(b3_p3_tr, b3_p3_te, b3_modelCell);
 
 % BUCKET 4
-b4_p3_tr = b3_p3_tr;
-b4_p3_te = P3SessionMerge(b3_p3_te, P3SessionLobenotion(eeg_dir,'tomek_session_017'));
+b4_p3_te = P3SessionLobenotion(eeg_dir,'tomek_session_017');
 
-[b4_model b4_modelCell b4_featsSelectCell b4_summary] = pickClassifier(b4_p3_tr, 'fast', 'no');
-b4_scores = trainTestMesh(b4_p3_tr, b4_p3_te, b4_modelCell);
+%[b4_model b4_modelCell b4_featsSelectCell b4_summary] = pickClassifier(b4_p3_tr, 'all', 'no');
+b4_scores = trainTestMesh(b3_p3_tr, b4_p3_te, b3_modelCell);
 
 %save all the variables into a binary file
-save('-binary', sprintf('%s/demoSameDayPerformance_2.0_no_splits.oct', eeg_dir));
+save('-binary', sprintf('%s/demoSameDayPerformance.oct', eeg_dir));

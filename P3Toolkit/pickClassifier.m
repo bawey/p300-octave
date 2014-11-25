@@ -1,18 +1,44 @@
-% function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all')
-function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all', repeats_split='no')
+% function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all\fast\slow', repeats_split='no/min/max', balancing='yes/no/only', xsplit='min/max/total/str2double()')
+% params:
+%   - classification_methods: ALL / fast / slow
+%   - repeats_split: no / min /max 
+%   - balancing: no / yes / only
+%   - xsplit: min / max / total / number - foldness of cross validation. if a number is given, the factors are multiplied until the result is >= number
+function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all', repeats_split='no', balancing='no', xsplit='min')
 
-    if(strcmp(repeats_split,'no')==false)
+    if(strcmp(repeats_split,'no')==false && strcmp(repeats_split,'none')==false)
         % train session epochs will be split in <smallest factor> number of periods to increase the depth of classifier comparison
         session = P3SessionSplitRepeats(session, repeats_split);
     endif;
     
     % xvalidation split rate will be the smallest factor to cut down processing time
-    splitRate = factor(session.periodsCount)(1);  
-    fprintf('using a session of %d characters and %d-fold cross-validation to estimate fitness of models \n', session.periodsCount, splitRate);
+    splitRate = min(factor(session.periodsCount));  
+    if(isstr(xsplit) && strcmp(xsplit, 'max'))
+        splitRate = max(factor(session.periodsCount));
+    elseif(isstr(xsplit) && strcmp(xsplit, 'total'))
+        splitRate = session.periodsCount;
+    else
+        splitRate=1;
+        splitThresh = 1;
+        if(isnumeric(xsplit))
+            splitThresh = xsplit;
+        else
+            splitThresh=str2double(xsplit);
+        endif;
+        
+        for(f=factor(session.periodsCount));
+            splitRate*=f;
+            if(splitRate>=splitThresh)
+                break;
+            endif;
+        endfor;
+    endif;
+    
+    fprintf('pickClassifier: train session of %d characters, %d-fold x-validation. balancing=%s, classification_methods=%s \n', session.periodsCount, splitRate, balancing, classification_methods);
     
     
     % SplitCell does NOT include the samples number as this is later inserted automatically in P3Workflow...
-    wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, classification_methods);
+    wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, classification_methods, balancing);
     summary = launch(wf);
     %will dump the results to console
 
