@@ -4,12 +4,13 @@ eeg_dir = '~/Desktop/eeg';
 %data taken on the same day
 p3tr = P3SessionLobenotion(eeg_dir, 'tomek_session_016');
 p3tr = P3SessionMerge(P3SessionLobenotion(eeg_dir, 'tomek_session_014'), p3tr);
+p3tr = downsample(p3tr, 6);
 
 % we will use sessions 12 and 17 for test. 17 also had a 1 or 2 noisy electrodes
-p3te1 = P3SessionLobenotion(eeg_dir, 'tomek_session_012'); 
-p3te2 = P3SessionLobenotion(eeg_dir, 'tomek_session_017');
+p3te1 = downsample(P3SessionLobenotion(eeg_dir, 'tomek_session_012'), 6); 
+p3te2 = downsample(P3SessionLobenotion(eeg_dir, 'tomek_session_017'), 6);
 % session 15 dates to the same day as train sessions
-p3te3 = P3SessionLobenotion(eeg_dir, 'tomek_session_015');
+p3te3 = downsample(P3SessionLobenotion(eeg_dir, 'tomek_session_015'), 6);
 
 [xs_model, xs_tr_mean, xs_tr_std, modelCell, featsMask, featsSelectCell, summary] = pickClassifier(p3tr, 'fast');
 

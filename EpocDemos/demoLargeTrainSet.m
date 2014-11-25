@@ -19,7 +19,11 @@ endfor;
 
 p3te=P3SessionLobenotion(eeg_dir, sprintf('%s%03d', eeg_file_stem, tests(1)));
 
-[model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'fast', 'no', 'yes', 10);
+%!!!!!!!!!!!!!
+p3te=downsample(p3te, 6);
+p3tr=downsample(p3tr, 6);
+
+[model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'fast', 'no', 'no', 10);
 
 scores=trainTestMesh(p3tr, p3te, modelCell);
 
