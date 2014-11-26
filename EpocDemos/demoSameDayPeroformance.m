@@ -17,10 +17,10 @@ eeg_dir = '~/Desktop/eeg/';
 classification_methods = 'all';
 balancing = 'yes';
 reps_split = 'no';
-xsplit = '4';
+xsplit = '3';
 
 % BUCKET 1
-b1_p3_tr = downsample(P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_011'),6), P3SessionLobenotion(eeg_dir,'tomek_session_009'));
+b1_p3_tr = downsample(P3SessionMerge(P3SessionLobenotion(eeg_dir,'tomek_session_011'), P3SessionLobenotion(eeg_dir,'tomek_session_009')),6);
 b1_p3_te = downsample(P3SessionLobenotion(eeg_dir,'tomek_session_012'),6);
 
 [b1_model b1_modelCell b1_featsSelectCell b1_summary] = pickClassifier(b1_p3_tr, 'all', reps_split, balancing, xsplit);
