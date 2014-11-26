@@ -44,15 +44,15 @@ function p3summary = launch(wf, title='untitled')
 				
 				featureIdx = featsSelect(wf, y, tfeats, tlabels);
 				for(z=1:length(wf.functions.trainTest))
-					if(length(summary{x}{y})<z)	summary{x}{y}{end+1}=struct('naive',zeros(2,2),'aware',zeros(2,2), 'correctSymbols',0, 'mse', 0, 'msme', 0); endif;
+					if(length(summary{x}{y})<z)	summary{x}{y}{end+1}=struct('naive',zeros(2,2),'aware',zeros(2,2), 'correctSymbols',0, 'mse', 0, 'msme', 0, 'fewestRepeats', 0); endif;
 					
 					funobj=wf.functions.trainTest{z};
 					
 					% if classifier function handle's struct indicates it utilizes bagging, validation data becomes the test data... WHY?!
 					if(ismember('bagging', fieldnames(funobj)) && funobj.bagging==true)
-                        [H, IH, correctSymbols, cse, csme]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
                     else
-                        [H, IH, correctSymbols, cse, csme]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
 					endif;
   					
     				summary{x}{y}{z}.naive+=H;
@@ -60,8 +60,9 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.correctSymbols+=correctSymbols;
     				summary{x}{y}{z}.mse+=cse/(wf.p3session.periodsCount*wf.p3session.epochsCountPerPeriod);
     				summary{x}{y}{z}.msme+=csme/(wf.p3session.periodsCount * numel(unique(tstimuli)));
+                    summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/wf.p3session.periodsCount;
 					
-					printf('Workflow progress: %.2f%%\n', ++progress*100/combinationsToRun);
+					printf('Workflow progress: %.2f%%\r', ++progress*100/combinationsToRun);
 					fflush(stdout);
 					
 %  					save('-binary', filename, 'summary', 'title', 'fc', 'fs', 'tt');

@@ -2,7 +2,12 @@
 % Returns:
 %   H:  confusion matrix
 %   IH: aware (informed) confusion matrix
-function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+%
+%
+%   fewestSufficientRepeats: a vector of repeats (epochs per stimuli) needed to make the correct decision (or max if decision is wrong)
+function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+	
+	fewestSufficientRepeats=[];
 	
 	%mix the data a bit
 	mixing_vec = randperm(length(tlabels));
@@ -50,10 +55,37 @@ function [H, IH, correctSymbols, cse, csme]=trainTest(workflow, methodIdx, tfeat
         aware_predictions=[aware_predictions; periodClassifierDecisions];
         
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
-    
+        
+        epochsPerStimulus = epochsPerPeriod/numel(unique(periodStimuli));
+        epochsRequiredForThisPeriod = epochsPerStimulus;
+        highestRepeatsWrongAnswer = 0;
         if(sum(periodClassifierDecisions==periodLabels)==length(periodLabels))
             ++correctSymbols;
+            % if the symbol was correct, let's also indicate how many periods were sufficient to make the decision - a mock version (start from 4, less is very unlikely).
+            for(eps=1:epochsPerStimulus)
+                sectionEnd = rows(periodStimuli)*eps/epochsPerStimulus;
+                fewerStimuli    =   periodStimuli(1:sectionEnd, :);
+                fewerFeats      =   periodFeats(1:sectionEnd, :);
+                [fewerPreds, fewerProbs]=classify(classifier, fewerFeats, fewerStimuli);
+                [fewerResponse, fewerRow, fewerCol, fewerLabelodds] = periodCharacterPrediction(fewerStimuli, fewerProbs);
+                if(fewerCol==col && fewerRow==row)
+                    if(epochsRequiredForThisPeriod==epochsPerStimulus)
+                    %this is no longer used. what matters is the last wrong
+                    epochsRequiredForThisPeriod = eps;
+                    %   fprintf('so we found our minimum reps, using %d rows of simuli\n', size(fewerStimuli,1));                      
+                    %   break;
+                    endif;
+                else
+                        highestRepeatsWrongAnswer=eps;
+                endif;
+            endfor;
+        else
+            highestRepeatsWrongAnswer=epochsPerStimulus;
         endif;
+        % fprintf('%d repeats were sufficient to tell the right character! Last error at %d repeats. Epochs per stimulus is: %d \n', epochsRequiredForThisPeriod, highestRepeatsWrongAnswer, epochsPerStimulus);
+        % What matters is not the fewest epochs needed for good answer, but the fewest for a good answer that doesn't get changed with introduction of subsequent epochs
+        % fewestSufficientRepeats=[fewestSufficientRepeats; epochsRequiredForThisPeriod];
+        fewestSufficientRepeats=[fewestSufficientRepeats; highestRepeatsWrongAnswer];
     endfor;
         
 	H=zeros(2,2); IH=zeros(2,2);

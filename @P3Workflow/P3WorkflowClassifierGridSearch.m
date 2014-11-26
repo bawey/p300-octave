@@ -3,30 +3,14 @@
 %
 % function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\fast\slow', balancing='yes\no\only')
 
-function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no')
+function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no', 
+                                            cvalues=[1000, 100, 10, 5, 1, 0.5, 0.1, 0.05, 0.01], 
+                                            gammas=[0.0001 0.0005 0.001 0.05 0.01 0.05 0.1 1],
+                                            lambdas=[0 0.001 0.01 0.1 1 10])
 
 %      printf('passing to the testflow: onlyFast: %d, onlySlow: %d\n', classifiers='all'); fflush(stdout);
-
     w=P3Workflow(p3train, splitCell);
     
-    %lambdas are for logistic regression and neural networks
-   lambdas=[0 0.001 0.01 0.1 1 10];
-   nn_lambdas=[0 0.001 0.01 0.1 1];
-
-
-    %c parameter values for SVM training
-      cvalues=[100, 10, 1, 0.1, 0.01];
-%  cvalues=[10, 1, 0.1];
-
-
-    %gamma parameter values for FLDA
-   gammas=[0.0001, 0.001, 0.01, 0.1, 1];
-%   gammas=[0.0001, 0.01, 1, 10];
-%   gammas=[0.01, 1];
-
-
-    %neural networks have 3 tuning parameters: lambda, size of the hidden layer and max training iterations
-    %max_iterations_values=[150 300 400];
     max_iterations_values=[125];
     hidden_neurons_values=[32];
 

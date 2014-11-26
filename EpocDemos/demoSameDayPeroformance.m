@@ -15,7 +15,7 @@
 
 eeg_dir = '~/Desktop/eeg/';
 classification_methods = 'all';
-balancing = 'yes';
+balancing = 'no';
 reps_split = 'no';
 xsplit = '3';
 

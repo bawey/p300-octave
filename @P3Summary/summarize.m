@@ -45,11 +45,15 @@ function summarize(p3summary)
                 if(isfield(summary{x}{y}{z},'correctSymbols'))
                     printf('| char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
+                
+                if(isfield(summary{x}{y}{z},'fewestRepeats'))
+                    printf(' : fewestRepeats: %.2f', summary{x}{y}{z}.fewestRepeats);
+                endif;
+                
                 if(isfield(summary{x}{y}{z},'mse'))
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
                 if(isfield(summary{x}{y}{z},'msme'))
-                    %todo: change this 6, it's here due to a /2 (unique values) in launch
                     printf(' : msme: %.3f', summary{x}{y}{z}.msme / 12);
                 endif;
 
