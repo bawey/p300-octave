@@ -26,9 +26,9 @@ function [model modelCell featsSelectCell summary] = pickClassifier(session, cla
             splitThresh=str2double(xsplit);
         endif;
         
-        for(f=factor(session.periodsCount));
-            splitRate*=f;
-            if(splitRate>=splitThresh)
+        for(f=allfactor(session.periodsCount));
+            if(f>=splitThresh)
+                splitRate=f;
                 break;
             endif;
         endfor;
