@@ -18,7 +18,7 @@ function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
     for(i=1:numel(varargin))
         if(isstr(varargin{i}))
             if(strcmp(varargin{i}, 'nocentering'))
-                centering=false;
+                centering=false
             endif;
         endif;
     endfor;

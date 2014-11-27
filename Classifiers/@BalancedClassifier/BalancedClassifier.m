@@ -24,8 +24,8 @@ function classifier = BalancedClassifier(X, y, classifierCell)
 
 %      	printf('First step. Samples selector of length %d \n', length(samplesSelector)); fflush(stdout);
 
-    	% samplesSelector = samplesSelector(randperm(length(samplesSelector)));
-    	samplesSelector=samplesSelector(randperm(numel(samplesSelector)));
+    	% Randomization makes the results unpredictable and the classifier itself ultimately worse
+        % samplesSelector = samplesSelector(randperm(numel(samplesSelector)));
     	sX = X(samplesSelector, :);
     	sy = y(samplesSelector, :);
     	

@@ -17,7 +17,9 @@ function [accuracy predicted] = testBerlin(p3train, p3test, expected, classifier
     init();
 
     [feats, labels, stimuli] = classificationData(p3train, [1:p3train.channelsCount], [1:p3train.periodsCount]);
-    [feats, tr_mean, tr_std] = centerTrainData(feats);
+    
+    %this is SPARTA! no... this is now handled by the classifier 
+    %[feats, tr_mean, tr_std] = centerTrainData(feats);
 
     spaceTransformationSteps=feval(fcCell{1}, feats, labels, fcCell{[1:end]~=1});
     feats = executeTransformationSteps(feats, spaceTransformationSteps);
