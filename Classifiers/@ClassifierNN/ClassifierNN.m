@@ -1,12 +1,28 @@
-function classifier = classifierNN(X, y, hidden_layer_size=32, maxiter=175, lambda=1);
+function classifier = classifierNN(X, y, hidden_layer_size=32, maxiter=175, lambda=1, stimuli=[], varargin);
 
     classifier=struct();
     
     % May the classifier object store data parameters
-    [X, tr_mean, tr_std] = centerTrainData(X);
+    
+    % Need to allow explicit data adjustment disabling (eg. by a top level aggregate classifier)
+    centering = true;
+    
+    for(i=1:numel(varargin))
+        if(isstr(varargin{i}))
+            if(strcmp(varargin{i}, 'nocentering'))
+                centering=false;
+            endif;
+        endif;
+    endfor;
+    
+    tr_std = ones(1, columns(X));
+    tr_mean = zeros(1, columns(X));
+    if(centering)
+        [X, tr_mean, tr_std] = centerTrainData(X);    
+    endif;
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
-
+    % end of data centering
 
     input_layer_size = size(X, 2);
     num_labels = length(unique(y));

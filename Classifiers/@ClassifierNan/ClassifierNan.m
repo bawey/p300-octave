@@ -2,16 +2,32 @@
 %   sample invocations:
 %       ClassifierNan(X, y, 'SVM') %short style
 %       ClassifierNan(X, y, struct('TYPE', 'SVM', 'hyperparameter', struct('c_value',1))); %long style
+%
 
-function classifier = ClassifierNan(X, y, mode)
+function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
 
     classifier = struct();
     
     % May the classifier object store data parameters
     
     X_copy = X; % X will be centered. Model's self-adjustment needs data in original distribution.
+
+    % Need to allow explicit data adjustment disabling (eg. by a top level aggregate classifier)
+    centering = true;
     
-    [X, tr_mean, tr_std] = centerTrainData(X);    
+    for(i=1:numel(varargin))
+        if(isstr(varargin{i}))
+            if(strcmp(varargin{i}, 'nocentering'))
+                centering=false;
+            endif;
+        endif;
+    endfor;
+    
+    tr_std = ones(1, columns(X));
+    tr_mean = zeros(1, columns(X));
+    if(centering)
+        [X, tr_mean, tr_std] = centerTrainData(X);    
+    endif;
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
     

@@ -19,6 +19,7 @@ function texize(p3summary, stage)
             ttFunc=p3summary.functions.trainTest{coordSet(3)};
             
             charRight=0;
+            fewestRepeats=0;
             mse=1;
             msme=1;
             
@@ -31,8 +32,11 @@ function texize(p3summary, stage)
             endif;
             
             if(isfield(summary{x}{y}{z},'msme'))
-                %TODO: remove that /12 thing when evaluations are moved to paper
-                msme = summary{x}{y}{z}.msme/12;
+                msme = summary{x}{y}{z}.msme;
+            endif;
+            
+            if(isfield(summary{x}{y}{z},'fewestRepeats'))
+                fewestRepeats = summary{x}{y}{z}.fewestRepeats;
             endif;
 
             
@@ -43,12 +47,12 @@ function texize(p3summary, stage)
             functionName = func2str(ttFunc.functionHandle);
             
             if(strcmp(functionName, func2str(@BalancedClassifier))==1)
-                functionName=func2str(ttFunc.arguments{1}{1});
+                functionName=func2str(ttFunc.arguments{1});
                 ttFunc.arguments{1}=ttFunc.arguments{1}(2:end);
             endif;
             
             if(strcmp(functionName, func2str(@ClassifierNan)))
-                MODE=ttFunc.arguments{1}{1};
+                MODE=ttFunc.arguments{1};
                 functionName=MODE.TYPE;
                 if(strcmp(functionName, 'SVM')==1)
                     paramString=sprintf('c=%.3g', MODE.hyperparameter.c_value);
@@ -57,14 +61,14 @@ function texize(p3summary, stage)
                 endif;
             elseif (strcmp(functionName, func2str(@ClassifierLogReg)))
                 functionName='Regresja logistyczna';
-                paramString=sprintf('$\\lambda=%.3g$', ttFunc.arguments{1}{2});
+                paramString=sprintf('$\\lambda=%.3g$', ttFunc.arguments{2});
             elseif (strcmp(functionName, func2str(@ClassifierNN)))
                 functionName='Sieć neuronowa';
-                paramString=sprintf('$\\|a^{(2)}\\|=%d$, $\\lambda=%.3g$', ttFunc.arguments{1}{1}, ttFunc.arguments{1}{3});
+                paramString=sprintf('$\\|a^{(2)}\\|=%d$, $\\lambda=%.3g$', ttFunc.arguments{1}, ttFunc.arguments{3});
             endif;
             
             
-            printf('%s & %s & %d & %.3f & %.3f & %.3f  \\\\\n', functionName, paramString, charRight, stats.f1, msme, mse);
+            printf('%s & %s & %d & %.3f & %.3f & %.3f & %.3f  \\\\\n', functionName, paramString, charRight, fewestRepeats, stats.f1, msme, mse);
             printf('\\hline \n');
         endfor;
         %=============== this prints crude stage 2 summary =================

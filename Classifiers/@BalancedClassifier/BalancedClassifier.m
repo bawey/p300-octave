@@ -31,7 +31,7 @@ function classifier = BalancedClassifier(X, y, classifierCell)
     	
 
 %      	printf('About to train a classifier on %d samples, %d of which positive, %d negative. \n', length(sy), length(find(sy==1)), length(find(sy==0))); fflush(stdout);
-    	classifier.units{end+1}=feval(classifierCell{1}, sX, sy, classifierCell{[1:end]~=1});
+    	classifier.units{end+1}=feval(classifierCell{1}, sX, sy, classifierCell{[1:end]~=1}, [], 'nocentering');
     	
     endfor;
     classifier=class(classifier, 'BalancedClassifier');
