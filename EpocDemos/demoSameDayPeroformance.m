@@ -56,4 +56,4 @@ b4_p3_tr = P3SessionMerge(downsample(P3SessionLobenotion(eeg_dir,'tomek_session_
 b4_scores = trainTestMesh(b4_p3_tr, b3_p3_te, b4_modelCell)
 
 %save all the variables into a binary file
-save('-binary', sprintf('%s/demoSameDayPerformance_reps_not_split.oct', eeg_dir));
+save('-binary', sprintf('%s/demoSameDayPerformance_alt.oct', eeg_dir));
