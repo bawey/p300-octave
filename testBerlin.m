@@ -34,10 +34,9 @@ function [accuracy predicted] = testBerlin(p3train, p3test, expected, classifier
 
     for(testperiod=1:p3test.periodsCount)
         [feats, labels, stimuli] = classificationData(p3test, [1:p3test.channelsCount], [testperiod]);
-        feats=centerTestData(feats, tr_mean, tr_std);
         feats=executeTransformationSteps(feats, spaceTransformationSteps);
         feats=feats(:,feats_mask);
-        [labels, prob]=classify(classifier, feats);
+        [labels, prob]=classify(classifier, feats, stimuli);
               
         character=periodCharacterPrediction(stimuli, prob);
         predicted=strcat(predicted, character);

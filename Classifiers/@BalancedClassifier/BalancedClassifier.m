@@ -2,6 +2,9 @@
 % Answering will probably be by averaging.
 %
 function classifier = BalancedClassifier(X, y, classifierCell)
+    [X, tr_mean, tr_std]=centerTrainData(X);
+    classifier.tr_mean=tr_mean;
+    classifier.tr_std=tr_std;
     classifier.units={}';
 
     minors = find(y==1);
