@@ -10,7 +10,8 @@ function classifier = BalancedClassifier(X, y, classifierCell)
     minors = find(y==1);
     majors = find(y~=1);
 
-    majorsOrdering = randperm(length(majors));
+%      majorsOrdering = randperm(length(majors));
+    majorsOrdering = [1:length(majors)];
 
     for(start = 0 : length(minors) : length(majors)-1)
     	finish=start+length(minors);
