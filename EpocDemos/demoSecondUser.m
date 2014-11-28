@@ -26,7 +26,7 @@ results=struct();
 results.model       = model;
 results.modelCell   = modelCell;
 results.summary     = summary;
-results.scores      = scores
+results.scores      = scores;
 results.confidence  = confidence;
 
-save('-binary', sprintf('%s/epocXp2nduser.oct', eeg_dir), 'results');
+%  save('-binary', sprintf('%s/epocXp2nduser.oct', eeg_dir), 'results');
