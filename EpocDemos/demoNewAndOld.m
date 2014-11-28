@@ -1,8 +1,13 @@
 eeg_dir = '~/Desktop/eeg';
 eeg_file_stem = 'tomek_session_';
 %% AVAILABLE SESSIONS:
-b1_trains = [10, 21];
-b1_tests = [13, 20, 22, 23, 24];
+
+% some issues happened when recording the first phrase. let's try the other way round
+%b1_trains = [10, 21];
+%b1_tests = [13, 20, 22, 23, 24];
+
+b1_trains = [13, 21, 22];
+b1_tests = [10, 20, 23, 24];
 
 b2_trains=b1_trains;
 b2_tests=[9,11,12,14,15,16,17];
@@ -30,12 +35,18 @@ for(b = {'b1', 'b2', 'b3'})
     p3tr=downsample(p3tr, 6);
     p3te=downsample(p3te, 6);
 
-    [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 'no', 'no', 10);
-    scores=trainTestMesh(p3tr, p3te, modelCell)
+    %b2 will reuse the model found in b1
+    if(strcmp(b, 'b2')==false)
+        [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 'no', 'no', 10);
+        scores=trainTestMesh(p3tr, p3te, modelCell)
     
-    results.(sprintf('%s_scores', b))=scores;
-    results.(sprintf('%s_model', b))=model;
-    results.(sprintf('%s_modelCell', b))=modelCell;
-    results.(sprintf('%s_summary', b))=summary;
+        results.(sprintf('%s_scores', b))=scores;
+        results.(sprintf('%s_model', b))=model;
+        results.(sprintf('%s_modelCell', b))=modelCell;
+        results.(sprintf('%s_summary', b))=summary;
+    else
+        scores=trainTestMesh(p3tr, p3te, results.b1_modelCell)
+        results.(sprintf('%s_scores', b))=scores;
+    endif;
     
 endfor;
