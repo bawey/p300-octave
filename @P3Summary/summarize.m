@@ -34,7 +34,7 @@ function summarize(p3summary)
     
         for(mode = {'naive'})
             mode=mode{:};
-            printf('\n*** Scoreboard (precision + recall)/2 of %s methods: ***\n', mode);
+            printf('\n*** Scoreboard (precision + recall)/2 of %s methods and %d periods (chars): ***\n', mode, p3summary.totalPeriods);
             
             [coords, score] = sortResults(p3summary, mode);
 
@@ -48,6 +48,14 @@ function summarize(p3summary)
                 
                 if(isfield(summary{x}{y}{z},'fewestRepeats'))
                     printf(' : fewestRepeats: %.2f', summary{x}{y}{z}.fewestRepeats);
+                endif;
+                
+                if(isfield(summary{x}{y}{z},'conf'))
+                    printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
+                endif;
+                
+                if(isfield(summary{x}{y}{z},'overconf'))
+                    printf(' : mean overconf: %.2f', summary{x}{y}{z}.overconf);
                 endif;
                 
                 if(isfield(summary{x}{y}{z},'mse'))

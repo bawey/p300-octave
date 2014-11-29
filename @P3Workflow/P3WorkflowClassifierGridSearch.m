@@ -4,9 +4,10 @@
 % function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\fast\slow', balancing='yes\no\only')
 
 function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no', 
-                                            cvalues=[1000, 100, 10, 5, 1, 0.5, 0.1, 0.05, 0.01], 
-                                            gammas=[0.0001 0.0005 0.001 0.05 0.01 0.1 1],
-                                            lambdas=[0 0.001 0.01 0.1 1 10])
+                                              cvalues=[1000, 100, 10, 5, 1, 0.5, 0.1, 0.05, 0.01], 
+                                              gammas=[0.0001 0.0005 0.001 0.05 0.01 0.1 1],
+                                              lambdas=[0 0.001 0.01 0.1 1 10])
+%                                                  cvalues=[], gammas=[0.05, 0.01], lambdas=[])
 
 %      printf('passing to the testflow: onlyFast: %d, onlySlow: %d\n', classifiers='all'); fflush(stdout);
     w=P3Workflow(p3train, splitCell);
@@ -33,10 +34,10 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE.TYPE='SVM';
             MODE.hyperparameter.c_value=c;
             if(~units_only)
-                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+                  w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
             endif;
             if(~balanced_only)
-                w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
+                  w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
             endif;
         endfor;
 

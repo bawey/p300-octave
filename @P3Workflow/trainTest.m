@@ -5,9 +5,13 @@
 %
 %
 %   fewestSufficientRepeats: a vector of repeats (epochs per stimuli) needed to make the correct decision (or max if decision is wrong)
-function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+%   totalConf: returns accumulated confidence for correct predictions
+%   totalOverconf: accumulated overconfidence, confidence of wrong predictions
+function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, totalOverconf]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
 	fewestSufficientRepeats=[];
+	totalConf=0;
+	totalOverconf=0;
 	
 	%mix the data a bit
 	mixing_vec = randperm(length(tlabels));
@@ -43,8 +47,9 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(w
 
         [response, row, col, labelodds] = periodCharacterPrediction(periodStimuli, periodProbs);
         
-        %use dbstop(func, line) to examine the outcome of the following:      
-%        labelodds
+        % have a look at labelodds to determine confidence
+        [confr, confc]=labeloddsConfidence(labelodds);
+        conf = 2*confr*confc/(confr+confc);
         
         prob_reality=[labelodds(:,2), ismember(labelodds(:,1), periodPositiveStimuli)];
         
@@ -54,6 +59,9 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(w
         periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
         aware_predictions=[aware_predictions; periodClassifierDecisions];
         
+        
+        
+        
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
         
         epochsPerStimulus = epochsPerPeriod/numel(unique(periodStimuli));
@@ -61,6 +69,7 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(w
         highestRepeatsWrongAnswer = 0;
         if(sum(periodClassifierDecisions==periodLabels)==length(periodLabels))
             ++correctSymbols;
+            totalConf+=conf;
             % if the symbol was correct, let's also indicate how many periods were sufficient to make the decision - a mock version (start from 4, less is very unlikely).
             for(eps=1:epochsPerStimulus)
                 sectionEnd = rows(periodStimuli)*eps/epochsPerStimulus;
@@ -81,6 +90,7 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats]=trainTest(w
             endfor;
         else
             highestRepeatsWrongAnswer=epochsPerStimulus;
+            totalOverconf+=conf;
         endif;
         % fprintf('%d repeats were sufficient to tell the right character! Last error at %d repeats. Epochs per stimulus is: %d \n', epochsRequiredForThisPeriod, highestRepeatsWrongAnswer, epochsPerStimulus);
         % What matters is not the fewest epochs needed for good answer, but the fewest for a good answer that doesn't get changed with introduction of subsequent epochs

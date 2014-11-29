@@ -44,15 +44,16 @@ function p3summary = launch(wf, title='untitled')
 				
 				featureIdx = featsSelect(wf, y, tfeats, tlabels);
 				for(z=1:length(wf.functions.trainTest))
-					if(length(summary{x}{y})<z)	summary{x}{y}{end+1}=struct('naive',zeros(2,2),'aware',zeros(2,2), 'correctSymbols',0, 'mse', 0, 'msme', 0, 'fewestRepeats', 0); endif;
+					if(length(summary{x}{y})<z)	summary{x}{y}{end+1}=struct('naive',zeros(2,2),'aware',zeros(2,2), 'correctSymbols',0, 'mse', 0, 'msme', 0, 'fewestRepeats', 0, 
+                                                             'conf', 0, 'overconf', 0); endif;
 					
 					funobj=wf.functions.trainTest{z};
 					
 					% if classifier function handle's struct indicates it utilizes bagging, validation data becomes the test data... WHY?!
 					if(ismember('bagging', fieldnames(funobj)) && funobj.bagging==true)
-                        [H, IH, correctSymbols, cse, csme, fewestRepeats]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
                     else
-                        [H, IH, correctSymbols, cse, csme, fewestRepeats]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
 					endif;
   					
     				summary{x}{y}{z}.naive+=H;
@@ -61,6 +62,8 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.mse+=cse/(wf.p3session.periodsCount*wf.p3session.epochsCountPerPeriod);
     				summary{x}{y}{z}.msme+=csme/(wf.p3session.periodsCount * numel(unique(tstimuli)));
                     summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/wf.p3session.periodsCount;
+                    summary{x}{y}{z}.conf+=tConf;
+                    summary{x}{y}{z}.overconf+=tOConf;
 					
 					printf('Workflow progress: %.2f%%\r', ++progress*100/combinationsToRun);
 					fflush(stdout);
@@ -73,5 +76,15 @@ function p3summary = launch(wf, title='untitled')
 	printf('\n');
 	
 	%P3Summary object containing info about the methods used and their confusion matrices
-	p3summary=P3Summary(wf.functions, summary);
+	totalPeriods=sum(unique(wf.trainTestSplitMx)<0);
+	for(x=1:length(summary))
+        for(y=1:length(summary{x}))
+            for(z=1:length(summary{x}{y}))
+                summary{x}{y}{z}.conf=summary{x}{y}{z}.conf/summary{x}{y}{z}.correctSymbols;
+                summary{x}{y}{z}.overconf=summary{x}{y}{z}.overconf/(totalPeriods-summary{x}{y}{z}.correctSymbols);
+            endfor;
+        endfor;
+	endfor;
+	
+	p3summary=P3Summary(wf.functions, summary, totalPeriods);
 endfunction;
