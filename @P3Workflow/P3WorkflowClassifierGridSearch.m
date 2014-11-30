@@ -1,7 +1,7 @@
 %       sample invocations:
 %               wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx});
 %
-% function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\slow\fast\fastest', balancing='yes\no\only')
+% function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='dummy\all\slow\fast\fastest', balancing='yes\no\only')
 
 function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no', 
                                               cvalues=[1000, 100, 10, 5, 1, 0.5, 0.1, 0.05, 0.01], 
@@ -24,7 +24,10 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     units_only = strcmp(balancing, 'no');
     balanced_only = strcmp(balancing, 'only');
     
-    
+    %Dummy classifier to check the summary consistency
+    if(strcmp(classifiers, 'dummy')==true)
+        w=addFunction(w, 'trainTest', @DummyClassifier);
+    endif;
 
     if(strcmp(classifiers, 'fast')==true || strcmp(classifiers, 'all')==true)
         %LINEAR SVMs

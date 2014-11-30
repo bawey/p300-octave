@@ -62,7 +62,7 @@ function summarize(p3summary)
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
                 if(isfield(summary{x}{y}{z},'msme'))
-                    printf(' : msme: %.3f', summary{x}{y}{z}.msme / 12);
+                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
                 endif;
 
                 printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));

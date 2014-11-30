@@ -3,7 +3,7 @@
 %
 function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1, stimuli=[], varargin)
 
-	classfier=struct();
+	classifier=struct();
 
     % May the classifier object store data parameters
     

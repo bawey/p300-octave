@@ -17,6 +17,9 @@ function p3summary = launch(wf, title='untitled')
 	combinationsToRun=size(wf.trainTestSplitMx,1) * length(wf.functions.featsCompute) * length(wf.functions.featsSelect) * length(wf.functions.trainTest);
 	progress=0;
 	
+	% means total TEST (validation) periods. It will be stored in the summary for presenting statistics
+	totalPeriods=sum(unique(wf.trainTestSplitMx)<0);
+	
 	printf('Workflow progress: %.2f\r', progress); fflush(stdout);
 	for(sv = wf.trainTestSplitMx')
 		sv=sv';
@@ -59,9 +62,9 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.naive+=H;
     				summary{x}{y}{z}.aware+=IH;
     				summary{x}{y}{z}.correctSymbols+=correctSymbols;
-    				summary{x}{y}{z}.mse+=cse/(wf.p3session.periodsCount*wf.p3session.epochsCountPerPeriod);
-    				summary{x}{y}{z}.msme+=csme/(wf.p3session.periodsCount * numel(unique(tstimuli)));
-                    summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/wf.p3session.periodsCount;
+    				summary{x}{y}{z}.mse+=cse/(totalPeriods*wf.p3session.epochsCountPerPeriod);
+    				summary{x}{y}{z}.msme+=csme/(totalPeriods * numel(unique(tstimuli)));
+                    summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/totalPeriods;
                     summary{x}{y}{z}.conf+=tConf;
                     summary{x}{y}{z}.overconf+=tOConf;
 					
@@ -75,8 +78,6 @@ function p3summary = launch(wf, title='untitled')
 	endfor;
 	printf('\n');
 	
-	%P3Summary object containing info about the methods used and their confusion matrices
-	totalPeriods=sum(unique(wf.trainTestSplitMx)<0);
 	for(x=1:length(summary))
         for(y=1:length(summary{x}))
             for(z=1:length(summary{x}{y}))
