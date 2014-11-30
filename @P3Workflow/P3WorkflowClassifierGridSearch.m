@@ -1,7 +1,7 @@
 %       sample invocations:
 %               wf = P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx});
 %
-% function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\fast\slow', balancing='yes\no\only')
+% function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all\slow\fast\fastest', balancing='yes\no\only')
 
 function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all', balancing='no', 
                                               cvalues=[1000, 100, 10, 5, 1, 0.5, 0.1, 0.05, 0.01], 
@@ -26,7 +26,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     
     
 
-    if(strcmp(classifiers, 'slow')==false)
+    if(strcmp(classifiers, 'fast')==true || strcmp(classifiers, 'all')==true)
         %LINEAR SVMs
         for(c=cvalues)
             %register several flavors of SVM
@@ -40,7 +40,8 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
                   w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
             endif;
         endfor;
-
+    endif;
+    if(strcmp(classifiers, 'fast')==true || strcmp(classifiers, 'fastest')==true || strcmp(classifiers, 'all')==true)
         %FLDAs
         for(gamma=gammas)
             MODE=struct();
@@ -56,7 +57,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
 
     endif;
     
-    if(strcmp(classifiers, 'fast')==false)
+    if(strcmp(classifiers, 'all')==true || strcmp(classifiers, 'slow')==true)
         %LOGISTIC REGRESSIONs
         for(lambda = lambdas)
             for(max_iterations=max_iterations_values)

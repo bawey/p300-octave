@@ -1,6 +1,6 @@
 % function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all\fast\slow', repeats_split='no/min/max', balancing='yes/no/only', xsplit='min/max/total/str2double()')
 % params:
-%   - classification_methods: ALL / fast / slow
+%   - classification_methods: ALL / fast / slow / fastest
 %   - repeats_split: no / min /max 
 %   - balancing: no / yes / only
 %   - xsplit: min / max / total / number - foldness of cross validation. if a number is given, the factors are multiplied until the result is >= number
