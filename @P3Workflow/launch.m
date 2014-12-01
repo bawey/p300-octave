@@ -19,6 +19,7 @@ function p3summary = launch(wf, title='untitled')
 	
 	% means total TEST (validation) periods. It will be stored in the summary for presenting statistics
 	totalPeriods=sum(unique(wf.trainTestSplitMx)<0);
+	dominanceRatio = sum(wf.p3session.labels==0)/sum(wf.p3session.labels==1);
 	
 	printf('Workflow progress: %.2f\r', progress); fflush(stdout);
 	for(sv = wf.trainTestSplitMx')
@@ -29,10 +30,9 @@ function p3summary = launch(wf, title='untitled')
 		trainPeriods{end+1}=[sv(sv>0)];
 		[vfeats, vlabels, vstimuli] = classificationData(wf.p3session, [1:wf.p3session.channelsCount], [-sv(sv<0)]);
 		testPeriods{end+1}=[-sv(sv<0)];
-
-            %   THIS GOES AWAY AS MODELS STORE THE DISTRIBUTIONS
-            %	[tfeats, vfeats] = centerData(tfeats, vfeats);
-		
+        
+        uniqueStimuliNo = numel(unique(tstimuli));
+    
 %  		printf('Evaluation period: %d \n', -sv(sv<0));
 		for(x=1:length(wf.functions.featsCompute))
 			if(length(summary)<x)	summary{end+1}={};	endif;
@@ -62,8 +62,8 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.naive+=H;
     				summary{x}{y}{z}.aware+=IH;
     				summary{x}{y}{z}.correctSymbols+=correctSymbols;
-    				summary{x}{y}{z}.mse+=cse/(totalPeriods*wf.p3session.epochsCountPerPeriod);
-    				summary{x}{y}{z}.msme+=csme/(totalPeriods * numel(unique(tstimuli)));
+    				summary{x}{y}{z}.mse+=cse/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) * wf.p3session.epochsCountPerStimulus );
+    				summary{x}{y}{z}.msme+=csme/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) );
                     summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/totalPeriods;
                     summary{x}{y}{z}.conf+=tConf;
                     summary{x}{y}{z}.overconf+=tOConf;

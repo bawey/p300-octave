@@ -9,6 +9,8 @@
 %   totalOverconf: accumulated overconfidence, confidence of wrong predictions
 function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, totalOverconf]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
+	dominanceRatio = sum(tlabels==0)/sum(tlabels==1);
+	
 	fewestSufficientRepeats=[];
 	totalConf=0;
 	totalOverconf=0;
@@ -54,6 +56,8 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
         prob_reality=[labelodds(:,2), ismember(labelodds(:,1), periodPositiveStimuli)];
         
         csmerrors=(prob_reality(:,1).-prob_reality(:,2)).^2;
+        % minority group errors should get multiplied by dominance ratio
+        csmerrors(prob_reality(:,2)==1).*=dominanceRatio;
         csme+=sum(csmerrors);
 
         periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
@@ -110,7 +114,10 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
     IH(2,1)=sum( vlabels==1 & aware_predictions==0 );
     IH(2,2)=sum( vlabels==1 & aware_predictions==1 );
 
-    cse=sum((vlabels.-probs).^2);
+
+    se = (vlabels.-probs).^2;
+    se(vlabels==1).*=dominanceRatio;
+    cse=sum(se);
     
     assert(sum(H(:))==sum(IH(:)));
 	
