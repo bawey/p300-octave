@@ -2,7 +2,7 @@
 % function [naive_label, scores] = classify(model, X, stimuli)
 function [naive_label, scores] = classify(model, X, stimuli)
 	
-	if(classifier.centering == true)
+	if(model.centering == true)
         X=centerTestData(X, model.tr_mean, model.tr_std);
     endif;
     
