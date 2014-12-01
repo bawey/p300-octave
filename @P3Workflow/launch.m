@@ -32,6 +32,10 @@ function p3summary = launch(wf, title='untitled')
 		testPeriods{end+1}=[-sv(sv<0)];
         
         uniqueStimuliNo = numel(unique(tstimuli));
+        
+        % IMPORTANT: doing the centering outside classifiers requires informing them not to do so (in trainTest method). 
+        [tfeats, train_mean, train_std] = centerTrainData(tfeats);
+        vfeats = centerTestData(vfeats, train_mean, train_std);
     
 %  		printf('Evaluation period: %d \n', -sv(sv<0));
 		for(x=1:length(wf.functions.featsCompute))
@@ -48,21 +52,22 @@ function p3summary = launch(wf, title='untitled')
 				featureIdx = featsSelect(wf, y, tfeats, tlabels);
 				for(z=1:length(wf.functions.trainTest))
 					if(length(summary{x}{y})<z)	summary{x}{y}{end+1}=struct('naive',zeros(2,2),'aware',zeros(2,2), 'correctSymbols',0, 'mse', 0, 'msme', 0, 'fewestRepeats', 0, 
-                                                             'conf', 0, 'overconf', 0); endif;
+                                                             'conf', 0, 'overconf', 0, 'mste', 0); endif;
 					
 					funobj=wf.functions.trainTest{z};
 					
 					% if classifier function handle's struct indicates it utilizes bagging, validation data becomes the test data... WHY?!
 					if(ismember('bagging', fieldnames(funobj)) && funobj.bagging==true)
-                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf, cste]=trainTest(wf, z, vfeats(:,featureIdx), vlabels, tfeats(:,featureIdx), tlabels, tstimuli, wf.p3session.epochsCountPerPeriod);
                     else
-                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
+                        [H, IH, correctSymbols, cse, csme, fewestRepeats, tConf, tOConf, cste]=trainTest(wf, z, tfeats(:,featureIdx), tlabels, vfeats(:,featureIdx), vlabels, vstimuli, wf.p3session.epochsCountPerPeriod);
 					endif;
   					
     				summary{x}{y}{z}.naive+=H;
     				summary{x}{y}{z}.aware+=IH;
     				summary{x}{y}{z}.correctSymbols+=correctSymbols;
     				summary{x}{y}{z}.mse+=cse/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) * wf.p3session.epochsCountPerStimulus );
+    				summary{x}{y}{z}.mste+=cste/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) * wf.p3session.epochsCountPerStimulus );
     				summary{x}{y}{z}.msme+=csme/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) );
                     summary{x}{y}{z}.fewestRepeats+=sum(fewestRepeats)/totalPeriods;
                     summary{x}{y}{z}.conf+=tConf;

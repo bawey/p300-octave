@@ -18,7 +18,7 @@ function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
     for(i=1:numel(varargin))
         if(isstr(varargin{i}))
             if(strcmp(varargin{i}, 'nocentering'))
-                centering=false
+                centering=false;
             endif;
         endif;
     endfor;
@@ -28,6 +28,9 @@ function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
     if(centering)
         [X, tr_mean, tr_std] = centerTrainData(X);    
     endif;
+    
+    classifier.centering = centering;
+%      fprintf('ClassifierNN, centering=%d\n', centering);
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
     

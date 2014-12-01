@@ -1,6 +1,8 @@
 function [p, prob] = classify(nn, X)
     
-    X = centerTestData(X, nn.tr_mean, nn.tr_std);
+    if(nn.centering == true)
+        X = centerTestData(X, nn.tr_mean, nn.tr_std);
+    endif;
     
     %PREDICT Predict the label of an input given a trained neural network
     %   p = PREDICT(Theta1, Theta2, X) outputs the predicted label of X given the

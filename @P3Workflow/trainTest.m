@@ -7,7 +7,7 @@
 %   fewestSufficientRepeats: a vector of repeats (epochs per stimuli) needed to make the correct decision (or max if decision is wrong)
 %   totalConf: returns accumulated confidence for correct predictions
 %   totalOverconf: accumulated overconfidence, confidence of wrong predictions
-function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, totalOverconf]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, totalOverconf, cste]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
 	dominanceRatio = sum(tlabels==0)/sum(tlabels==1);
 	
@@ -22,7 +22,8 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
 	
 	functionStruct=workflow.functions.trainTest{methodIdx};
 	
-	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:});
+	% nocentering instructs the classifier that the centering is handled outside, which is the case here - for performance sake
+	classifier = feval(functionStruct.functionHandle, tfeats, tlabels, functionStruct.arguments{:}, [], 'nocentering');
 	
 	predictions=[];
 	probs=[];
@@ -118,6 +119,10 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
     se = (vlabels.-probs).^2;
     se(vlabels==1).*=dominanceRatio;
     cse=sum(se);
+    
+    ste = (vlabels.-predictions).^2;
+    ste(vlabels==1).*=dominanceRatio;
+    cste=sum(ste);
     
     assert(sum(H(:))==sum(IH(:)));
 	

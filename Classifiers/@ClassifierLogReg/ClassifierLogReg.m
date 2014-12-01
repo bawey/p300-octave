@@ -23,6 +23,9 @@ function classifier = ClassifierLogReg(X,Y,MaxIter=175, lambda=1, stimuli=[], va
     if(centering)
         [X, tr_mean, tr_std] = centerTrainData(X);    
     endif;
+    
+    classifier.centering = centering;
+%      fprintf('ClassifierLogReg, centering=%d\n', centering);
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
     % end of data centering	

@@ -20,6 +20,9 @@ function classifier = classifierNN(X, y, hidden_layer_size=32, maxiter=175, lamb
     if(centering)
         [X, tr_mean, tr_std] = centerTrainData(X);    
     endif;
+    
+    classifier.centering = centering;
+%      fprintf('ClassfNN, centering=%d\n', centering);
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;
     % end of data centering

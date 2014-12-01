@@ -1,7 +1,11 @@
 % IMPORTANT: This one has to be invoked period-by-period sd it relies on aware prediction for unit classifiers voting
 % function [naive_label, scores] = classify(model, X, stimuli)
 function [naive_label, scores] = classify(model, X, stimuli)
-	X=centerTestData(X, model.tr_mean, model.tr_std);
+	
+	if(classifier.centering == true)
+        X=centerTestData(X, model.tr_mean, model.tr_std);
+    endif;
+    
 	naive_label = scores = zeros(rows(stimuli),1);
 	for(i=1:length(model.units))
         % we will care about the scores (similiar to scoresabilities) returned by unit classifiers

@@ -1,10 +1,30 @@
 % This one aims to aggregate several classifiers so that each would have the same amount of positive and negative samples
 % Answering will probably be by averaging.
 %
-function classifier = BalancedClassifier(X, y, classifierCell)
-    [X, tr_mean, tr_std]=centerTrainData(X);
-    classifier.tr_mean=tr_mean;
-    classifier.tr_std=tr_std;
+function classifier = BalancedClassifier(X, y, classifierCell, varargin)
+    
+    % Need to allow explicit data adjustment disabling (eg. from the P3Workflow.launch method that might perform the centering once for all the classifiers being trained)
+    centering = true;
+    
+    for(i=1:numel(varargin))
+        if(isstr(varargin{i}))
+            if(strcmp(varargin{i}, 'nocentering'))
+                centering=false;
+            endif;
+        endif;
+    endfor;
+    
+    tr_std = ones(1, columns(X));
+    tr_mean = zeros(1, columns(X));
+    if(centering)
+        [X, tr_mean, tr_std] = centerTrainData(X);    
+    endif;
+    
+    classifier.centering = centering;
+%      fprintf('BalancedClassifier, centering=%d\n', centering);
+    classifier.tr_mean = tr_mean;
+    classifier.tr_std = tr_std;
+    
     classifier.units={}';
 
     minors = find(y==1);

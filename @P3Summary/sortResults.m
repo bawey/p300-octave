@@ -22,12 +22,12 @@ function [coords, value] = sortResults(p3summary, mode='naive')
 %                      scoreboard.naive(end, 1)+=(1/summary{x}{y}{z}.fewestRepeats);
                 endif;
                 
-                if(isfield(summary{x}{y}{z}, 'msme') && ~isnan(summary{x}{y}{z}.msme))
-                      scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.msme);
+                if(isfield(summary{x}{y}{z}, 'mste') && ~isnan(summary{x}{y}{z}.msme))
+                        scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.mste);
                 endif;
 
                 if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.msme))
-                      scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.mse);
+                      scoreboard.naive(end, 1)+=0.01/(summary{x}{y}{z}.mse);
                 endif;
 
             endfor;

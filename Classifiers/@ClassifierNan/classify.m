@@ -1,6 +1,8 @@
 function [p, prob, distance] = classify(classifier, vfeats)
-
-    vfeats = centerTestData(vfeats, classifier.tr_mean, classifier.tr_std);
+    
+    if(classifier.centering == true)
+        vfeats = centerTestData(vfeats, classifier.tr_mean, classifier.tr_std);
+    endif;
 
     R=test_sc(classifier.CC, vfeats, classifier.MODE.TYPE);
 
