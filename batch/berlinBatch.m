@@ -65,4 +65,6 @@ for(dataset = datasets)
 
 endfor;
 
+[code,out]=system('date +%Y%m%d.%H%M');
+save('-binary', sprintf('%s/berlin.summaries_%s.oct', dirSummaries, strtrim(out)), 'summaries');
 
