@@ -4,9 +4,12 @@
 % arg: split_ratio determines how many output periods will be produced from each original one
 %   split_ratio can either be 'max' to yield max(factor(epochsCountPerPeriod)) periods or 'min'
 function p3s = P3SessionSplitRepeats(session, split_ratio='min')
-    thefactor = min(factor(session.epochsCountPerStimulus));
+    
+    factors = allfactor(session.epochsCountPerStimulus)(2:end);
+    
+    thefactor = factors(1);
     if(strcmp(split_ratio,'max'))
-        thefactor = max(factor(session.epochsCountPerStimulus));
+        thefactor = factors(end)
     endif;
     newtargets=[];
     

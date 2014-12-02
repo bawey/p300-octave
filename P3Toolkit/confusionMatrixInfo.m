@@ -1,5 +1,6 @@
 function [nfo, stats] = confusionMatrixInfo(H)
 	stats=struct();
+	H = adjustConfusionMx(H);
 	stats.tn=H(1,1);
 	stats.tp=H(2,2);
 	stats.fp=H(1,2);	

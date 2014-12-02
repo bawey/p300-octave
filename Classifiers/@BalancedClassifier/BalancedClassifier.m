@@ -5,11 +5,15 @@ function classifier = BalancedClassifier(X, y, classifierCell, varargin)
     
     % Need to allow explicit data adjustment disabling (eg. from the P3Workflow.launch method that might perform the centering once for all the classifiers being trained)
     centering = true;
+    voting = true;
     
     for(i=1:numel(varargin))
         if(isstr(varargin{i}))
             if(strcmp(varargin{i}, 'nocentering'))
                 centering=false;
+            endif;
+            if(strcmp(varargin{i}, 'novoting'))
+                voting=false;
             endif;
         endif;
     endfor;
@@ -21,6 +25,7 @@ function classifier = BalancedClassifier(X, y, classifierCell, varargin)
     endif;
     
     classifier.centering = centering;
+    classifier.voting = voting;
 %      fprintf('BalancedClassifier, centering=%d\n', centering);
     classifier.tr_mean = tr_mean;
     classifier.tr_std = tr_std;

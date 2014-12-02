@@ -10,18 +10,20 @@ function [naive_label, scores] = classify(model, X, stimuli)
 	for(i=1:length(model.units))
         % we will care about the scores (similiar to scoresabilities) returned by unit classifiers
         [discard, u_scores] = classify(model.units{i}, X);
-		
-		% scores are used to determine the most likely column\row and their confidence values
-		[response, row, col, labelodds] = periodCharacterPrediction(stimuli, u_scores);
-		[confr, confc] = labeloddsConfidence(labelodds);
-		
-		% each unit 'votes' for one row and one column, with the confidence used as a weight of a vote
-		votes = (confr*(stimuli==row) | confc*(stimuli==-abs(col)));
-		scores=votes+scores;
-        
+        if(model.voting==true)
+            % scores are used to determine the most likely column\row and their confidence values
+            [response, row, col, labelodds] = periodCharacterPrediction(stimuli, u_scores);
+            [confr, confc] = labeloddsConfidence(labelodds);
+            
+            % each unit 'votes' for one row and one column, with the confidence used as a weight of a vote
+            votes = (confr*(stimuli==row) | confc*(stimuli==-abs(col)));
+            scores=votes+scores;
+        else
+            scores=u_scores+scores;
+        endif;
 	endfor;
 	
 	scores./=length(model.units);
-	naive_label = scores>0.5;
+	naive_label = scores>=0.5;
 
 endfunction;

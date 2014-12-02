@@ -46,28 +46,28 @@ function summarize(p3summary)
                     printf('| char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
                 
-                if(isfield(summary{x}{y}{z},'fewestRepeats'))
-                    printf(' : fewestRepeats: %.2f', summary{x}{y}{z}.fewestRepeats);
-                endif;
+%                  if(isfield(summary{x}{y}{z},'fewestRepeats'))
+%                      printf(' : fewestRepeats: %.2f', summary{x}{y}{z}.fewestRepeats);
+%                  endif;
                 
-                if(isfield(summary{x}{y}{z},'conf'))
-                    printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
-                endif;
+%                  if(isfield(summary{x}{y}{z},'conf'))
+%                      printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
+%                  endif;
                 
-                if(isfield(summary{x}{y}{z},'overconf'))
-                    printf(' : mean overconf: %.2f', summary{x}{y}{z}.overconf);
-                endif;
+%                  if(isfield(summary{x}{y}{z},'overconf'))
+%                      printf(' : mean overconf: %.2f', summary{x}{y}{z}.overconf);
+%                  endif;
                 
                 if(isfield(summary{x}{y}{z},'mse'))
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
-                if(isfield(summary{x}{y}{z},'msme'))
-                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
-                endif;
-                
-                if(isfield(summary{x}{y}{z},'mste'))
-                    printf(' : mste: %.3f', summary{x}{y}{z}.mste);
-                endif;
+%                  if(isfield(summary{x}{y}{z},'msme'))
+%  %                      printf(' : msme: %.3f', summary{x}{y}{z}.msme);
+%                  endif;
+%                  
+%                  if(isfield(summary{x}{y}{z},'mste'))
+%  %                      printf(' : mste: %.3f', summary{x}{y}{z}.mste);
+%                  endif;
 
                 printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));
                 

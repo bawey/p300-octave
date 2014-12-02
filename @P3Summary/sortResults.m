@@ -8,11 +8,11 @@ function [coords, value] = sortResults(p3summary, mode='naive')
             for(z=1:length(summary{x}{y}))
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.naive);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (naive): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                  scoreboard.naive=[scoreboard.naive; stats.f1*0.00000000001, x, y, z];
+                   scoreboard.naive=[scoreboard.naive; 100*stats.accuracy + 0.01*stats.f1, x, y, z];
 
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.aware);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (aware): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                  scoreboard.aware=[scoreboard.aware; stats.f1*0.00000000001, x, y, z];
+                  scoreboard.aware=[scoreboard.aware; 100*stats.accuracy + 0.01*stats.f1, x, y, z];
 
                 if(isfield(summary{x}{y}{z}, 'correctSymbols'))
 %                      scoreboard.naive(end, 1)+=summary{x}{y}{z}.correctSymbols;
@@ -23,11 +23,11 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 endif;
                 
                 if(isfield(summary{x}{y}{z}, 'mste') && ~isnan(summary{x}{y}{z}.msme))
-                        scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.mste);
+%                          scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.mste);
                 endif;
 
                 if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.msme))
-                      scoreboard.naive(end, 1)+=0.01/(summary{x}{y}{z}.mse);
+                        scoreboard.naive(end, 1)+=0.00001/(summary{x}{y}{z}.mse);
                 endif;
 
             endfor;

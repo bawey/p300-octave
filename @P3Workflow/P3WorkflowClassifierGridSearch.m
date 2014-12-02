@@ -37,7 +37,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE.TYPE='SVM';
             MODE.hyperparameter.c_value=c;
             if(~units_only)
-                  w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+                  w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE}, 'novoting');
             endif;
             if(~balanced_only)
                   w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
@@ -51,7 +51,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             MODE.TYPE='FLDA';
             MODE.hyperparameter.gamma=gamma;
             if(~units_only)
-                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE});
+                w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNan, MODE}, 'novoting');
             endif;
             if(~balanced_only)
                 w=addFunction(w, 'trainTest', @ClassifierNan, MODE);
@@ -66,7 +66,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             for(max_iterations=max_iterations_values)
                 %register several flavors of LogisticRegression
                 if(~units_only)
-                    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, max_iterations, lambda});
+                    w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierLogReg, max_iterations, lambda}, 'novoting');
                 endif;
                 if(~balanced_only)
                     w=addFunction(w, 'trainTest', @ClassifierLogReg, max_iterations, lambda);
@@ -79,7 +79,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
             for(hidden_neurons = hidden_neurons_values)
                 for(max_iterations = max_iterations_values)
                     if(~units_only)
-                        w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda });
+                        w=addFunction(w, 'trainTest', @BalancedClassifier, {@ClassifierNN, hidden_neurons, max_iterations, lambda }, 'novoting');
                     endif;
                     if(~balanced_only)
                         w=addFunction(w, 'trainTest', @ClassifierNN, hidden_neurons, max_iterations, lambda );

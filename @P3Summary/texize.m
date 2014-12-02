@@ -4,7 +4,7 @@ function texize(p3summary, stage)
     if(stage==1)
         %============== this prints crude stage 1 summary =================
         printf('\\hline \n');
-        printf('Klasyfikator & Parametry & Znaki & F1 & msme & mse \\\\ \n')
+        printf('\\textbf{Klasyfikator} & \\textbf{Trafność} & \\textbf{MSE} & \\textbf{Znaki} & \\textbf{F1} \\\\ \n')
         printf('\\hline \n');
         for(coordSet=coords')
             
@@ -19,36 +19,26 @@ function texize(p3summary, stage)
             ttFunc=p3summary.functions.trainTest{coordSet(3)};
             
             charRight=0;
-            fewestRepeats=0;
             mse=1;
-            msme=1;
-            
-            if(isfield(summary{x}{y}{z},'correctSymbols'))
-                charRight = summary{x}{y}{z}.correctSymbols;
-            endif;
             
             if(isfield(summary{x}{y}{z},'mse'))
                 mse = summary{x}{y}{z}.mse;
             endif;
             
-            if(isfield(summary{x}{y}{z},'msme'))
-                msme = summary{x}{y}{z}.msme;
+            if(isfield(summary{x}{y}{z},'correctSymbols'))
+                charRight = summary{x}{y}{z}.correctSymbols;
             endif;
-            
-            if(isfield(summary{x}{y}{z},'fewestRepeats'))
-                fewestRepeats = summary{x}{y}{z}.fewestRepeats;
-            endif;
-
-            
             
             [info, stats]=confusionMatrixInfo(p3summary.confusionMatrix{coordSet(1)}{coordSet(2)}{coordSet(3)}.naive);
             
             paramString=stringify(ttFunc.arguments);
             functionName = func2str(ttFunc.functionHandle);
+            balancedStr = '';
             
             if(strcmp(functionName, func2str(@BalancedClassifier))==1)
-                functionName=func2str(ttFunc.arguments{1});
-                ttFunc.arguments{1}=ttFunc.arguments{1}(2:end);
+                balancedStr = 'META ';
+                functionName=sprintf('%s',func2str(ttFunc.arguments{1}{1}));
+                ttFunc.arguments=ttFunc.arguments{1}(2:end);
             endif;
             
             if(strcmp(functionName, func2str(@ClassifierNan)))
@@ -67,8 +57,8 @@ function texize(p3summary, stage)
                 paramString=sprintf('$\\|a^{(2)}\\|=%d$, $\\lambda=%.3g$', ttFunc.arguments{1}, ttFunc.arguments{3});
             endif;
             
-            
-            printf('%s & %s & %d & %.3f & %.3f & %.3f & %.3f  \\\\\n', functionName, paramString, charRight, fewestRepeats, stats.f1, msme, mse);
+                        
+            printf('%s%s, %s & %.2f\\%% & %.3f & %d/%d & %.3f \\\\\n',balancedStr, functionName, paramString, stats.accuracy*100, mse, charRight, p3summary.totalPeriods, stats.f1);
             printf('\\hline \n');
         endfor;
         %=============== this prints crude stage 2 summary =================

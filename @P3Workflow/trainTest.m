@@ -64,9 +64,6 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
         periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
         aware_predictions=[aware_predictions; periodClassifierDecisions];
         
-        
-        
-        
         % Would a character be classified correctly? If so, an aware method should pick the right row and the right column for each period considered.
         
         epochsPerStimulus = epochsPerPeriod/numel(unique(periodStimuli));
