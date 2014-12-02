@@ -8,25 +8,27 @@ function [coords, value] = sortResults(p3summary, mode='naive')
             for(z=1:length(summary{x}{y}))
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.naive);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (naive): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                   scoreboard.naive=[scoreboard.naive; 100*stats.accuracy + 0.01*stats.f1, x, y, z];
+%                     scoreboard.naive=[scoreboard.naive; 100*stats.accuracy + 0.01*stats.f1, x, y, z];
+                        scoreboard.naive=[scoreboard.naive; 0, x, y, z];
 
                 [info, stats]=confusionMatrixInfo(summary{x}{y}{z}.aware);
 %               printf('feats computation: %15s, feats selection: %20s, classifier (aware): %10s , %s', fc{x}, fs{y}, cl{z}, info);
-                  scoreboard.aware=[scoreboard.aware; 100*stats.accuracy + 0.01*stats.f1, x, y, z];
+                  scoreboard.aware=[scoreboard.aware; 0 + 0.01*stats.f1, x, y, z];
 
                 if(isfield(summary{x}{y}{z}, 'correctSymbols'))
-%                      scoreboard.naive(end, 1)+=summary{x}{y}{z}.correctSymbols;
+                      scoreboard.aware(end, 1)+=summary{x}{y}{z}.correctSymbols;
                 endif;
                 
-                 if(isfield(summary{x}{y}{z},'fewestRepeats'))
-%                      scoreboard.naive(end, 1)+=(1/summary{x}{y}{z}.fewestRepeats);
+                if(isfield(summary{x}{y}{z}, 'msme') && ~isnan(summary{x}{y}{z}.msme))
+%                      scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.msme);
                 endif;
                 
-                if(isfield(summary{x}{y}{z}, 'mste') && ~isnan(summary{x}{y}{z}.msme))
-%                          scoreboard.naive(end, 1)+=1/(summary{x}{y}{z}.mste);
+                if(isfield(summary{x}{y}{z}, 'microScore'))
+                    scoreboard.naive(end, 1)+=(summary{x}{y}{z}.microScore);
                 endif;
+                
 
-                if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.msme))
+                if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.mse))
                         scoreboard.naive(end, 1)+=0.00001/(summary{x}{y}{z}.mse);
                 endif;
 

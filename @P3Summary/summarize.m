@@ -1,7 +1,7 @@
 %   sample invocation:
 %       summarize(p3summary)
 %
-function summarize(p3summary)
+function summarize(p3summary, mode='naive')
     %let's try to rank all the methods: naive and aware separately
     
     summary=p3summary.confusionMatrix;
@@ -32,8 +32,8 @@ function summarize(p3summary)
     
     %======DESCRIPTIONS GENERATED=========
     
-        for(mode = {'naive'})
-            mode=mode{:};
+%          for(mode = {'naive'})
+%              mode=mode{:};
             printf('\n*** Scoreboard (precision + recall)/2 of %s methods and %d periods (chars): ***\n', mode, p3summary.totalPeriods);
             
             [coords, score] = sortResults(p3summary, mode);
@@ -46,9 +46,9 @@ function summarize(p3summary)
                     printf('| char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
                 
-%                  if(isfield(summary{x}{y}{z},'fewestRepeats'))
-%                      printf(' : fewestRepeats: %.2f', summary{x}{y}{z}.fewestRepeats);
-%                  endif;
+                  if(isfield(summary{x}{y}{z},'microScore'))
+                      printf(' : microScore: %.2f', summary{x}{y}{z}.microScore);
+                  endif;
                 
 %                  if(isfield(summary{x}{y}{z},'conf'))
 %                      printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
@@ -61,9 +61,10 @@ function summarize(p3summary)
                 if(isfield(summary{x}{y}{z},'mse'))
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
-%                  if(isfield(summary{x}{y}{z},'msme'))
-%  %                      printf(' : msme: %.3f', summary{x}{y}{z}.msme);
-%                  endif;
+
+                if(isfield(summary{x}{y}{z},'msme'))
+                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
+                endif;
 %                  
 %                  if(isfield(summary{x}{y}{z},'mste'))
 %  %                      printf(' : mste: %.3f', summary{x}{y}{z}.mste);
@@ -76,6 +77,6 @@ function summarize(p3summary)
                 printf('\n');
             endfor;
             
-        endfor;
+%          endfor;
 
 endfunction;

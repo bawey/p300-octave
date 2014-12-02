@@ -4,6 +4,6 @@ function [model] = trainClassifier(trainSession, modelCell)
     [tfeats, tlabels, tstimuli] = classificationData(trainSession);
     
     % train a classifier object
-    model = feval(modelCell{1}, tfeats, tlabels, modelCell{2});
+    model = feval(modelCell{1}, tfeats, tlabels, modelCell{[1:end]~=1});
     
 endfunction;

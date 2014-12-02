@@ -7,8 +7,9 @@
 %   fewestSufficientRepeats: a vector of repeats (epochs per stimuli) needed to make the correct decision (or max if decision is wrong)
 %   totalConf: returns accumulated confidence for correct predictions
 %   totalOverconf: accumulated overconfidence, confidence of wrong predictions
-function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, totalOverconf, cste]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
+function [H, IH, correctSymbols, cse, csme, microScore, totalConf, totalOverconf, cste]=trainTest(workflow, methodIdx, tfeats, tlabels, vfeats, vlabels, vstimuli, epochsPerPeriod)
 	
+	microScore = 0;
 	dominanceRatio = sum(tlabels==0)/sum(tlabels==1);
 	
 	fewestSufficientRepeats=[];
@@ -34,6 +35,7 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
     csme=0;
 	%we need to know how long a period is
 	
+	% ITERATE OVER ALL CLASSIFIED PERIODS
 	for(i=0:epochsPerPeriod:rows(vfeats)-1)
         periodStimuli=vstimuli(i+1:i+epochsPerPeriod,:);
     	periodLabels=vlabels(i+1:i+epochsPerPeriod,:);
@@ -54,13 +56,6 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
         [confr, confc]=labeloddsConfidence(labelodds);
         conf = 2*confr*confc/(confr+confc);
         
-        prob_reality=[labelodds(:,2), ismember(labelodds(:,1), periodPositiveStimuli)];
-        
-        csmerrors=(prob_reality(:,1).-prob_reality(:,2)).^2;
-        % minority group errors should get multiplied by dominance ratio
-        csmerrors(prob_reality(:,2)==1).*=dominanceRatio;
-        csme+=sum(csmerrors);
-
         periodClassifierDecisions=(periodStimuli==row | periodStimuli == col);
         aware_predictions=[aware_predictions; periodClassifierDecisions];
         
@@ -68,38 +63,51 @@ function [H, IH, correctSymbols, cse, csme, fewestSufficientRepeats, totalConf, 
         
         epochsPerStimulus = epochsPerPeriod/numel(unique(periodStimuli));
         epochsRequiredForThisPeriod = epochsPerStimulus;
-        highestRepeatsWrongAnswer = 0;
+        
         if(sum(periodClassifierDecisions==periodLabels)==length(periodLabels))
             ++correctSymbols;
             totalConf+=conf;
             % if the symbol was correct, let's also indicate how many periods were sufficient to make the decision - a mock version (start from 4, less is very unlikely).
-            for(eps=1:epochsPerStimulus)
-                sectionEnd = rows(periodStimuli)*eps/epochsPerStimulus;
-                fewerStimuli    =   periodStimuli(1:sectionEnd, :);
-                fewerFeats      =   periodFeats(1:sectionEnd, :);
-                [fewerPreds, fewerProbs]=classify(classifier, fewerFeats, fewerStimuli);
-                [fewerResponse, fewerRow, fewerCol, fewerLabelodds] = periodCharacterPrediction(fewerStimuli, fewerProbs);
-                if(fewerCol==col && fewerRow==row)
-                    if(epochsRequiredForThisPeriod==epochsPerStimulus)
-                    %this is no longer used. what matters is the last wrong
-                    epochsRequiredForThisPeriod = eps;
-                    %   fprintf('so we found our minimum reps, using %d rows of simuli\n', size(fewerStimuli,1));                      
-                    %   break;
-                    endif;
-                else
-                        highestRepeatsWrongAnswer=eps;
-                endif;
-            endfor;
         else
-            highestRepeatsWrongAnswer=epochsPerStimulus;
             totalOverconf+=conf;
         endif;
-        % fprintf('%d repeats were sufficient to tell the right character! Last error at %d repeats. Epochs per stimulus is: %d \n', epochsRequiredForThisPeriod, highestRepeatsWrongAnswer, epochsPerStimulus);
-        % What matters is not the fewest epochs needed for good answer, but the fewest for a good answer that doesn't get changed with introduction of subsequent epochs
-        % fewestSufficientRepeats=[fewestSufficientRepeats; epochsRequiredForThisPeriod];
-        fewestSufficientRepeats=[fewestSufficientRepeats; highestRepeatsWrongAnswer];
+        
+        periodAnswers=unique(periodStimuli(periodLabels));
+        assert(numel(periodAnswers)==2);
+
+        
+%            printf('going from: ');
+            for(eps=1:epochsPerStimulus)
+                sectionStart    =   rows(periodStimuli)*(eps-1)/epochsPerStimulus  +  1;
+                sectionEnd      =   rows(periodStimuli)*eps/epochsPerStimulus;
+%                    printf(' %d to %d ', sectionStart, sectionEnd);
+                fewerStimuli    =   periodStimuli(sectionStart:sectionEnd, :);
+                fewerFeats      =   periodFeats(sectionStart:sectionEnd, :);
+                fewerLabels     =   periodLabels(sectionStart:sectionEnd);
+                
+                [fewerPreds, fewerProbs]    =   classify(classifier, fewerFeats, fewerStimuli);
+                [fewerResponse, fewerRow, fewerCol, fewerLabelodds] = periodCharacterPrediction(fewerStimuli, fewerProbs);              
+                subScore = (fewerCol==periodAnswers(1)) + (fewerRow==periodAnswers(2));
+                microScore += subScore;
+                
+                probVsReality=[fewerLabelodds(:,2), ismember(fewerLabelodds(:,1), periodPositiveStimuli)];
+                assert(sum(probVsReality(:,2))==2);
+        
+                csmerrors=(probVsReality(:,1).-probVsReality(:,2)).^2;
+                % minority group errors should get multiplied by dominance ratio
+                csmerrors(probVsReality(:,2)==1).*=dominanceRatio;
+                csme+=sum(csmerrors);
+%                    printf('(%0.2f, %0.2f)', subScore, sum(csmerrors));
+                
+            endfor;
+%                printf('\n');
+%                fflush(stdout);
+        
+        
+        
     endfor;
         
+
 	H=zeros(2,2); IH=zeros(2,2);
 	
 	H(1,1)=sum( vlabels==0 & predictions==0 );
