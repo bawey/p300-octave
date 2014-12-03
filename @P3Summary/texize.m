@@ -1,13 +1,13 @@
-function texize(p3summary, stage)
-    [coords value] = sortResults(p3summary);
+function texize(p3summary, stage, mode='correctSymbols')
+    [coords value] = sortResults(p3summary, mode);
     
     if(stage==1)
         %============== this prints crude stage 1 summary =================
         printf('\\hline \n');
-        printf('\\textbf{Klasyfikator} & \\textbf{Trafność} & \\textbf{MSE} & \\textbf{Znaki} & \\textbf{F1} \\\\ \n')
+        printf('\\textbf{Lp.} & \\textbf{Klasyfikator} & \\textbf{Znaki} & \\textbf{MSE} & \\textbf{Trafność} & \\textbf{F1} \\\\ \n')
         printf('\\hline \n');
+        number = 0;
         for(coordSet=coords')
-            
             %copy-paste compatibility
             x=coordSet(1);
             y=coordSet(2);
@@ -58,7 +58,7 @@ function texize(p3summary, stage)
             endif;
             
                         
-            printf('%s%s, %s & %.2f\\%% & %.3f & %d/%d & %.3f \\\\\n',balancedStr, functionName, paramString, stats.accuracy*100, mse, charRight, p3summary.totalPeriods, stats.f1);
+            printf('%0d. & %s%s, %s & %d/%d & %.3f & %.2f\\%% & %.3f \\\\\n', (++number), balancedStr, functionName, paramString, charRight, p3summary.totalPeriods, mse, stats.accuracy*100, stats.f1);
             printf('\\hline \n');
         endfor;
         %=============== this prints crude stage 2 summary =================

@@ -69,7 +69,7 @@ function p3summary = launch(wf, title='untitled')
     				summary{x}{y}{z}.mse+=cse/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) * wf.p3session.epochsCountPerStimulus );
     				summary{x}{y}{z}.mste+=cste/(totalPeriods * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) * wf.p3session.epochsCountPerStimulus );
     				summary{x}{y}{z}.msme+=csme/(totalPeriods * wf.p3session.epochsCountPerStimulus * (uniqueStimuliNo + 2 * (dominanceRatio -1) ) );
-                    summary{x}{y}{z}.microScore+=microScore/(2 * totalPeriods * wf.p3session.epochsCountPerStimulus);
+                    summary{x}{y}{z}.microScore+=microScore/(2 * totalPeriods);
                     summary{x}{y}{z}.conf+=tConf;
                     summary{x}{y}{z}.overconf+=tOConf;
 					

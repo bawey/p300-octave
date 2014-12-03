@@ -1,6 +1,6 @@
 %function correlateMetrics(sumt, sumxv=sumt)
 
-function correlateMetrics(sumt, sumxv=sumt)
+function info = correlateMetrics(sumt, sumxv=sumt)
     [ord_test       , scr_test]         = sortResults(sumt  , 'correctSymbols');
     [ord_accuracy   , scr_accuracy]     = sortResults(sumxv , 'accuracy');
     [ord_f1         , scr_f1]           = sortResults(sumxv , 'f1');
@@ -32,13 +32,43 @@ function correlateMetrics(sumt, sumxv=sumt)
     f1_test             = [f1(:,2), scr_test(f1(:,1))];
     recall_test         = [recall(:,2), scr_test(recall(:,1))];
     precision_test      = [precision(:,2), scr_test(precision(:,1))];
-      
-    for(m = {'correctSymbols', 'accuracy', 'mse', 'mste', 'f1', 'precision', 'recall'})
+    
+%      method_scores=ones(size(scr_test));
+    
+    info = struct();
+    info.corr = struct();
+    info.data = struct();
+    
+    for(m = {'correctSymbols', 'accuracy', 'mse', 'f1', 'precision', 'recall', 'conf', 'overconf'})
         [ord   , scr_own]     = sortResults(sumxv , m{:});
         ord = ord(:,3);
         headon = [scr_own, scr_test(ord)];
         correl = corr(headon)(1,2);
-        fprintf('%s has correlation of %.4f \n', m{:}, correl);
+%          fprintf('%s has correlation of %.4f \n', m{:}, correl);
+        info.corr.(m{:})=correl;
+        info.data.(m{:})=headon;
+        
+%          scr_own.*=correl;
+%          if(ismember(m{:}, {'correctSymbols'}))
+%              scr_own./=sumxv.totalPeriods;
+%          
+%          endif;
+    %scr own was ordered according to its value. need to reorded according to method number
+    
+%      [x y] = sort(ord);
+%          if(correl>0.3)
+%              method_scores.*=scr_own(y);
+%          endif;
     endfor;
+    
+%      sumxv.totalPeriods
+%      
+%      [value index] = max(method_scores)
+%      
+%      stringify(sumxv.functions.trainTest{index})
+
+    
+    
+
     
 endfunction;

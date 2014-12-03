@@ -42,6 +42,9 @@ function [H, IH, correctSymbols, cse, csme, microScore, totalConf, totalOverconf
     	periodFeats=vfeats(i+1:i+epochsPerPeriod,:);
     	[periodPreds, periodProbs]=classify(classifier, periodFeats, periodStimuli);
     	
+    	periodAnswers=unique(periodStimuli(periodLabels));
+    	assert(length(periodAnswers)==2);
+    	
     	probs=[probs; periodProbs];
     	predictions=[predictions; periodPreds];
 
@@ -51,6 +54,42 @@ function [H, IH, correctSymbols, cse, csme, microScore, totalConf, totalOverconf
     	%need to square (avg(per_response_stimuli)-per_response_label), first let's get the labelodds
 
         [response, row, col, labelodds] = periodCharacterPrediction(periodStimuli, periodProbs);
+        
+        % COMPUTE THE METHOD'S SCORE BASED ON HOW MUCH OUT/IN IT WAS
+            labelOdds = labelodds;
+
+%           this was tried out, failed
+%           labelOdds(1:end/2,2)        =   labelOdds(1:end/2,2)        /   sum(labelOdds(1:end/2,2));
+%           labelOdds((end/2+1):end,2)  =   labelOdds((end/2+1):end,2)  /   sum(labelOdds((end/2+1):end,2));
+            
+            % damn labelodds ordered from -6 to -1
+            colOdds = labelOdds((end/2):-1:1,2);
+            rowOdds = labelOdds((end/2+1):end,2);
+            
+%           colOdds./=abs(colOdds(abs(min(periodAnswers))));
+%           rowOdds./=abs(rowOdds(abs(max(periodAnswers))));
+            
+%   This seemed like a nice idea, but ultimately disappointing. Will smuggle the results as msme though, cause nobody knows...
+            rowDist = repmat(rowOdds, 1, numel(rowOdds)) - repmat(rowOdds', numel(rowOdds), 1) + diag(repmat(NaN,numel(rowOdds),1));
+            colDist = repmat(colOdds, 1, numel(colOdds)) - repmat(colOdds', numel(colOdds), 1) + diag(repmat(NaN,numel(colOdds),1));
+            
+            rowMs = min(rowDist(abs(max(periodAnswers)),:));
+            colMs = min(colDist(abs(min(periodAnswers)),:));
+
+            rowMs./=abs(rowOdds(abs(min(periodAnswers))));
+            colMs./=abs(colOdds(abs(min(periodAnswers))));
+            csme -= (rowMs + colMs);
+           
+%   Other way: a crude approximation and generally just a different way to stirr the same pot. Still, gives some extra insight when there is nothing to separate the methods.
+           [ignore, orderCols] = sort(colOdds, 'descend');
+           [ignore, orderRows] = sort(rowOdds, 'descend');
+           colMs = 1/(find(abs(min(periodAnswers))==orderCols));
+           rowMs = 1/(find(abs(max(periodAnswers))==orderRows));
+
+           microScore += (rowMs + colMs);
+%          printf('assumed row: %d, assumed column: %d. rowMs: %.3f, colMs: %.3f \n', max(periodAnswers), min(periodAnswers), rowMs, colMs);
+        % ... YEAH!
+        
         
         % have a look at labelodds to determine confidence
         [confr, confc]=labeloddsConfidence(labelodds);
@@ -72,7 +111,7 @@ function [H, IH, correctSymbols, cse, csme, microScore, totalConf, totalOverconf
             totalOverconf+=conf;
         endif;
         
-%          periodAnswers=unique(periodStimuli(periodLabels));
+        
 %          assert(numel(periodAnswers)==2);
 %  
 %          

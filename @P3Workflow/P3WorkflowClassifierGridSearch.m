@@ -25,7 +25,7 @@ function w = P3WorkflowClassifierGridSearch(p3train, splitCell, classifiers='all
     balanced_only = strcmp(balancing, 'only');
     
     %Dummy classifier to check the summary consistency
-    if(strcmp(classifiers, 'dummy')==true)
+    if(strcmp(classifiers, 'dummy')==true || strcmp(classifiers, 'fastest')==true)
         w=addFunction(w, 'trainTest', @DummyClassifier);
     endif;
 

@@ -46,7 +46,7 @@ for(dataset = datasets)
     % Create the crossvalidation workflow and ru(i)n it
     xvRate = p3train.periodsCount;
     for(ftr = allfactor(xvRate))
-        if(ftr>minXvRate) xvRate = ftr; break; endif;
+        if(ftr>=minXvRate) xvRate = ftr; break; endif;
     endfor;
     wf=P3WorkflowClassifierGridSearch(P3SessionSplitRepeats(p3train, repeatsSplit), {@trainTestSplitMx, xvRate}, classification_methods, balancing);
     summaries.(dataset).(sprintf('xv%d', xvRate)) = launch(wf);
@@ -58,16 +58,18 @@ for(dataset = datasets)
     save('-binary', summariesSaveFile, 'summaries');
     
     % now the same for 'flattened' data
-    fprintf('Flattening the data ...'); fflush(stdout);
-    p3train = groupEpochs(p3train);
-    p3test = groupEpochs(p3test);
-    fprintf('done\n'); fflush(stdout);
+    if(exist('berlinBatchFlattenData','var'))
+        fprintf('Flattening the data ...'); fflush(stdout);
+        p3train = groupEpochs(p3train);
+        p3test = groupEpochs(p3test);
+        fprintf('done\n'); fflush(stdout);
     
-    wf=P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, xvRate}, classification_methods, balancing);
-    summaries.(dataset).(sprintf('flat_xv%d', xvRate)) = launch(wf);
-    save('-binary', summariesSaveFile, 'summaries');
-    summaries.(dataset).('flat_test') = trainAndTestGrid(p3train, p3test, classification_methods, balancing); 
-    save('-binary', summariesSaveFile, 'summaries');
+        wf=P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, xvRate}, classification_methods, balancing);
+        summaries.(dataset).(sprintf('flat_xv%d', xvRate)) = launch(wf);
+        save('-binary', summariesSaveFile, 'summaries');
+        summaries.(dataset).('flat_test') = trainAndTestGrid(p3train, p3test, classification_methods, balancing); 
+        save('-binary', summariesSaveFile, 'summaries');
+    endif;
 endfor;
 
 

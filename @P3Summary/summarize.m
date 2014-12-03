@@ -50,13 +50,19 @@ function summarize(p3summary, mode='naive')
 %                        printf(' : microScore: %.2f', summary{x}{y}{z}.microScore);
 %                    endif;
                 
-%                  if(isfield(summary{x}{y}{z},'conf'))
-%                      printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
-%                  endif;
+%                    if(isfield(summary{x}{y}{z},'conf'))
+%                        printf(' : mean conf: %.4f', summary{x}{y}{z}.conf);
+%                    endif;
+%                  
+%                    if(isfield(summary{x}{y}{z},'overconf'))
+%                        printf(' : mean overconf: %.4f', summary{x}{y}{z}.overconf);
+%                    endif;
+
+
+                  if(isfield(summary{x}{y}{z},'microScore'))
+                      printf(' : micrscr: %.4f', summary{x}{y}{z}.microScore);
+                  endif;
                 
-%                  if(isfield(summary{x}{y}{z},'overconf'))
-%                      printf(' : mean overconf: %.2f', summary{x}{y}{z}.overconf);
-%                  endif;
                 
                 if(isfield(summary{x}{y}{z},'mse'))
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);

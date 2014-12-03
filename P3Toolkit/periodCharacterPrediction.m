@@ -17,9 +17,6 @@ function [response, row, col, labelodds] = periodCharacterPrediction(stimuli, pr
         labelodds(labelodds(:,1)==label,2)=mean(probs(stimuli==label));
     endfor;
 
-%normalize the odds!
-%      labelodds(1:end/2,2)=labelodds(1:end/2,2)/sum(labelodds(1:end/2,2));
-%      labelodds((end/2+1):end,2)=labelodds((end/2+1):end,2)/sum(labelodds((end/2+1):end,2));
     
     [val, order] = sort(labelodds(:,2),'descend');
     
