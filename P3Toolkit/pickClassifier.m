@@ -42,9 +42,11 @@ function [model modelCell featsSelectCell summary] = pickClassifier(session, cla
     summary = launch(wf);
     %will dump the results to console
 
-    modelCell = getBest(summary).trainTest;
-    featsSelectCell = getBest(summary).featsSelect;
-    featsComputeCell = getBest(summary).featsCompute;
+    bestStruct = getBest(summary, 'accuracy');
+
+    modelCell = bestStruct.trainTest;
+    featsSelectCell = bestStruct.featsSelect;
+    featsComputeCell = bestStruct.featsCompute;
     
 
 %      summarize(summary);

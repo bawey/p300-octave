@@ -17,17 +17,16 @@ function [p, prob, distance] = classify(classifier, vfeats)
         distance = R.output(:,1);
     endif;
     
-    %sufficiently large margins could be sigmoided
-%      fprintf('Classifier type is %s and spread is %.3f \n', classifier.MODE.TYPE, classifier.spread);
     
-    %was 10, but we want sigmoid - IT's not this
-%      if(classifier.spread<=10)
-%      	prob=(distance-classifier.offset)/classifier.spread;
-%      else
-    distance.-=classifier.threshold;
-    prob=sigmoid(distance);
+    prob=[];
+    prob=sigmoid(distance-classifier.threshold);
+    p=prob>0.5;
     
+%      prob=[];
+%      if(ismember(classifier.MODE.TYPE, {'FLDA'}))
+%          prob=sigmoid(5*distance);
+%      elseif(ismember(classifier.MODE.TYPE, {'SVM'}))
+%          prob=sigmoid(distance-classifier.threshold);
 %      endif;
-
-    p=(prob>=0.5);
+%      p=(prob>=0.5);
 endfunction;

@@ -72,39 +72,39 @@ function [H, IH, correctSymbols, cse, csme, microScore, totalConf, totalOverconf
             totalOverconf+=conf;
         endif;
         
-        periodAnswers=unique(periodStimuli(periodLabels));
-        assert(numel(periodAnswers)==2);
-
-        
-%            printf('going from: ');
-            for(eps=1:epochsPerStimulus)
-                sectionStart    =   rows(periodStimuli)*(eps-1)/epochsPerStimulus  +  1;
-                sectionEnd      =   rows(periodStimuli)*eps/epochsPerStimulus;
-%                    printf(' %d to %d ', sectionStart, sectionEnd);
-                fewerStimuli    =   periodStimuli(sectionStart:sectionEnd, :);
-                fewerFeats      =   periodFeats(sectionStart:sectionEnd, :);
-                fewerLabels     =   periodLabels(sectionStart:sectionEnd);
-                
-                [fewerPreds, fewerProbs]    =   classify(classifier, fewerFeats, fewerStimuli);
-                [fewerResponse, fewerRow, fewerCol, fewerLabelodds] = periodCharacterPrediction(fewerStimuli, fewerProbs);              
-                subScore = (fewerCol==periodAnswers(1)) + (fewerRow==periodAnswers(2));
-                microScore += subScore;
-                
-                probVsReality=[fewerLabelodds(:,2), ismember(fewerLabelodds(:,1), periodPositiveStimuli)];
-                assert(sum(probVsReality(:,2))==2);
-        
-                csmerrors=(probVsReality(:,1).-probVsReality(:,2)).^2;
-                % minority group errors should get multiplied by dominance ratio
-                csmerrors(probVsReality(:,2)==1).*=dominanceRatio;
-                csme+=sum(csmerrors);
-%                    printf('(%0.2f, %0.2f)', subScore, sum(csmerrors));
-                
-            endfor;
-%                printf('\n');
-%                fflush(stdout);
-        
-        
-        
+%          periodAnswers=unique(periodStimuli(periodLabels));
+%          assert(numel(periodAnswers)==2);
+%  
+%          
+%  %            printf('going from: ');
+%              for(eps=1:epochsPerStimulus)
+%                  sectionStart    =   rows(periodStimuli)*(eps-1)/epochsPerStimulus  +  1;
+%                  sectionEnd      =   rows(periodStimuli)*eps/epochsPerStimulus;
+%  %                    printf(' %d to %d ', sectionStart, sectionEnd);
+%                  fewerStimuli    =   periodStimuli(sectionStart:sectionEnd, :);
+%                  fewerFeats      =   periodFeats(sectionStart:sectionEnd, :);
+%                  fewerLabels     =   periodLabels(sectionStart:sectionEnd);
+%                  
+%                  [fewerPreds, fewerProbs]    =   classify(classifier, fewerFeats, fewerStimuli);
+%                  [fewerResponse, fewerRow, fewerCol, fewerLabelodds] = periodCharacterPrediction(fewerStimuli, fewerProbs);              
+%                  subScore = (fewerCol==periodAnswers(1)) + (fewerRow==periodAnswers(2));
+%                  microScore += subScore;
+%                  
+%                  probVsReality=[fewerLabelodds(:,2), ismember(fewerLabelodds(:,1), periodPositiveStimuli)];
+%                  assert(sum(probVsReality(:,2))==2);
+%          
+%                  csmerrors=(probVsReality(:,1).-probVsReality(:,2)).^2;
+%                  % minority group errors should get multiplied by dominance ratio
+%                  csmerrors(probVsReality(:,2)==1).*=dominanceRatio;
+%                  csme+=sum(csmerrors);
+%  %                    printf('(%0.2f, %0.2f)', subScore, sum(csmerrors));
+%                  
+%              endfor;
+%  %                printf('\n');
+%  %                fflush(stdout);
+%          
+%          
+%          
     endfor;
         
 

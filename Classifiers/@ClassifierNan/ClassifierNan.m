@@ -14,11 +14,15 @@ function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
 
     % Need to allow explicit data adjustment disabling (eg. by a top level aggregate classifier)
     centering = true;
+    adaptive = true;
     
-    for(i=1:numel(varargin))
+    for(i=1:length(varargin))
         if(isstr(varargin{i}))
             if(strcmp(varargin{i}, 'nocentering'))
                 centering=false;
+            endif;
+            if(strcmp(varargin{i}, 'nonadaptive'))
+                adaptive=false;
             endif;
         endif;
     endfor;
@@ -62,26 +66,21 @@ function classifier = ClassifierNan(X, y, mode, stimuli, varargin)
     classifier.offset=0;
     classifier.spread=0;
 
-    classifier=class(classifier, 'ClassifierNan');
-
-    [p, prob, distance] = classify(classifier, X_copy);
-    
-    truth=[y, distance];
-
-    max_n=max(truth( ( truth(:,1)~=1 )  ,2));
-    min_p=min(truth( ( truth(:,1)==1 )  ,2));
-    
-%      alt_threshold=mean(truth( ( (truth(:,1)~=1 & truth(:,2)>min_p ) | ( truth(:,1)==1 & truth(:,2)<max_n ) ), 2));
-%      classifier.threshold=alt_threshold;
-
-    classifier.threshold=0.5*(min_p+max_n);
-    
-%   fprintf('Classfier threshold at %.3f\n', classifier.threshold);
-
-    %TRYING SOMETHING NEW OUT
-    classifier.offset=min(distance);
-    classifier.spread=max(distance)-classifier.offset;
 
     classifier=class(classifier, 'ClassifierNan');
+    if(adaptive && ismember(classifier.MODE.TYPE, {'SVM'}))
+        [p, prob, distance] = classify(classifier, X_copy);
+        
+        truth=[y, distance];
+
+        max_n=max(truth( ( truth(:,1)~=1 )  ,2));
+        min_p=min(truth( ( truth(:,1)==1 )  ,2));
+        
+%        classifier.threshold=0.5*(min_p+max_n);
+         classifier.threshold=mean(distance);
+%          printf('Some SVN apparently and a threshold of %.3f \n', classifier.threshold);
+
+        classifier=class(classifier, 'ClassifierNan');
+    endif;
 
 endfunction;

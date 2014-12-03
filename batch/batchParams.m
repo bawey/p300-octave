@@ -12,9 +12,10 @@ binNames.berlin3a = 'p3tt-berlin3a';
 binNames.berlin3b = 'p3tt-berlin3b';
 
 datasets={'berlin2', 'berlin3a', 'berlin3b'};
+repeatsSplit='max';
 
 minXvRate = 10;
-classification_methods='dummy';
-balancing = 'no';
+classification_methods='all';
+balancing = 'yes';
 
 dirSummaries = '~/Desktop/eeg/';

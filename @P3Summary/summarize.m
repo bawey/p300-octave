@@ -46,9 +46,9 @@ function summarize(p3summary, mode='naive')
                     printf('| char right: %d', summary{x}{y}{z}.correctSymbols);
                 endif;
                 
-                  if(isfield(summary{x}{y}{z},'microScore'))
-                      printf(' : microScore: %.2f', summary{x}{y}{z}.microScore);
-                  endif;
+%                    if(isfield(summary{x}{y}{z},'microScore'))
+%                        printf(' : microScore: %.2f', summary{x}{y}{z}.microScore);
+%                    endif;
                 
 %                  if(isfield(summary{x}{y}{z},'conf'))
 %                      printf(' : mean conf: %.2f', summary{x}{y}{z}.conf);
@@ -62,15 +62,19 @@ function summarize(p3summary, mode='naive')
                     printf(' : mse: %.3f', summary{x}{y}{z}.mse);
                 endif;
 
-                if(isfield(summary{x}{y}{z},'msme'))
-                    printf(' : msme: %.3f', summary{x}{y}{z}.msme);
-                endif;
-%                  
-%                  if(isfield(summary{x}{y}{z},'mste'))
-%  %                      printf(' : mste: %.3f', summary{x}{y}{z}.mste);
+%                  if(isfield(summary{x}{y}{z},'msme'))
+%                      printf(' : msme: %.3f', summary{x}{y}{z}.msme);
 %                  endif;
-
-                printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(mode)));
+%                  
+                if(isfield(summary{x}{y}{z},'mste'))
+                    printf(' : mste: %.3f', summary{x}{y}{z}.mste);
+                endif;
+                
+                modeToPrint = mode;
+                if(~ismember(mode, {'naive', 'aware'}))
+                    modeToPrint='naive';
+                endif;
+                printf(' : %s', confusionMatrixInfo(summary{x}{y}{z}.(modeToPrint)));
                 
                 printf(' : FC: %15s, FS: %20s, TT: %10s , %s ', fc{x}, fs{y}, tt{z});
                 

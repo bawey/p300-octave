@@ -2,6 +2,8 @@ source batch/batchParams.m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 summaries = struct();
+[code,out]=system('date +%Y%m%d.%H%M');
+summariesSaveFile=sprintf('%s/berlin.summaries_%s.oct', dirSummaries, strtrim(out))
 
 for(dataset = datasets)
     % unpacks the string from a cell
@@ -46,12 +48,14 @@ for(dataset = datasets)
     for(ftr = allfactor(xvRate))
         if(ftr>minXvRate) xvRate = ftr; break; endif;
     endfor;
-    wf=P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, xvRate}, classification_methods, balancing);
+    wf=P3WorkflowClassifierGridSearch(P3SessionSplitRepeats(p3train, repeatsSplit), {@trainTestSplitMx, xvRate}, classification_methods, balancing);
     summaries.(dataset).(sprintf('xv%d', xvRate)) = launch(wf);
+    save('-binary', summariesSaveFile, 'summaries');
     
     % Labelling data according to the answers provided by competition holders
     p3test = P3SessionAddLabels(p3test, teststring);
     summaries.(dataset).('test') = trainAndTestGrid(p3train, p3test, classification_methods, balancing);
+    save('-binary', summariesSaveFile, 'summaries');
     
     % now the same for 'flattened' data
     fprintf('Flattening the data ...'); fflush(stdout);
@@ -61,10 +65,9 @@ for(dataset = datasets)
     
     wf=P3WorkflowClassifierGridSearch(p3train, {@trainTestSplitMx, xvRate}, classification_methods, balancing);
     summaries.(dataset).(sprintf('flat_xv%d', xvRate)) = launch(wf);
-    summaries.(dataset).('flat_test') = trainAndTestGrid(p3train, p3test, classification_methods, balancing);
-
+    save('-binary', summariesSaveFile, 'summaries');
+    summaries.(dataset).('flat_test') = trainAndTestGrid(p3train, p3test, classification_methods, balancing); 
+    save('-binary', summariesSaveFile, 'summaries');
 endfor;
 
-[code,out]=system('date +%Y%m%d.%H%M');
-save('-binary', sprintf('%s/berlin.summaries_%s.oct', dirSummaries, strtrim(out)), 'summaries');
 
