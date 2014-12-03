@@ -55,6 +55,10 @@ function [coords, value] = sortResults(p3summary, mode='naive')
     scores(isnan(scores))=0;
     
 %   [value, position] = sort(scoreboard.(mode)(:,1), 'descend');
+    sortOrder = 'descend';
+    if(ismember(mode,{'mse', 'msme', 'mste'}))
+        sortOrder='ascend';
+    endif;
     [value, position] = sort(scores, 'descend');
     coords=scoreboard.(mode)([position], [2:end]);
     
