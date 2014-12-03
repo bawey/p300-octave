@@ -16,7 +16,7 @@ datasets={'berlin3a', 'berlin3b'};
 repeatsSplit=3;
 
 minXvRate = 15;
-classification_methods='fast';
-balancing = 'no';
+classification_methods='all';
+balancing = 'yes';
 
 dirSummaries = '~/Desktop/eeg/';
