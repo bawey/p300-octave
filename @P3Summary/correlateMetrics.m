@@ -39,7 +39,7 @@ function info = correlateMetrics(sumt, sumxv=sumt)
     info.corr = struct();
     info.data = struct();
     
-    for(m = {'correctSymbols', 'accuracy', 'mse', 'f1', 'precision', 'recall', 'conf', 'overconf'})
+    for(m = {'correctSymbols', 'accuracy', 'mse', 'f1', 'precision', 'recall', 'conf', 'overconf', 'microScore', 'msme'})
         [ord   , scr_own]     = sortResults(sumxv , m{:});
         ord = ord(:,3);
         headon = [scr_own, scr_test(ord)];
