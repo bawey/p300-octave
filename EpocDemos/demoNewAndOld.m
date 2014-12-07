@@ -29,9 +29,10 @@ for(b = {'b1', 'b2', 'b3'})
         p3te = P3SessionMerge(p3te, P3SessionLobenotion(eeg_dir, sprintf('%s%03d', eeg_file_stem, i)));
     endfor;
 
-    p3tr=downsample(p3tr, 6);
-    p3te=downsample(p3te, 6);
+    p3tr=downsample(p3tr, 8);
+    p3te=downsample(p3te, 8);
 
+    results.(sprintf('%s_p3te', b))=p3te;
     %b2 will reuse the model found in b1
     if(strcmp(b, 'b2')==false)
         [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 'no', 'no', 10);
@@ -42,6 +43,8 @@ for(b = {'b1', 'b2', 'b3'})
         results.(sprintf('%s_modelCell', b))=modelCell;
         results.(sprintf('%s_summary', b))=summary;
         results.(sprintf('%s_confidence', b))=confidence;
+        
+        results.(sprintf('%s_p3tr', b))=p3tr;
     else
         [scores, confidence] = trainTestMesh(p3tr, p3te, results.b1_modelCell);
         results.(sprintf('%s_scores', b))=scores;
@@ -65,4 +68,4 @@ endfor;
 [results.b3_b1_scores, results.b3_b1_confidence] = trainTestMesh(p3tr, p3te, results.b3_modelCell);
 
 % save all the results
-save('-binary', sprintf('%s/demoNewOld.oct', eeg_dir), results);
+save('-binary', sprintf('%s/epocXp.adhoc.decim8ted.oct', eeg_dir), results);
