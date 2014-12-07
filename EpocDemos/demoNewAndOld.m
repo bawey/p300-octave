@@ -35,7 +35,7 @@ for(b = {'b1', 'b2', 'b3'})
     results.(sprintf('%s_p3te', b))=p3te;
     %b2 will reuse the model found in b1
     if(strcmp(b, 'b2')==false)
-        [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 'no', 'no', 10);
+        [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 3, 'no', 10);
         [scores, confidence] = trainTestMesh(p3tr, p3te, modelCell);
     
         results.(sprintf('%s_scores', b))=scores;
