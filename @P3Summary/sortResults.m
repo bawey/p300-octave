@@ -34,9 +34,11 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 %% end of aware stats block
 
                 if(isfield(summary{x}{y}{z}, 'correctSymbols'))
-                      scoreboard.aware(end, 1)+=summary{x}{y}{z}.correctSymbols;
-                      
+                      scoreboard.aware(end, 1)+=summary{x}{y}{z}.correctSymbols;                  
                       scoreboard.naive(end, 1).*=(summary{x}{y}{z}.correctSymbols / p3summary.totalPeriods );
+                      if(ismember(mode, {'microScore'}))
+                        scoreboard.(mode) += (summary{x}{y}{z}.correctSymbols/10000);                  
+                      endif;
                 endif;
                 
                 if(isfield(summary{x}{y}{z}, 'msme') && ~isnan(summary{x}{y}{z}.msme))
@@ -45,6 +47,9 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 
                 if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.mse))
                    scoreboard.naive(end, 1).+=0.001/(summary{x}{y}{z}.mse);
+                    if(ismember(mode, {'microScore'}))
+                        scoreboard.(mode) -= (summary{x}{y}{z}.mse/10000);                  
+                    endif;
                 endif;
 
             endfor;
