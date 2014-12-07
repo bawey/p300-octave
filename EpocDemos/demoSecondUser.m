@@ -15,8 +15,8 @@ for(i=tests([1:end]~=1))
     p3te = P3SessionMerge(p3te, P3SessionLobenotion(eeg_dir, sprintf('%s%03d', eeg_file_stem, i)));
 endfor;
 
-p3tr=downsample(p3tr, 6);
-p3te=downsample(p3te, 6);
+p3tr=downsample(p3tr, 8);
+p3te=downsample(p3te, 8);
 
 [model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 'no', 'no', 6);
 [scores, confidence]=trainTestMesh(p3tr, p3te, modelCell);
@@ -28,5 +28,7 @@ results.modelCell   = modelCell;
 results.summary     = summary;
 results.scores      = scores;
 results.confidence  = confidence;
+results.p3te        = p3te;
+results.p3tr        = p3tr;
 
-%  save('-binary', sprintf('%s/epocXp2nduser.oct', eeg_dir), 'results');
+save('-binary', sprintf('%s/epocXp2nduser.decim8ted.oct', eeg_dir), 'results');
