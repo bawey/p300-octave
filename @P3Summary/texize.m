@@ -4,7 +4,7 @@ function texize(p3summary, stage, mode='correctSymbols')
     if(stage==1)
         %============== this prints crude stage 1 summary =================
         if(isfield(p3summary.confusionMatrix{1}{1}{1}, 'microScore'))
-            printf('\\textbf{Lp.} & \\textbf{Klasyfikator} & \\textbf{Znaki} & \\textbf{microScore} & \\textbf{MSE} & \\textbf{Trafność} & \\textbf{F1} \\\\ \n')
+            printf('\\textbf{Lp.} & \\textbf{Klasyfikator} & \\textbf{Znaki} & \\textbf{mscore} & \\textbf{MSE} & \\textbf{Trafność} & \\textbf{F1} \\\\ \n')
         else
             printf('\\textbf{Lp.} & \\textbf{Klasyfikator} & \\textbf{Znaki} & \\textbf{MSE} & \\textbf{Trafność} & \\textbf{F1} \\\\ \n')
         endif;
@@ -44,7 +44,7 @@ function texize(p3summary, stage, mode='correctSymbols')
             balancedStr = '';
             
             if(strcmp(functionName, func2str(@BalancedClassifier))==1)
-                balancedStr = 'META ';
+                balancedStr = 'Meta ';
                 functionName=sprintf('%s',func2str(ttFunc.arguments{1}{1}));
                 ttFunc.arguments=ttFunc.arguments{1}(2:end);
             endif;
@@ -58,10 +58,10 @@ function texize(p3summary, stage, mode='correctSymbols')
                     paramString=sprintf('$\\gamma=%.3g$', MODE.hyperparameter.gamma);
                 endif;
             elseif (strcmp(functionName, func2str(@ClassifierLogReg)))
-                functionName='Regresja logistyczna';
+                functionName='LR';
                 paramString=sprintf('$\\lambda=%.3g$', ttFunc.arguments{2});
             elseif (strcmp(functionName, func2str(@ClassifierNN)))
-                functionName='Sieć neuronowa';
+                functionName='NN';
                 paramString=sprintf('$\\|a^{(2)}\\|=%d$, $\\lambda=%.3g$', ttFunc.arguments{1}, ttFunc.arguments{3});
             endif;
             

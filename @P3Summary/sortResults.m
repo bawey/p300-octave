@@ -16,8 +16,20 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                     endif;
                 
                     if(ismember(mode, fieldnames(summary{x}{y}{z})))
-                        scoreboard.(mode)=[scoreboard.(mode); summary{x}{y}{z}.(mode), x, y, z];
+                        
+                        score = summary{x}{y}{z}.(mode);
+                        
+                        
+                        %microScore shall also be sorted by characters and mse
+                        if(ismember(mode, {'microScore'}))
+                            score -= (summary{x}{y}{z}.mse/10000);                  
+                            score += (summary{x}{y}{z}.correctSymbols/1000);
+                        endif;
+                        
+                        scoreboard.(mode)=[scoreboard.(mode); score, x, y, z];
                         continue;
+                        
+                        
                     endif;
                     
                     if(ismember(mode, fieldnames(stats)))
@@ -36,9 +48,6 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 if(isfield(summary{x}{y}{z}, 'correctSymbols'))
                       scoreboard.aware(end, 1)+=summary{x}{y}{z}.correctSymbols;                  
                       scoreboard.naive(end, 1).*=(summary{x}{y}{z}.correctSymbols / p3summary.totalPeriods );
-                      if(ismember(mode, {'microScore'}))
-                        scoreboard.(mode) += (summary{x}{y}{z}.correctSymbols/10000);                  
-                      endif;
                 endif;
                 
                 if(isfield(summary{x}{y}{z}, 'msme') && ~isnan(summary{x}{y}{z}.msme))
@@ -47,9 +56,6 @@ function [coords, value] = sortResults(p3summary, mode='naive')
                 
                 if(isfield(summary{x}{y}{z}, 'mse') && ~isnan(summary{x}{y}{z}.mse))
                    scoreboard.naive(end, 1).+=0.001/(summary{x}{y}{z}.mse);
-                    if(ismember(mode, {'microScore'}))
-                        scoreboard.(mode) -= (summary{x}{y}{z}.mse/10000);                  
-                    endif;
                 endif;
 
             endfor;
