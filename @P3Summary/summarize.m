@@ -1,7 +1,7 @@
 %   sample invocation:
 %       summarize(p3summary)
 %
-function summarize(p3summary, mode='naive')
+function summarize(p3summary, mode='microScore')
     %let's try to rank all the methods: naive and aware separately
     
     summary=p3summary.confusionMatrix;

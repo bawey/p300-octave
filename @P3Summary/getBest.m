@@ -1,5 +1,5 @@
 % function best = getBest(p3summary, mode='naive', index=1)
-function best = getBest(p3summary, mode='naive', index=1)
+function best = getBest(p3summary, mode='microScore', index=1)
     best=struct();
     [coords, scores]=sortResults(p3summary, mode);
     best.featsCompute=p3summary.functions.featsCompute{coords(index,1)};

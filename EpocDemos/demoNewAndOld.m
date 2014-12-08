@@ -68,4 +68,4 @@ endfor;
 [results.b3_b1_scores, results.b3_b1_confidence] = trainTestMesh(p3tr, p3te, results.b3_modelCell);
 
 % save all the results
-save('-binary', sprintf('%s/epocXp.adhoc.decim8ted.oct', eeg_dir), results);
+save('-binary', sprintf('%s/epocXp.adhoc.decim8ted.oct', eeg_dir), 'results');
