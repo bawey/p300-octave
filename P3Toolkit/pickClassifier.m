@@ -42,7 +42,7 @@ function [model modelCell featsSelectCell summary] = pickClassifier(session, cla
     summary = launch(wf);
     %will dump the results to console
 
-    bestStruct = getBest(summary, 'accuracy');
+    bestStruct = getBest(summary, 'microScore');
 
     modelCell = bestStruct.trainTest;
     featsSelectCell = bestStruct.featsSelect;
