@@ -65,6 +65,9 @@ p3te=P3SessionLobenotion(eeg_dir, sprintf('%s%03d', eeg_file_stem, b1_tests(1)))
     p3te = P3SessionMerge(p3te, P3SessionLobenotion(eeg_dir, sprintf('%s%03d', eeg_file_stem, i)));
 endfor;
 
+p3tr=downsample(p3tr, 8);
+p3te=downsample(p3te, 8);
+
 [results.b3_b1_scores, results.b3_b1_confidence] = trainTestMesh(p3tr, p3te, results.b3_modelCell);
 
 % save all the results

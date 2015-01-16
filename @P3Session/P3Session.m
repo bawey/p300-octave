@@ -1,3 +1,4 @@
+% P3Session(signal, stimuli, targets, channelsCount, samplingRate, channelNames, silent=true)
 function p3Session = P3Session(signal, stimuli, targets, channelsCount, samplingRate, channelNames, silent=true)
 	
 	p3Session.samplingRate=samplingRate;

@@ -18,7 +18,7 @@ endfor;
 p3tr=downsample(p3tr, 8);
 p3te=downsample(p3te, 8);
 
-[model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 3, 'no', 6);
+[model modelCell featsSelectCell summary] = pickClassifier(p3tr, 'all', 4, 'no', 6);
 [scores, confidence]=trainTestMesh(p3tr, p3te, modelCell);
 
 results=struct();

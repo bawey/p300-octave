@@ -3,40 +3,46 @@
 function analyzeConfidence(conf, 
     label_x='Powtorzenia', 
     label_y='Znaki treningowe', 
-    label_z='Poziom ufnosci')
+    label_z='Poziom pewnosci')
 
     figure;
     
+    start_flash = 4;
+    
     subplot(2,2,1);
-    surf([1:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.right.highs');
+    surf([start_flash:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.right.highs(start_flash:end, :)');
     xlabel(label_x);
     ylabel(label_y);
     zlabel(label_z);
-    title('Max. poziom ufnosci - trafne');
+    view(-37.5, 40);
+    title('Max. poziom pewnosci - trafne');
 
     
     subplot(2,2,2);
-    surf([1:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.wrong.highs');
+    surf([start_flash:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.wrong.highs(start_flash:end, :)');
     xlabel(label_x);
     ylabel(label_y);
     zlabel(label_z);
-    view(-37.5, 30)
-    title('Max. poziom ufnosci - bledne');
+%       view(-217.5, 30)
+    view(-37.5, 40);
+    title('Max. poziom pewnosci - bledne');
     
     subplot(2,2,3);
-    surf([1:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.right.means');
+    surf([start_flash:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.right.means(start_flash:end, :)');
     xlabel(label_x);
     ylabel(label_y);
     zlabel(label_z);
-    title('Sredni poziom ufnosci - trafne');
+    view(-37.5, 40);
+    title('Sredni poziom pewnosci - trafne');
     
     subplot(2,2,4);
-    surf([1:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.wrong.means');
+    surf([start_flash:rows(conf.wrong.means)], [1:columns(conf.wrong.means)], conf.wrong.means(start_flash:end, :)');
     xlabel(label_x);
     ylabel(label_y);
     zlabel(label_z);
-    view(-37.5, 30)
-    title('Sredni poziom ufnosci - bledne');
+    view(-37.5, 40);
+%      view(-217.5, 30)
+    title('Sredni poziom pewnosci - bledne');
     
 endfunction;
 

@@ -4,7 +4,7 @@
 function session = P3SessionLobeRaw(data, meta, targets, channelsCount, samplingRate, channelNames)
 
     epoch_length = 120;
-
+    printf('P3SessionLobeRaw got data matrix %d x %d \n', rows(data), columns(data));
     
     %Experimental piece!
     
