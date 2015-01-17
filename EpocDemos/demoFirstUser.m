@@ -70,5 +70,34 @@ p3te=downsample(p3te, 8);
 
 [results.b3_b1_scores, results.b3_b1_confidence] = trainTestMesh(p3tr, p3te, results.b3_modelCell);
 
+% Extending with a bit of confidence-involving experiments
+
+results.b1_gaps = getConfGaps(results.b1_p3tr, results.b1_modelCell);
+results.b3_gaps = getConfGaps(results.b3_p3tr, results.b3_modelCell);
+
+results.risks = [0.01:0.07:0.99];
+
+for(b = {'b1', 'b2', 'b3'})
+    b=b{:};
+    avgFlashes = [];
+    accuracies= [];
+    
+    readToken = b;
+    if(strcmp('b2', b)) readToken = 'b1'; endif;
+    
+    gaps = results.(sprintf('%s_gaps',readToken));
+    model = results.(sprintf('%s_model',readToken));
+    p3te = results.(sprintf('%s_p3te',b));
+    
+    for(risk = results.risks)
+        [minCnf, minReps] = pickConfidence(gaps, risk);
+        [out conf flashesUsed accuracy] = askAndConfide(model, p3te, minCnf, minReps);
+        avgFlashes = [avgFlashes; mean(flashesUsed)];
+        accuracies = [accuracies; accuracy];
+    endfor;
+    
+    results.(sprintf('%s_cnfImpact', b)) = [results.risks', avgFlashes, accuracies];
+endfor;
+
 % save all the results
 save('-binary', sprintf('%s/epocXp.adhoc.decim8ted.oct', eeg_dir), 'results');

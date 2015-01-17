@@ -31,4 +31,22 @@ results.confidence  = confidence;
 results.p3te        = p3te;
 results.p3tr        = p3tr;
 
+% Extending with a bit of confidence-involving experiments
+
+results.gaps = getConfGaps(results.p3tr, results.modelCell);
+
+results.risks = [0.01:0.07:0.99];
+
+avgFlashes = [];
+accuracies= [];
+    
+for(risk = results.risks)
+    [minCnf, minReps] = pickConfidence(results.gaps, risk);
+    [out conf flashesUsed accuracy] = askAndConfide(results.model, results.p3te, minCnf, minReps);
+    avgFlashes = [avgFlashes; mean(flashesUsed)];
+    accuracies = [accuracies; accuracy];
+endfor;
+    
+results.cnfImpact = [results.risks', avgFlashes, accuracies];
+
 save('-binary', sprintf('%s/epocXp2nduser.decim8ted.oct', eeg_dir), 'results');

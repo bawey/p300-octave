@@ -1,7 +1,7 @@
 % This method simulates classifying non-full periods using only [1..epochsCountPerStimulus] rounds
 % As arguments it takes: the model, the data, minimum confidence value and minimum flashes used before the confidence is considered
 % askAndConfide(model, p3s, minCnf, minFlashes)
-function [results confidence flashesUsed] = askAndConfide(model, p3s, minCnf, minFlashes)
+function [results confidence flashesUsed accuracy] = askAndConfide(model, p3s, minCnf, minFlashes)
     
     flashesUsed = [];
     results = [];
@@ -45,7 +45,9 @@ function [results confidence flashesUsed] = askAndConfide(model, p3s, minCnf, mi
                 
     halfTruths=reshape(halfTruths, numel(halfTruths), 1);
                 
-    fprintf('Correctly regonized %d/%d characters and %d/%d columns or rows.\n', 
+    fprintf('Correctly reconized %d/%d characters and %d/%d columns or rows.\n', 
         sum(truths), numel(truths), sum(halfTruths), numel(halfTruths));
-        
+    
+    accuracy = sum(truths) / numel(truths);
+    
 endfunction;

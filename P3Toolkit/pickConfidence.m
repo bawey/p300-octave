@@ -1,48 +1,60 @@
-% function [scores confidence] = pickConfidence(p3s, modelCell)
-% Given the model configuration, retrains the model for all (n-1)-sized subsets of periods and performs
-% evaluation on remaining one.
-% This is pretty much like cross-validation, except that now we're looking for the confidence levels achieved for
-% each left-out period.
-
-% returns the "confidence gaps" matrix, listing the number of repeats used, 
-% max observed confidence of correct rulings and max observed confidence of mistakes
-
-function [confidenceGaps scores confidence] = pickConfidence(p3s, modelCell)
-    scores = [];
-    confidence = struct();
+% takes confidence gaps as returned by getConfGaps
+% and returns suggested confidence level and minimal required flashes
+function [cnf minReps] = pickConfidence(gaps, risk = 0.5)
+      
+    minReps = rows(gaps);
+    cnf=1;
     
-    % Go over all periods, marking the current as dead
-    for(i=1:p3s.periodsCount)
-        % get training data as all periods except the now-dead one
-        [feats, labels, stimuli] = classificationData(p3s, [1:p3s.channelsCount], [1:i-1, i+1:p3s.periodsCount]);
-        model = modelFromCell(modelCell, feats, labels);
-
-        % dead data makes up the test set
-        [vfeats vlabels vstimuli] = classificationData(p3s, [1:p3s.channelsCount], [i]);
-        %that stupid issue with copying all
-        temptargets = p3s.targets;
-        p3t = P3Session(vfeats, vstimuli, temptargets(i,:), p3s.channelsCount, p3s.samplingRate, p3s.channelNames);
-        
-        [score, confidence_chunk] = evaluateOnTestSet(model, p3t);
-        scores=[scores; score];
-        
-        if(isempty(fieldnames(confidence)))
-            confidence = confidence_chunk;
+    % mean(mean(gaps(2:end,2:end)))
+    
+    figure;
+    plot(gaps(:,1),gaps(:,3), 'ro');
+    hold on
+    plot(gaps(:,1), gaps(:,2), 'go');
+    hold on
+%   plot(gaps(:,1), gaps(:,2)-gaps(:,3), 'x');
+    
+%      xpnt = max(find(gaps(:,2)<gaps(:,3)));
+%      
+%      max_margin = max(max(gaps(:,2)-gaps(:,3)))
+%      
+%      if(xpnt<11)
+%          cnf = mean(gaps(xpnt+2, 2:3));
+%          minReps = xpnt+2;
+%      endif;
+    
+    % 
+    surfs = [];
+    centers = [];
+    
+    for(reps = gaps(end,1) : -1 : gaps(1,1))
+        lowerBound = max ( gaps(reps:end, 3) );
+        upperBound = min( gaps(reps:end, 2) );
+        if(upperBound>lowerBound)
+            center = (upperBound*(1-risk) + risk*lowerBound);
         else
-            for(x={'right', 'wrong'})
-            x=x{:};
-                for(y={'highs', 'lows', 'means'})
-                    y=y{:};
-                    confidence.(x).(y) = [confidence.(x).(y), confidence_chunk.(x).(y)];
-                endfor;
-            endfor;
+            center = NaN;
         endif;
+        
+        centers = [center; centers];
+        surf = (upperBound - lowerBound) * (gaps(end,1)-reps);        
+        surfs = [surf; surfs];
     endfor;
     
-    confidenceGaps = [];
+    [maxsurf, maxind] = max(surfs);
     
-    for(minpers = 1: p3s.epochsCountPerStimulus)
-        confidenceGaps=[confidenceGaps; minpers, max(confidence.right.highs(minpers,:)), max(confidence.wrong.highs(minpers,:))];
-    endfor;
+    cnf = centers(maxind);
+    minReps = maxind;
     
+    plot(gaps(:,1), surfs, 'b:');
+    plot(gaps(:,1), centers, 'b*');
+    
+    
+    legend('Maksymalna pewnosc blednych wskazan', 'Maksymalna pewnosc trafnych wskazan', 
+           'Pow. prostokata wpisanego pomiedzy trafne i błedne', 'Sugerowany prog pewnosci', 'location', 'southeast');
+    
+    axis([0,rows(gaps)+1,0.8*min(gaps(:,2:end)(:)),1.11*max(gaps(:,2:end)(:))]);
+    xlabel('Liczba powtorzen podczas klasyfikacji');
+    hold off;
+
 endfunction;
