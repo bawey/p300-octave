@@ -1,0 +1,16 @@
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 1000.000000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 100.000000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 10.000000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 5.000000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 1.000000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 0.500000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 0.100000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 0.050000))}
+{@ClassifierNan, struct("TYPE", "SVM", "hyperparameter", struct("c_value", 0.010000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.000100))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.000500))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.001000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.050000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.010000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.100000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 1.000000))}

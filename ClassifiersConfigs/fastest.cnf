@@ -1,0 +1,7 @@
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.000100))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.000500))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.001000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.050000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.010000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 0.100000))}
+{@ClassifierNan, struct("TYPE", "FLDA", "hyperparameter", struct("gamma", 1.000000))}

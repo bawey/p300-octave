@@ -27,5 +27,6 @@ function init()
 	
 	addpath(sprintf('%s/EpocDemos/', pwd));
 	addpath(sprintf('%s/batch/', pwd));
+	addpath(sprintf('%s/ClassifiersConfigs/', pwd));
 	
 endfunction;

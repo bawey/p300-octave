@@ -6,6 +6,11 @@
 %   - xsplit: min / max / total / number - foldness of cross validation. if a number is given, the factors are multiplied until the result is >= number
 function [model modelCell featsSelectCell summary] = pickClassifier(session, classification_methods='all', repeats_split='no', balancing='no', xsplit='min')
 
+    % new approach: if classification methods include balanced classifier: set balancing = yes
+    if( ismember('BalancedClassifier', classification_methods))
+        balancing = 'yes';
+    endif;
+
     if(strcmp(repeats_split,'no')==false && strcmp(repeats_split,'none')==false)
         % train session epochs will be split in <smallest factor> number of periods to increase the depth of classifier comparison
         session = P3SessionSplitRepeats(session, repeats_split);
@@ -33,9 +38,6 @@ function [model modelCell featsSelectCell summary] = pickClassifier(session, cla
             endif;
         endfor;
     endif;
-    
-    fprintf('pickClassifier: train session of %d characters, %d-fold x-validation. balancing=%s, classification_methods=%s \n', session.periodsCount, splitRate, balancing, classification_methods);
-    
     
     % SplitCell does NOT include the samples number as this is later inserted automatically in P3Workflow...
     wf=P3WorkflowClassifierGridSearch(session, {@trainTestSplitMx, splitRate}, classification_methods, balancing);
