@@ -7,7 +7,12 @@
 % returns the "confidence gaps" matrix, listing the number of repeats used, 
 % max observed confidence of correct rulings and max observed confidence of mistakes
 
-function [confidenceGaps scores confidence] = getConfGaps(p3s, modelCell)
+function [confidenceGaps scores confidence] = getConfGaps(p3s, modelCell, verbose=false)
+    
+    if(isstr(modelCell))
+        modelCell=eval(modelCell);
+    endif;
+    
     scores = [];
     confidence = struct();
     
@@ -43,6 +48,11 @@ function [confidenceGaps scores confidence] = getConfGaps(p3s, modelCell)
     
     for(minpers = 1: p3s.epochsCountPerStimulus)
         confidenceGaps=[confidenceGaps; minpers, max(confidence.right.highs(minpers,:)), max(confidence.wrong.highs(minpers,:))];
+        if(verbose)
+            printf(sprintf('%02d repeats: min confidence: %f, max overconfidence: %f ( %f difference ) \r', 
+                           confidenceGaps(end, 1), confidenceGaps(end, 2), confidenceGaps(end, 3), confidenceGaps(end,2)-confidenceGaps(end,3)));
+            fflush(stdout);
+        endif;
     endfor;
     
 endfunction;
