@@ -36,5 +36,6 @@ function plotPeriodChannelResponses(p3, channel, periodNo)
 		hold on;
 		plot(data_x, mean_neg, '-r');
 		title(sprintf('stimulus: %d', stimulus));
+		axis('labelx', 'ticx');
 	endfor;
 endfunction;

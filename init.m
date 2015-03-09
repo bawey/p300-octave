@@ -21,9 +21,16 @@ function init()
 	addpath(sprintf('%s/Classifiers/@DummyClassifier', pwd));
 	
 	addpath(sprintf('%s/test/', pwd));
-	addpath(sprintf('%s/../p3results/', pwd));
-	addpath(sprintf('%s/../p3data/', pwd));
-	addpath(sprintf('%s/../p3results_balanced', pwd));
+	
+	if(exist('%s/../p3results/')==7)
+            addpath(sprintf('%s/../p3results/', pwd));
+        endif;
+        if (exist('%s/../p3data/')==7)
+            addpath(sprintf('%s/../p3data/', pwd));
+	endif;
+	if(exist('%s/../p3results_balanced/')==7)
+            addpath(sprintf('%s/../p3results_balanced', pwd));
+        endif;
 	
 	addpath(sprintf('%s/EpocDemos/', pwd));
 	addpath(sprintf('%s/batch/', pwd));
